@@ -4,7 +4,6 @@
 
 %{
 #include <stdio.h>
-#include <gmp.h>
 #include "ritual-r5rs.tab.h"
 #include "parse_context.h"
 %}
