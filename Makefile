@@ -1,5 +1,7 @@
 BISONFLAGS=
 
+all: ritual-r5rs
+
 clean:
 	rm -rf lex.ritual-r5rs.c ritual-r5rs.tab.c ritual-r5rs ritual-r5rs.tab.h
 
