@@ -1,25 +1,25 @@
-#include "parsectx.h"
+#include "parsec.h"
 #include <stdlib.h>
 #include <string.h>
 
 #include <assert.h>
 
-void init_parse_ctx(struct parse_ctx *ctx) {
+void pctx_init(struct parse_context *ctx) {
     memset( ctx, 0, sizeof *ctx );
 }
 
-void destroy_parse_ctx(struct parse_ctx *ctx) {
+void pctx_destroy(struct parse_context *ctx) {
     if( ctx->dynstring ) {
         free( ctx->dynstring );
         ctx->dynstring = 0;
     }
 }
 
-char *get_dynstring( struct parse_ctx* ctx ) {
+char *pctx_dynstring_get( struct parse_context* ctx ) {
     return ctx->dynstring;
 }
 
-int initialize_dynstring( struct parse_ctx* ctx ) {
+int pctx_dynstring_init( struct parse_context* ctx ) {
     ctx->dynstring_index = 0;
     if( !ctx->dynstring ) { 
         ctx->dynstring_size = DYNSTRING_SIZE;
@@ -28,7 +28,7 @@ int initialize_dynstring( struct parse_ctx* ctx ) {
     return ctx->dynstring == 0;
 }
 
-int accumulate_dynstring( struct parse_ctx *ctx, char ch ) {
+int pctx_dynstring_putc( struct parse_context *ctx, char ch ) {
     if( ctx->dynstring_index >= ctx->dynstring_size ) {
         while( ctx->dynstring_index >= ctx->dynstring_size ) {
             ctx->dynstring_size *= 2;

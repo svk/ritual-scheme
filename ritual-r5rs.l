@@ -6,7 +6,7 @@
 #include <stdio.h>
 #include <gmp.h>
 #include "ritual-r5rs.tab.h"
-#include "parsectx.h"
+#include "parse_context.h"
 %}
 
 letter [a-z]
@@ -30,15 +30,15 @@ subsequents [a-z\!\$\%\&\*\/\:\<\=\>\?\^\_\~0-9\+\-\.\@]*
 "#\\space"      { yylval_param->integer = ' '; return CHARACTER; }
 "#\\newline"    { yylval_param->integer = '\n'; return CHARACTER; }
 #\\.            { yylval_param->integer = yytext[2]; return CHARACTER; }
-\"              { initialize_dynstring( yyextra ); BEGIN(QUOTED_STRING); }
+\"              { pctx_dynstring_init( yyextra ); BEGIN(QUOTED_STRING); }
 <QUOTED_STRING>{
     \"          { BEGIN(INITIAL);
-                  accumulate_dynstring( yyextra, '\0' );
-                  yylval_param->string = get_dynstring( yyextra );
+                  pctx_dynstring_putc( yyextra, '\0' );
+                  yylval_param->string = pctx_dynstring_get( yyextra );
                   return STRING; }
-    \\\"        { accumulate_dynstring( yyextra, '"' ); }
-    \\\\        { accumulate_dynstring( yyextra, '\\' ); }
-    .           { accumulate_dynstring( yyextra, yytext[0] ); }
+    \\\"        { pctx_dynstring_putc( yyextra, '"' ); }
+    \\\\        { pctx_dynstring_putc( yyextra, '\\' ); }
+    .           { pctx_dynstring_putc( yyextra, yytext[0] ); }
 }
 .            return yytext[0];
 %%

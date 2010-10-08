@@ -5,7 +5,7 @@
 %{
 #include <stdio.h>
 #include <string.h>
-#include "parsectx.h"
+#include "parse_context.h"
 
 #define YYLEX_PARAM ((struct parse_ctx*)ctx)->scanner
 
@@ -14,14 +14,14 @@ void yyerror( struct parse_ctx *ctx, const char *str ) {
 }
 
 int main(int argc, char *argv[]) {
-    struct parse_ctx my;
-    init_parse_ctx( &my );
+    struct parse_context my;
+    pctx_init( &my );
     yylex_init( &my.scanner );
     yyset_extra( &my, my.scanner );
     yy_scan_string( "how many roads must a man walk down? (42)", my.scanner );
     yyparse( &my );
     yylex_destroy( my.scanner );
-    destroy_parse_ctx( &my );
+    pctx_destroy( &my );
     return 0;
 }
 
