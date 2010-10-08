@@ -1,4 +1,5 @@
-#include "parsec.h"
+#include "parse_context.h"
+
 #include <stdlib.h>
 #include <string.h>
 
@@ -22,7 +23,7 @@ char *pctx_dynstring_get( struct parse_context* ctx ) {
 int pctx_dynstring_init( struct parse_context* ctx ) {
     ctx->dynstring_index = 0;
     if( !ctx->dynstring ) { 
-        ctx->dynstring_size = DYNSTRING_SIZE;
+        ctx->dynstring_size = PCTX_DYNSTRING_SIZE;
         ctx->dynstring = malloc( ctx->dynstring_size );
     }
     return ctx->dynstring == 0;

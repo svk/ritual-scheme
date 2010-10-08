@@ -1,5 +1,5 @@
 %define api.pure
-%parse-param { struct parse_ctx* ctx }
+%parse-param { struct parse_context* ctx }
 %lex-param { void* scanner }
 
 %{
@@ -7,9 +7,9 @@
 #include <string.h>
 #include "parse_context.h"
 
-#define YYLEX_PARAM ((struct parse_ctx*)ctx)->scanner
+#define YYLEX_PARAM ((struct parse_context*)ctx)->scanner
 
-void yyerror( struct parse_ctx *ctx, const char *str ) {
+void yyerror( struct parse_context *ctx, const char *str ) {
     fprintf( stderr, "error: %s\n", str );
 }
 
