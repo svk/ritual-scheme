@@ -3,7 +3,6 @@
 
 #define USE_JENKINS_HASH_32
 #define RHT_THREAD_SAFE
-#define RHT_THREAD_SAFE
 
 #define DEBUG
 #define DEBUG_VERBOSE
