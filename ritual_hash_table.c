@@ -28,7 +28,7 @@ int rht_get_best_size( int lower_bound ) {
 int rht_table_init( struct rht_table* table, int initial_size ) {
     memset( table, 0, sizeof *table );
 
-    initial_size = rht_get_best_size( lower_bound );
+    initial_size = rht_get_best_size( initial_size );
 
     table->slot = malloc( sizeof *table->slot * initial_size );
     if( !table->slot ) return 1;
@@ -47,19 +47,31 @@ int rht_table_init( struct rht_table* table, int initial_size ) {
 }
 
 void rht_table_destroy( struct rht_table* table ) {
-    while( table->slot ) {
-        rht_entry_delete( &table->slot );
+    for(int i=0;i<table->slots;i++) {
+        while( table->slot[i] ) {
+            rht_entry_delete( &table->slot[i], table->free_value );
+        }
     }
-    while( table->old_slot ) {
-        rht_entry_delete( &table->old_slot );
+    free( table->slot );
+    table->slot = 0;
+    
+    if( table->old_slot ) {
+        for(int i=0;i<table->old_slots;i++) {
+            while( table->old_slot[i] ) {
+                rht_entry_delete( &table->old_slot[i], table->free_value );
+            }
+        }
+        free( table->old_slot );
+        table->old_slot = 0;
     }
+
 #ifdef RHT_THREAD_SAFE
     pthread_rwlock_destroy( &table->lock );
 #endif
 }
 
 struct rht_entry * rht_entry_create( const void *key, int keylen,
-                                     void **value ) {
+                                     void *value ) {
     struct rht_entry *rv = malloc(sizeof *rv);
     if( !rv ) return 0;
 
@@ -81,7 +93,7 @@ struct rht_entry * rht_entry_create( const void *key, int keylen,
 
 struct rht_entry ** rht_find_entry_in_list( struct rht_entry **list,
                                             const void* key, int keylen ) {
-    for( struct rht_entry ** rv = list; rv; rv = rv->next ) {
+    for( struct rht_entry ** rv = list; rv; rv = &(*rv)->next ) {
         if( (*rv)->keylen != keylen ) continue;
         if( memcmp( (*rv)->key, key, keylen ) ) continue;
         return rv;
@@ -108,10 +120,13 @@ struct rht_entry ** rht_find_entry( const struct rht_table* table,
     return 0;
 }
 
-void rht_entry_delete( struct rht_entry **pp ) {
-    /* Keys are owned, values are not. */
+void rht_entry_delete( struct rht_entry **pp,
+                       void (*free_value)(void*) ) {
     if( *pp ) {
         struct rht_entry *next = (*pp)->next;
+        if( free_value ) {
+            free_value( (*pp)->value );
+        }
         free( (*pp)->key );
         free( *pp );
         *pp = next;
@@ -125,7 +140,7 @@ int rht_lookup( const struct rht_table *table,
     struct rht_entry **pp;
 
 #ifdef RHT_THREAD_SAFE
-    pthread_rwlock_rdlock( &table->lock );
+    pthread_rwlock_rdlock( &((struct rht_table*)table)->lock );
 #endif
 
     pp = rht_find_entry( table, key, keylen );
@@ -138,7 +153,7 @@ int rht_lookup( const struct rht_table *table,
     }
 
 #ifdef RHT_THREAD_SAFE
-    pthread_rwlock_unlock( &table->lock );
+    pthread_rwlock_unlock( &((struct rht_table*)table)->lock );
 #endif
 
     return rv;
@@ -217,10 +232,7 @@ int rht_delete( struct rht_table *table, const void *key, int keylen ) {
     pp = rht_find_entry( table, key, keylen );
     if( pp ) {
         rv = 0;
-        if( table->free_value ) {
-            table->free_value( (*pp)->value );
-        }
-        rht_entry_delete( pp );
+        rht_entry_delete( pp, table->free_value  );
         --table->entries;
     } else {
         rv = 1;
@@ -274,7 +286,7 @@ int rht_do_move( struct rht_table *table ) {
 
             *entryp = entry->next; // delete from old
 
-            ritual_hash_t hash = rht_get_hash( key, keylen );
+            ritual_hash_t hash = rht_get_hash( entry->key, entry->keylen );
             int index = hash % table->slots;
             entry->next = table->slot[index];
             table->slot[index] = entry;

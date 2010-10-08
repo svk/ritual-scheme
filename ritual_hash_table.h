@@ -42,11 +42,11 @@ struct rht_table {
     void (*free_value)(void*);
 
     int slots, entries;
-    struct rht_entry * slot;
+    struct rht_entry ** slot;
 
     int old_slots;
     int first_old_index;
-    struct rht_entry * old_slot;
+    struct rht_entry ** old_slot;
 
 #ifdef RHT_THREAD_SAFE
     pthread_rwlock_t lock;
@@ -59,7 +59,7 @@ int rht_table_init( struct rht_table*, int );
 void rht_table_destroy( struct rht_table* );
 
 struct rht_entry * rht_entry_create( const void*, int, void* );
-void rht_entry_delete( struct rht_entry ** );
+void rht_entry_delete( struct rht_entry **, void (*)(void*) );
 
 struct rht_entry ** rht_find_entry_in_list( struct rht_entry **, const void*, int );
 struct rht_entry ** rht_find_entry( const struct rht_table*, const void*, int );
