@@ -93,7 +93,7 @@ struct rht_entry * rht_entry_create( const void *key, int keylen,
 
 struct rht_entry ** rht_find_entry_in_list( struct rht_entry **list,
                                             const void* key, int keylen ) {
-    for( struct rht_entry ** rv = list; rv; rv = &(*rv)->next ) {
+    for( struct rht_entry ** rv = list; *rv; rv = &(*rv)->next ) {
         if( (*rv)->keylen != keylen ) continue;
         if( memcmp( (*rv)->key, key, keylen ) ) continue;
         return rv;
