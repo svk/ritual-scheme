@@ -13,3 +13,6 @@ lex.ritual-r5rs.c: ritual-r5rs.l
 
 ritual-r5rs.tab.c: ritual-r5rs.y
 	bison $(BISONFLAGS) -d $^
+
+test_hash_table: test_hash_table.c ritual_hash_table.c
+	gcc -Wall -g $^ -lpthreadGC2 -o $@
