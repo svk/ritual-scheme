@@ -18,6 +18,7 @@ int main(int argc, char *argv[]) {
     init_parse_ctx( &my );
     yylex_init( &my.scanner );
     yyset_extra( &my, my.scanner );
+    yy_scan_string( "how many roads must a man walk down? (42)", my.scanner );
     yyparse( &my );
     yylex_destroy( my.scanner );
     destroy_parse_ctx( &my );
