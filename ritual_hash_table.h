@@ -77,8 +77,8 @@ int rht_set( struct rht_table*, const void*, int, void* );
 int rht_delete( struct rht_table*, const void*, int );
 
 int rht_lookup_str( const struct rht_table*, const char*, void** );
-int rht_set_str( const struct rht_table*, const char*, void* );
-int rht_delete_str( const struct rht_table*, const char* );
+int rht_set_str( struct rht_table*, const char*, void* );
+int rht_delete_str( struct rht_table*, const char* );
 
 void * rht_qlookup( const struct rht_table*, const void*, int);
 void * rht_qlookup_str( const struct rht_table*, const char*);

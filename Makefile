@@ -14,5 +14,5 @@ lex.ritual-r5rs.c: ritual-r5rs.l
 ritual-r5rs.tab.c: ritual-r5rs.y
 	bison $(BISONFLAGS) -d $^
 
-test_hash_table: test_hash_table.c ritual_hash_table.c
+test_hash_table: test_hash_table.c ritual_hash_table.c lookup3.c
 	gcc -std=c99 -Wall -g $^ -lpthreadGC2 -o $@

@@ -229,7 +229,7 @@ int rht_delete( struct rht_table *table, const void *key, int keylen ) {
         }
     }
 
-    pp = rht_find_entry( table, key, keylen );
+    struct rht_entry **pp = rht_find_entry( table, key, keylen );
     if( pp ) {
         rv = 0;
         rht_entry_delete( pp, table->free_value  );
@@ -248,7 +248,7 @@ int rht_delete( struct rht_table *table, const void *key, int keylen ) {
 int rht_realloc_table( struct rht_table *table, int newsize ) {
     assert( !table->old_slot );
 
-    struct rht_entry *newslot = malloc( sizeof *newslot * newsize );
+    struct rht_entry **newslot = malloc( sizeof *newslot * newsize );
     if( !newslot ) {
 #ifdef DEBUG
         fprintf( stderr, "warning: failed to reallocate table\n" );
@@ -296,8 +296,8 @@ int rht_do_move( struct rht_table *table ) {
 #ifdef DEBUG_VERBOSE
             fprintf(stderr, "notice: transition completed, freeing old table\n" );
 #endif
-            free( table->old_slots );
-            table->old_slots = 0;
+            free( table->old_slot );
+            table->old_slot = 0;
         }
 
     }
@@ -308,11 +308,11 @@ int rht_lookup_str( const struct rht_table* table, const char* key, void** value
     return rht_lookup( table, key, strlen( key ), value );
 }
 
-int rht_set_str( const struct rht_table* table, const char* key, void* value) {
+int rht_set_str( struct rht_table* table, const char* key, void* value) {
     return rht_set( table, key, strlen( key ), value );
 }
 
-int rht_delete_str( const struct rht_table* table, const char* key) {
+int rht_delete_str( struct rht_table* table, const char* key) {
     return rht_delete( table, key, strlen( key ) );
 }
 
