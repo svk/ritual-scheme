@@ -1,0 +1,4 @@
+Ritual Scheme
+
+A toy implementation of R5RS for scripting, written in C to be easily
+embeddable. Clearly not yet finished, not yet even properly begun.
