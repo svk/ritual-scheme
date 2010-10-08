@@ -55,7 +55,7 @@ typedef union YYSTYPE
 {
 
 /* Line 1749 of yacc.c  */
-#line 33 "ritual-r5rs.y"
+#line 21 "ritual-r5rs.y"
 
     int integer;
     char *string;

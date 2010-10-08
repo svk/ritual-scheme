@@ -41,4 +41,5 @@ int pctx_dynstring_putc( struct parse_context *ctx, char ch ) {
         ctx->dynstring = rv;
     }
     ctx->dynstring[ ctx->dynstring_index++ ] = ch;
+    return 0;
 }
