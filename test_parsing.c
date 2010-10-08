@@ -9,7 +9,7 @@ int main(int argc, char *argv[]) {
     pctx_init( &my );
     yylex_init( &my.scanner );
     yyset_extra( &my, my.scanner );
-    yy_scan_string( "how many roads must a man walk down? (42)", my.scanner );
+    yy_scan_string( "... someone open up a window?", my.scanner );
     yyparse( &my );
     yylex_destroy( my.scanner );
     pctx_destroy( &my );
