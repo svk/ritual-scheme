@@ -26,8 +26,6 @@ typedef uint32_t ritual_hash_t;
 #include <pthread.h>
 #endif
 
-#define RHT_OWN_VALUES 1
-
 struct rht_entry {
     void *key;
     int keylen;
