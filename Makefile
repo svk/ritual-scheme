@@ -10,7 +10,7 @@ else
 LIB_PTHREAD=-lpthread
 endif
 
-all: test_parsing test_hash_table
+all: test_parsing test_hash_table test_basic_types test_basic_types test_basic_types test_basic_types
 
 reflex:
 	rm -rf lex.ritual-r5rs.c ritual-r5rs.tab.c ritual-r5rs.tab.h lex.ritual-r5rs.h
@@ -20,6 +20,9 @@ veryclean: clean reflex
 clean:
 	rm -rf test_hash_table
 	rm -f *.o
+	rm -f *.exe
+
+test_basic_types: test_basic_types.o ritual_generic.o ritual_basic_types.o ritual_object.o ritual_flo.o
 
 test_parsing: lex.ritual-r5rs.o ritual-r5rs.tab.o parse_context.o test_parsing.o
 	gcc $(CFLAGS) $^ -o $@

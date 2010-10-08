@@ -2,6 +2,7 @@
 #define H_RITUAL_BASIC_TYPES
 
 #include "ritual_object.h"
+#include "ritual_flo.h"
 
 /* The _destroy() functions should be called by the GC.
  * Note that the presence of a GC means that no object
@@ -27,7 +28,7 @@ struct ritual_pair * ritual_pair_create( ritual_object_t *,
 struct ritual_symbol {
     ritual_object_t header;
     char name[1]; // Simple but rather inefficient.
-}
+};
 
 struct ritual_symbol * ritual_symbol_create( const char * );
 
@@ -35,29 +36,45 @@ struct ritual_ascii_string {
         // null-terminated; can NOT contain binary data!
     ritual_object_t header;
     char data[1];
-}
+};
 
 struct ritual_ascii_string * ritual_ascii_string_create( const char * );
 
 struct ritual_native_int {
     ritual_object_t header;
     int32_t value;
-}
+};
 
 struct ritual_native_int * ritual_native_int_create( int32_t );
 
 struct ritual_ascii_char {
     ritual_object_t header;
     int8_t value;
-}
+};
 
 struct ritual_ascii_char * ritual_ascii_char_create( int8_t );
 
 struct ritual_boolean {
     ritual_object_t header;
     uint8_t value; // nonzero?
-}
+};
 
 struct ritual_boolean * ritual_boolean_create(int);
+
+
+void ritual_print_null( struct ritual_flo *,
+                        void * );
+void ritual_print_pair( struct ritual_flo *,
+                        void * );
+void ritual_print_ascii_string( struct ritual_flo *,
+                                void * );
+void ritual_print_boolean( struct ritual_flo *,
+                           void * );
+void ritual_print_native_int( struct ritual_flo *,
+                              void * );
+void ritual_print_ascii_char( struct ritual_flo *,
+                              void * );
+void ritual_print_symbol( struct ritual_flo *,
+                          void * );
 
 #endif

@@ -1,5 +1,7 @@
 #include "ritual_object.h"
 
+#include <stdlib.h>
+
 /* For now we have no actual garbage collection, just talkie
  * comments. We leak memory like a sieve. */
 

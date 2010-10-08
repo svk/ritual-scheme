@@ -23,7 +23,8 @@ typedef enum ritual_type {
     RTYPE_ASCII_CHAR,
     RTYPE_ASCII_STRING,
     RTYPE_VECTOR,
-    RTYPE_PORT
+    RTYPE_PORT,
+    RTYPE_NUM_TYPES
 } ritual_type_t;
 
 /* Alternative for consideration: use aligned memory.
