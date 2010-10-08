@@ -1,11 +1,14 @@
 #include "ritual_hash_table.h"
 
+#include <stdio.h>
+#include <stdlib.h>
+
 void show( const char *name, const char *data ) {
     fprintf( stderr, "%s=%s\n", name, (data) ? data : "(not set)" );
 }
 
 void showkey( struct rht_table *table, const char *key ) {
-    show( key, rht_qlookup( table, key ) );
+    show( key, rht_qlookup_str( table, key ) );
 }
 
 void wouldfree( void *p ) {

@@ -15,4 +15,4 @@ ritual-r5rs.tab.c: ritual-r5rs.y
 	bison $(BISONFLAGS) -d $^
 
 test_hash_table: test_hash_table.c ritual_hash_table.c
-	gcc -Wall -g $^ -lpthreadGC2 -o $@
+	gcc -std=c99 -Wall -g $^ -lpthreadGC2 -o $@

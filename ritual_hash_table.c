@@ -1,5 +1,9 @@
 #include "ritual_hash_table.h"
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
 #include <assert.h>
 
 #ifdef USE_JENKINS_HASH_32
@@ -54,7 +58,8 @@ void rht_table_destroy( struct rht_table* table ) {
 #endif
 }
 
-struct rht_entry * rht_entry_create( void *key, int keylen, void **value ) {
+struct rht_entry * rht_entry_create( const void *key, int keylen,
+                                     void **value ) {
     struct rht_entry *rv = malloc(sizeof *rv);
     if( !rv ) return 0;
 
@@ -75,7 +80,7 @@ struct rht_entry * rht_entry_create( void *key, int keylen, void **value ) {
 }
 
 struct rht_entry ** rht_find_entry_in_list( struct rht_entry **list,
-                                          void* key, int keylen ) {
+                                            const void* key, int keylen ) {
     for( struct rht_entry ** rv = list; rv; rv = rv->next ) {
         if( (*rv)->keylen != keylen ) continue;
         if( memcmp( (*rv)->key, key, keylen ) ) continue;
@@ -85,7 +90,7 @@ struct rht_entry ** rht_find_entry_in_list( struct rht_entry **list,
 }
 
 struct rht_entry ** rht_find_entry( const struct rht_table* table,
-                                  void* key, int keylen ) {
+                                    const void* key, int keylen ) {
     ritual_hash_t hash = rht_get_hash( key, keylen );
     struct rht_entry ** rv = 0;
 
@@ -114,8 +119,8 @@ void rht_entry_delete( struct rht_entry **pp ) {
 }
 
 int rht_lookup( const struct rht_table *table,
-                       void *key, int keylen,
-                       void **value ) {
+                const void *key, int keylen,
+                void **value ) {
     int rv;
     struct rht_entry **pp;
 
@@ -140,7 +145,7 @@ int rht_lookup( const struct rht_table *table,
 }
 
 int rht_set( struct rht_table *table,
-             void *key, int keylen,
+             const void *key, int keylen,
              void *value ) {
     int rv;
 
@@ -196,7 +201,7 @@ int rht_set( struct rht_table *table,
     return rv;
 }
 
-int rht_delete( struct rht_table *table, void *key, int keylen ) {
+int rht_delete( struct rht_table *table, const void *key, int keylen ) {
     int rv;
 
 #ifdef RHT_THREAD_SAFE
@@ -292,14 +297,14 @@ int rht_lookup_str( const struct rht_table* table, const char* key, void** value
 }
 
 int rht_set_str( const struct rht_table* table, const char* key, void* value) {
-    return rht_set_str( table, key, strlen( key ), value );
+    return rht_set( table, key, strlen( key ), value );
 }
 
 int rht_delete_str( const struct rht_table* table, const char* key) {
-    return rht_delete_str( table, key, strlen( key ) );
+    return rht_delete( table, key, strlen( key ) );
 }
 
-void * rht_qlookup( const struct rht_table *table, void *key, int keylen ) {
+void * rht_qlookup( const struct rht_table *table, const void *key, int keylen ) {
     void *rv;
     if( rht_lookup( table, key, keylen, &rv ) ) {
         return 0;

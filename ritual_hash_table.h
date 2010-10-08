@@ -58,11 +58,11 @@ ritual_hash_t rht_get_hash( const void *, int );
 int rht_table_init( struct rht_table*, int );
 void rht_table_destroy( struct rht_table* );
 
-struct rht_entry * rht_entry_create( void*, int, void* );
+struct rht_entry * rht_entry_create( const void*, int, void* );
 void rht_entry_delete( struct rht_entry ** );
 
-struct rht_entry ** rht_find_entry_in_list( struct rht_entry **, void*, int );
-struct rht_entry ** rht_find_entry( const struct rht_table*, void*, int );
+struct rht_entry ** rht_find_entry_in_list( struct rht_entry **, const void*, int );
+struct rht_entry ** rht_find_entry( const struct rht_table*, const void*, int );
 int rht_get_best_size(int);
 
 int rht_realloc_table( struct rht_table *, int );
@@ -72,15 +72,15 @@ int rht_do_move( struct rht_table * );
 /* Return nonzero on failure (e.g. no such key for lookup), 0 on success. */
 /* delete returns the value (in case that needs deletion), or 0 on failure. */
 
-int rht_lookup( const struct rht_table*, void*, int, void** );
-int rht_set( struct rht_table*, void*, int, void* );
-int rht_delete( struct rht_table*, void*, int );
+int rht_lookup( const struct rht_table*, const void*, int, void** );
+int rht_set( struct rht_table*, const void*, int, void* );
+int rht_delete( struct rht_table*, const void*, int );
 
 int rht_lookup_str( const struct rht_table*, const char*, void** );
 int rht_set_str( const struct rht_table*, const char*, void* );
 int rht_delete_str( const struct rht_table*, const char* );
 
-void * rht_qlookup( const struct rht_table*, void*, int);
+void * rht_qlookup( const struct rht_table*, const void*, int);
 void * rht_qlookup_str( const struct rht_table*, const char*);
 
 
