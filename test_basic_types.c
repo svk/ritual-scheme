@@ -14,16 +14,19 @@ int main(int argc, char *argv[]) {
     void *zeta = ritual_ascii_char_create( '\n' );
     void *eta = 0;
 
+    void *megalist = 0;
+    megalist = ritual_pair_create( eta, megalist );
+    megalist = ritual_pair_create( zeta, megalist );
+    megalist = ritual_pair_create( epsilon, megalist );
+    megalist = ritual_pair_create( delta, megalist );
+    megalist = ritual_pair_create( gamma, megalist );
+    megalist = ritual_pair_create( beta, megalist );
+    megalist = ritual_pair_create( alpha, megalist );
+
     struct rflo_filehandle * fhf = rflo_filehandle_create( stdout );
     struct ritual_flo *f = &fhf->flo;
 
-    ritual_print( f, alpha );
-    ritual_print( f, beta );
-    ritual_print( f, gamma );
-    ritual_print( f, delta );
-    ritual_print( f, epsilon );
-    ritual_print( f, zeta );
-    ritual_print( f, eta );
+    ritual_print( f, megalist );
 
     return 0;
 }
