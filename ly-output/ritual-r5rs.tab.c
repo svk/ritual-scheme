@@ -71,29 +71,30 @@
 
 #include <stdio.h>
 #include <string.h>
-#include "parsectx.h"
+#include "parse_context.h"
 
-#define YYLEX_PARAM ((struct parse_ctx*)ctx)->scanner
+#define YYLEX_PARAM ((struct parse_context*)ctx)->scanner
 
-void yyerror( struct parse_ctx *ctx, const char *str ) {
+void yyerror( struct parse_context *ctx, const char *str ) {
     fprintf( stderr, "error: %s\n", str );
 }
 
 int main(int argc, char *argv[]) {
-    struct parse_ctx my;
-    init_parse_ctx( &my );
+    struct parse_context my;
+    pctx_init( &my );
     yylex_init( &my.scanner );
     yyset_extra( &my, my.scanner );
+    yy_scan_string( "how many roads must a man walk down? (42)", my.scanner );
     yyparse( &my );
     yylex_destroy( my.scanner );
-    destroy_parse_ctx( &my );
+    pctx_destroy( &my );
     return 0;
 }
 
 
 
 /* Line 189 of yacc.c  */
-#line 97 "ritual-r5rs.tab.c"
+#line 98 "ritual-r5rs.tab.c"
 
 /* Enabling traces.  */
 #ifndef YYDEBUG
@@ -137,7 +138,7 @@ typedef union YYSTYPE
 {
 
 /* Line 222 of yacc.c  */
-#line 32 "ritual-r5rs.y"
+#line 33 "ritual-r5rs.y"
 
     int integer;
     char *string;
@@ -145,7 +146,7 @@ typedef union YYSTYPE
 
 
 /* Line 222 of yacc.c  */
-#line 149 "ritual-r5rs.tab.c"
+#line 150 "ritual-r5rs.tab.c"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
@@ -157,7 +158,7 @@ typedef union YYSTYPE
 
 
 /* Line 264 of yacc.c  */
-#line 161 "ritual-r5rs.tab.c"
+#line 162 "ritual-r5rs.tab.c"
 
 #ifdef short
 # undef short
@@ -442,8 +443,8 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    43,    43,    44,    48,    51,    54,    57,    60,    63,
-      66,    69
+       0,    44,    44,    45,    49,    52,    55,    58,    61,    64,
+      67,    70
 };
 #endif
 
@@ -670,14 +671,14 @@ do {									  \
 #if (defined __STDC__ || defined __C99__FUNC__ \
      || defined __cplusplus || defined _MSC_VER)
 static void
-yy_symbol_value_print (FILE *yyoutput, int yytype, YYSTYPE const * const yyvaluep, struct parse_ctx* ctx)
+yy_symbol_value_print (FILE *yyoutput, int yytype, YYSTYPE const * const yyvaluep, struct parse_context* ctx)
 #else
 static void
 yy_symbol_value_print (yyoutput, yytype, yyvaluep, ctx)
     FILE *yyoutput;
     int yytype;
     YYSTYPE const * const yyvaluep;
-    struct parse_ctx* ctx;
+    struct parse_context* ctx;
 #endif
 {
   if (!yyvaluep)
@@ -704,14 +705,14 @@ yy_symbol_value_print (yyoutput, yytype, yyvaluep, ctx)
 #if (defined __STDC__ || defined __C99__FUNC__ \
      || defined __cplusplus || defined _MSC_VER)
 static void
-yy_symbol_print (FILE *yyoutput, int yytype, YYSTYPE const * const yyvaluep, struct parse_ctx* ctx)
+yy_symbol_print (FILE *yyoutput, int yytype, YYSTYPE const * const yyvaluep, struct parse_context* ctx)
 #else
 static void
 yy_symbol_print (yyoutput, yytype, yyvaluep, ctx)
     FILE *yyoutput;
     int yytype;
     YYSTYPE const * const yyvaluep;
-    struct parse_ctx* ctx;
+    struct parse_context* ctx;
 #endif
 {
   if (yytype < YYNTOKENS)
@@ -762,13 +763,13 @@ do {								\
 #if (defined __STDC__ || defined __C99__FUNC__ \
      || defined __cplusplus || defined _MSC_VER)
 static void
-yy_reduce_print (YYSTYPE *yyvsp, int yyrule, struct parse_ctx* ctx)
+yy_reduce_print (YYSTYPE *yyvsp, int yyrule, struct parse_context* ctx)
 #else
 static void
 yy_reduce_print (yyvsp, yyrule, ctx)
     YYSTYPE *yyvsp;
     int yyrule;
-    struct parse_ctx* ctx;
+    struct parse_context* ctx;
 #endif
 {
   int yynrhs = yyr2[yyrule];
@@ -1041,14 +1042,14 @@ yysyntax_error (char *yyresult, int yystate, int yychar)
 #if (defined __STDC__ || defined __C99__FUNC__ \
      || defined __cplusplus || defined _MSC_VER)
 static void
-yydestruct (const char *yymsg, int yytype, YYSTYPE *yyvaluep, struct parse_ctx* ctx)
+yydestruct (const char *yymsg, int yytype, YYSTYPE *yyvaluep, struct parse_context* ctx)
 #else
 static void
 yydestruct (yymsg, yytype, yyvaluep, ctx)
     const char *yymsg;
     int yytype;
     YYSTYPE *yyvaluep;
-    struct parse_ctx* ctx;
+    struct parse_context* ctx;
 #endif
 {
   YYUSE (yyvaluep);
@@ -1075,7 +1076,7 @@ int yyparse ();
 #endif
 #else /* ! YYPARSE_PARAM */
 #if defined __STDC__ || defined __cplusplus
-int yyparse (struct parse_ctx* ctx);
+int yyparse (struct parse_context* ctx);
 #else
 int yyparse ();
 #endif
@@ -1103,11 +1104,11 @@ yyparse (YYPARSE_PARAM)
 #if (defined __STDC__ || defined __C99__FUNC__ \
      || defined __cplusplus || defined _MSC_VER)
 int
-yyparse (struct parse_ctx* ctx)
+yyparse (struct parse_context* ctx)
 #else
 int
 yyparse (ctx)
-    struct parse_ctx* ctx;
+    struct parse_context* ctx;
 #endif
 #endif
 {
@@ -1362,7 +1363,7 @@ yyreduce:
         case 4:
 
 /* Line 1464 of yacc.c  */
-#line 48 "ritual-r5rs.y"
+#line 49 "ritual-r5rs.y"
     {
         printf( "number: %s\n", (yyvsp[(1) - (1)].string) );
     ;}
@@ -1371,7 +1372,7 @@ yyreduce:
   case 5:
 
 /* Line 1464 of yacc.c  */
-#line 51 "ritual-r5rs.y"
+#line 52 "ritual-r5rs.y"
     {
         printf( "identifier: %s\n", (yyvsp[(1) - (1)].string) );
     ;}
@@ -1380,7 +1381,7 @@ yyreduce:
   case 6:
 
 /* Line 1464 of yacc.c  */
-#line 54 "ritual-r5rs.y"
+#line 55 "ritual-r5rs.y"
     {
         printf( "string: %s\n", (yyvsp[(1) - (1)].string) );
     ;}
@@ -1389,7 +1390,7 @@ yyreduce:
   case 7:
 
 /* Line 1464 of yacc.c  */
-#line 57 "ritual-r5rs.y"
+#line 58 "ritual-r5rs.y"
     {
         printf( "character: %d (%c)\n", ((yyvsp[(1) - (1)].integer)), (char) (yyvsp[(1) - (1)].integer));
     ;}
@@ -1398,7 +1399,7 @@ yyreduce:
   case 8:
 
 /* Line 1464 of yacc.c  */
-#line 60 "ritual-r5rs.y"
+#line 61 "ritual-r5rs.y"
     {
         printf( "boolean: %s\n", ((yyvsp[(1) - (1)].integer)) ? "#t" : "#f" );
     ;}
@@ -1407,7 +1408,7 @@ yyreduce:
   case 9:
 
 /* Line 1464 of yacc.c  */
-#line 63 "ritual-r5rs.y"
+#line 64 "ritual-r5rs.y"
     {
         printf( "(\n" );
     ;}
@@ -1416,7 +1417,7 @@ yyreduce:
   case 10:
 
 /* Line 1464 of yacc.c  */
-#line 66 "ritual-r5rs.y"
+#line 67 "ritual-r5rs.y"
     {
         printf( "#(\n" );
     ;}
@@ -1425,7 +1426,7 @@ yyreduce:
   case 11:
 
 /* Line 1464 of yacc.c  */
-#line 69 "ritual-r5rs.y"
+#line 70 "ritual-r5rs.y"
     {
         printf( ")\n" );
     ;}
@@ -1434,7 +1435,7 @@ yyreduce:
 
 
 /* Line 1464 of yacc.c  */
-#line 1438 "ritual-r5rs.tab.c"
+#line 1439 "ritual-r5rs.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);

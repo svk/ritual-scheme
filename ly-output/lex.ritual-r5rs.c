@@ -476,7 +476,7 @@ static yyconst flex_int16_t yy_chk[133] =
 #include <stdio.h>
 #include <gmp.h>
 #include "ritual-r5rs.tab.h"
-#include "parsectx.h"
+#include "parse_context.h"
 
 #line 482 "<stdout>"
 
@@ -873,31 +873,31 @@ YY_RULE_SETUP
 case 15:
 YY_RULE_SETUP
 #line 33 "ritual-r5rs.l"
-{ initialize_dynstring( yyextra ); BEGIN(QUOTED_STRING); }
+{ pctx_dynstring_init( yyextra ); BEGIN(QUOTED_STRING); }
 	YY_BREAK
 
 case 16:
 YY_RULE_SETUP
 #line 35 "ritual-r5rs.l"
 { BEGIN(INITIAL);
-                  accumulate_dynstring( yyextra, '\0' );
-                  yylval_param->string = get_dynstring( yyextra );
+                  pctx_dynstring_putc( yyextra, '\0' );
+                  yylval_param->string = pctx_dynstring_get( yyextra );
                   return STRING; }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
 #line 39 "ritual-r5rs.l"
-{ accumulate_dynstring( yyextra, '"' ); }
+{ pctx_dynstring_putc( yyextra, '"' ); }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
 #line 40 "ritual-r5rs.l"
-{ accumulate_dynstring( yyextra, '\\' ); }
+{ pctx_dynstring_putc( yyextra, '\\' ); }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
 #line 41 "ritual-r5rs.l"
-{ accumulate_dynstring( yyextra, yytext[0] ); }
+{ pctx_dynstring_putc( yyextra, yytext[0] ); }
 	YY_BREAK
 
 case 20:
