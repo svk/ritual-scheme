@@ -117,7 +117,7 @@ struct rht_entry ** rht_find_entry( const struct rht_table* table,
         rv = rht_find_entry_in_list( &table->slot[ index ], key, keylen );
     }
 
-    return 0;
+    return rv;
 }
 
 void rht_entry_delete( struct rht_entry **pp,

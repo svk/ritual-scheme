@@ -44,7 +44,7 @@ int main(int argc, char *argv[]) {
 
     showkey( &ht, "invalid" );
 
-    rht_set_str( &ht, "Miriam", "Godwinson" );
+    rht_set_str( &ht, "Deirdre", "Skye" );
 
     showkey( &ht, "Deirdre" );
     showkey( &ht, "Miriam" );
