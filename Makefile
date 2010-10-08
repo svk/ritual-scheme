@@ -26,5 +26,5 @@ lex.ritual-r5rs.c: ritual-r5rs.l
 ritual-r5rs.tab.c: ritual-r5rs.y
 	bison $(BISONFLAGS) -d $^
 
-test_hash_table: test_hash_table.c ritual_hash_table.c lookup3.c
+test_hash_table: test_hash_table.o ritual_hash_table.o lookup3.o
 	gcc $(CFLAGS) -g $^ $(LIB_PTHREAD) -o $@
