@@ -2,3 +2,16 @@ Ritual Scheme
 
 A toy implementation of R5RS for scripting, written in C to be easily
 embeddable. Clearly not yet finished, not yet even properly begun.
+
+Goals:
+ * reasonably efficient for common tasks -- use C libraries (GMP,
+   especially); Scheme purity is not a goal
+ * easily sandboxable wrt attacks more serious than DoS when
+   executing hostile code (so swapping config files / scripts
+   is safe)
+ * clean C interface for easy embedding (when ready for use, also
+   create a C++ layer around it)
+ * supports Linux and Windows (and OSX), little system-dependence
+ * at least externally multithreaded (possible to run separate
+   code in separate threads without interference)
+
