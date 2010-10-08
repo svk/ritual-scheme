@@ -12,7 +12,7 @@ void showkey( struct rht_table *table, const char *key ) {
 }
 
 void wouldfree( void *p ) {
-    fprintf(stderr, "would free \"%s\"\n", p );
+    fprintf(stderr, "would free \"%s\"\n", (char*) p );
 }
 
 int main(int argc, char *argv[]) {
