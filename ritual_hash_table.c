@@ -168,12 +168,6 @@ int rht_set( struct rht_table *table,
     pthread_rwlock_wrlock( &table->lock );
 #endif
 
-    if( table->old_slot ) {
-        for(int i=0;i<MOVES_PER_OPERATION;i++) {
-            rht_do_move( table );
-        }
-    }
-
     int lfl = (table->entries + 1) * LOAD_FACTOR_DENOM;
     int lfr = REALLOC_ON_LOAD_FACTOR * table->slots;
     if( lfl > lfr ) {
@@ -189,6 +183,11 @@ int rht_set( struct rht_table *table,
 #endif
         }
     }
+
+    for(int i=0;table->old_slot && i<MOVES_PER_OPERATION;i++) {
+        rht_do_move( table );
+    }
+
     struct rht_entry **pp = rht_find_entry( table, key, keylen );
     if( !pp ) {
         struct rht_entry * newentry = rht_entry_create( key, keylen, value );
@@ -223,10 +222,8 @@ int rht_delete( struct rht_table *table, const void *key, int keylen ) {
     pthread_rwlock_wrlock( &table->lock );
 #endif
 
-    if( table->old_slot ) {
-        for(int i=0;i<MOVES_PER_OPERATION;i++) {
-            rht_do_move( table );
-        }
+    for(int i=0;table->old_slot && i<MOVES_PER_OPERATION;i++) {
+        rht_do_move( table );
     }
 
     struct rht_entry **pp = rht_find_entry( table, key, keylen );

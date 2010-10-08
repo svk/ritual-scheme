@@ -18,7 +18,7 @@ void wouldfree( void *p ) {
 int main(int argc, char *argv[]) {
     struct rht_table ht;
 
-    rht_table_init( &ht, 1024 );
+    rht_table_init( &ht, 2 );
     ht.free_value = &wouldfree;
 
     rht_set_str( &ht, "Pravin", "Lal" );
