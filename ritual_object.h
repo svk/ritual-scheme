@@ -6,6 +6,9 @@
  * informally-specified, bug-ridden, slow implementation of half
  * of C++." */
 
+/* Keep in sync with:
+ *      - ritual_genfun[] in ritual_generic.c
+ *      - ritual_typename() in ritual_object.c */
 typedef enum ritual_type {
     RTYPE_INVALID = 0,
     RTYPE_NULL,
@@ -18,6 +21,7 @@ typedef enum ritual_type {
     RTYPE_ASCII_STRING,
     RTYPE_VECTOR,
     RTYPE_PORT,
+    RTYPE_NATIVE_PROC,
     RTYPE_NUM_TYPES
 } ritual_type_t;
 

@@ -22,6 +22,9 @@ struct ritual_instance {
     struct ritual_error_instance *error;
 
     struct ritual_env *root;
+
+    // XXX hax: these being void* 
+    void *scheme_true, *scheme_false;
 };
 
 int ritual_initialize_instance( struct ritual_instance* );

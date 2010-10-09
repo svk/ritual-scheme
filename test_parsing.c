@@ -13,6 +13,7 @@
 #include "ritual_eval.h"
 
 #include "ritual_basic_types.h"
+#include "ritual_native_proc.h"
 
 extern int yyparse( struct parse_context* );
 
@@ -34,11 +35,7 @@ int main(int argc, char *argv[]) {
 
     flo_stdout = rflo_filehandle_create( stdout );
 
-    ritual_env_define( &scheme, scheme.root,
-                       "miriam",
-                       (ritual_object_t*)
-                         ritual_ascii_string_create( &scheme,
-                                                     "godwinson" ));
+    ritual_define_native_proc( &scheme, scheme.root, "eq?", rnp_eqp );
 
     pctx_init( &my, &scheme );
     yylex_init( &my.scanner );

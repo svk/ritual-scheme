@@ -4,6 +4,8 @@
 #include "ritual_env.h"
 #include "ritual_error.h"
 
+#include "ritual_basic_types.h"
+
 #include <string.h>
 #include <stdlib.h>
 
@@ -24,6 +26,13 @@ int ritual_initialize_instance( struct ritual_instance * inst ) {
         inst->root = malloc(sizeof *inst->root );
         if( !inst->root ) break;
         ritual_env_init_root( inst, inst->root );
+
+        /* These objects are GCed on deinitialization as all others
+         * and we do not need to free them. On the contrary, we need
+         * to make sure they're never GCed automatically when we
+         * implement proper GC! */
+        inst->scheme_true = ritual_boolean_create( inst, 1 );
+        inst->scheme_false = ritual_boolean_create( inst, 0 );
 
         return 0;
     } while(0);
