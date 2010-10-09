@@ -26,8 +26,7 @@ void yyerror( struct parse_context *ctx, const char *str ) {
 %%
 
 tokens:
-    | tokens token
-    ;
+    | tokens token { pctx_push_back( ctx, $2 ); }
 
 list: '(' rest_of_list { $$ = $2; }
 
@@ -36,12 +35,7 @@ rest_of_list:
     | token rest_of_list { $$ = (ritual_object_t*) ritual_pair_create( $1, $2 ); }
 
 token:
-    list {
-        struct rflo_filehandle *fhf = rflo_filehandle_create( stdout );
-        ritual_print( &fhf->flo, $1 );
-        printf( "\n" );
-        rflo_filehandle_destroy( fhf );
-    }
+    list
     | NUMBER
     | IDENTIFIER
     | STRING

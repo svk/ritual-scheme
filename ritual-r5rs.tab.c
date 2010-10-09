@@ -432,8 +432,8 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    28,    28,    29,    32,    35,    36,    39,    45,    46,
-      47,    48,    49
+       0,    28,    28,    29,    31,    34,    35,    38,    39,    40,
+      41,    42,    43
 };
 #endif
 
@@ -1349,43 +1349,38 @@ yyreduce:
   YY_REDUCE_PRINT (yyn);
   switch (yyn)
     {
-        case 4:
+        case 3:
 
 /* Line 1464 of yacc.c  */
-#line 32 "ritual-r5rs.y"
+#line 29 "ritual-r5rs.y"
+    { pctx_push_back( ctx, (yyvsp[(2) - (2)]) ); ;}
+    break;
+
+  case 4:
+
+/* Line 1464 of yacc.c  */
+#line 31 "ritual-r5rs.y"
     { (yyval) = (yyvsp[(2) - (2)]); ;}
     break;
 
   case 5:
 
 /* Line 1464 of yacc.c  */
-#line 35 "ritual-r5rs.y"
+#line 34 "ritual-r5rs.y"
     { (yyval) = 0; ;}
     break;
 
   case 6:
 
 /* Line 1464 of yacc.c  */
-#line 36 "ritual-r5rs.y"
+#line 35 "ritual-r5rs.y"
     { (yyval) = (ritual_object_t*) ritual_pair_create( (yyvsp[(1) - (2)]), (yyvsp[(2) - (2)]) ); ;}
     break;
 
-  case 7:
-
-/* Line 1464 of yacc.c  */
-#line 39 "ritual-r5rs.y"
-    {
-        struct rflo_filehandle *fhf = rflo_filehandle_create( stdout );
-        ritual_print( &fhf->flo, (yyvsp[(1) - (1)]) );
-        printf( "\n" );
-        rflo_filehandle_destroy( fhf );
-    ;}
-    break;
-
 
 
 /* Line 1464 of yacc.c  */
-#line 1389 "ritual-r5rs.tab.c"
+#line 1384 "ritual-r5rs.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
