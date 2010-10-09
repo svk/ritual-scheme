@@ -59,6 +59,9 @@ typedef struct ritual_object ritual_object_t;
 
     /* Memory for objects must be managed by our own
      * functions since we need garbage collection. */
+    /* ritual_alloc_object() should never return NULL,
+     * but may trigger an error (hopefully eventually
+     * an internal scheme error). */
 ritual_object_t * ritual_alloc_object( struct ritual_instance*, int );
 void ritual_free_object( struct ritual_instance*, ritual_object_t * );
 

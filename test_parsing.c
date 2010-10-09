@@ -8,6 +8,8 @@
 
 #include "ritual_generic.h"
 
+#include "ritual_error.h"
+
 extern int yyparse( struct parse_context* );
 
 int main(int argc, char *argv[]) {
@@ -18,6 +20,11 @@ int main(int argc, char *argv[]) {
     int failure = ritual_initialize_instance( &scheme );
     if( failure ) {
         fprintf(stderr, "fatal error: unable to initialize Scheme instance\n" );
+        return 1;
+    }
+    if( RITUAL_TOP_LEVEL_ERROR( &scheme ) ) {
+        fprintf(stderr, "fatal error: %s\n", scheme.error->reason );
+        ritual_deinitialize_instance( &scheme );
         return 1;
     }
 

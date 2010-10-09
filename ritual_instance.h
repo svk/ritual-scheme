@@ -11,10 +11,14 @@
  * allows us to e.g. impose quotas, down the line) -- this means that
  * the parser needs access to one in the context. */
 
+#include <setjmp.h>
+
 struct ritual_gc_instance;
+struct ritual_error_instance;
 
 struct ritual_instance {
     struct ritual_gc_instance *gc;
+    struct ritual_error_instance *error;
 };
 
 int ritual_initialize_instance( struct ritual_instance* );

@@ -2,6 +2,8 @@
 
 #include "ritual_generic.h"
 
+#include "ritual_error.h"
+
 #include "ritual_gc.h"
 
 #include <stdlib.h>
@@ -18,6 +20,9 @@
 ritual_object_t * ritual_alloc_object( struct ritual_instance *inst,
                                        int sz ) {
     ritual_object_t * rv = ritual_alloc( inst, sz );
+    if( !rv ) {
+        ritual_error( inst, "unable to allocate object of size %d (out of memory)", sz );
+    }
     rgc_allocated_object( inst, rv );
     return rv;
 }
@@ -77,7 +82,9 @@ void ritual_olist_push( struct ritual_instance *inst,
                         ritual_object_t * object ) {
     if( object ) {
         struct ritual_onode *node = ritual_alloc( inst, sizeof *node );
-        assert( node );
+        if( !node ) {
+            ritual_error_str( inst, "unable to allocate olist node (out of memory)" );
+        }
         node->object = object;
         node->next = *list;
         *list = node;

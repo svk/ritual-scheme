@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <assert.h>
+#include "ritual_error.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -18,7 +18,7 @@ struct ritual_pair * ritual_pair_create( struct ritual_instance *inst,
                                          ritual_object_t *cdr ) {
     struct ritual_pair *rv;
     rv = ritual_alloc_typed_object( inst, RTYPE_PAIR, sizeof *rv );
-    assert( rv ); 
+    RITUAL_ASSERT( inst, rv, "object allocation failure should not return" ); 
     rv->car = car;
     rv->cdr = cdr;
     return rv;
@@ -31,7 +31,7 @@ struct ritual_symbol * ritual_symbol_create( struct ritual_instance *inst,
     const int len = strlen( s ),
           size = sizeof *rv + len; // 1 elt (NUL) included in sizeof
     rv = ritual_alloc_typed_object( inst, RTYPE_SYMBOL, size );
-    assert( rv );
+    RITUAL_ASSERT( inst, rv, "object allocation failure should not return" ); 
     memcpy( rv->name, s, len + 1 );
     return rv;
 }
@@ -42,7 +42,7 @@ struct ritual_ascii_string * ritual_ascii_string_create( struct ritual_instance 
     const int len = strlen( s ),
           size = sizeof *rv + len; // 1 elt (NUL) included in sizeof
     rv = ritual_alloc_typed_object( inst, RTYPE_ASCII_STRING, size );
-    assert( rv );
+    RITUAL_ASSERT( inst, rv, "object allocation failure should not return" ); 
     memcpy( rv->data, s, len + 1 );
     return rv;
 }
@@ -51,7 +51,7 @@ struct ritual_ascii_char * ritual_ascii_char_create( struct ritual_instance *ins
                                                      int8_t value ) {
     struct ritual_ascii_char *rv;
     rv = ritual_alloc_typed_object( inst, RTYPE_ASCII_CHAR, sizeof *rv );
-    assert( rv );
+    RITUAL_ASSERT( inst, rv, "object allocation failure should not return" ); 
     rv->value = value;
     return rv;
 }
@@ -60,7 +60,7 @@ struct ritual_native_int * ritual_native_int_create( struct ritual_instance *ins
                                                      int32_t value ) {
     struct ritual_native_int *rv;
     rv = ritual_alloc_typed_object( inst, RTYPE_NATIVE_INTEGER, sizeof *rv );
-    assert( rv );
+    RITUAL_ASSERT( inst, rv, "object allocation failure should not return" ); 
     rv->value = value;
     return rv;
 }
@@ -69,7 +69,7 @@ struct ritual_boolean * ritual_boolean_create( struct ritual_instance *inst,
                                                int value ) {
     struct ritual_boolean *rv;
     rv = ritual_alloc_typed_object( inst, RTYPE_BOOLEAN, sizeof *rv );
-    assert( rv );
+    RITUAL_ASSERT( inst, rv, "object allocation failure should not return" ); 
     rv->value = (value) ? 1 : 0;
     return rv;
 }
