@@ -21,7 +21,11 @@ int main(int argc, char *argv[]) {
 		char data[1024];
 		fputs( ">>> ", stdout );
 		fflush( stdout );
-		fgets( data, sizeof data, stdin );
+		int fgrv = fgets( data, sizeof data, stdin );
+        if( !fgrv ) {
+            puts("");
+            break;
+        }
 
 		int len = strlen( data );
 		if( data[len-1] != '\n' ) {
@@ -29,7 +33,7 @@ int main(int argc, char *argv[]) {
 		} else {
 			data[len-1] = '\0';
 			if( !strlen(data) ) {
-				break;
+				continue;
 			}
 			yy_scan_string( data, my.scanner );
 			yyparse( &my );
