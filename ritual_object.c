@@ -2,33 +2,85 @@
 
 #include "ritual_generic.h"
 
+#include "ritual_gc.h"
+
 #include <stdlib.h>
 
 #include <stdio.h>
 
-/* For now we have no actual garbage collection, just talkie
- * comments. We leak memory like a sieve. */
+#include <assert.h>
 
-ritual_object_t * ritual_alloc( struct ritual_instance *inst,
-                                int sz ) {
-    ritual_object_t * rv = malloc( sz );
+/* Current GC: a very naïve implementation of tricolour
+ * marking. We keep a linked list of ALL OBJECTS;
+ * very wasteful.
+ */
+
+ritual_object_t * ritual_alloc_object( struct ritual_instance *inst,
+                                       int sz ) {
+    ritual_object_t * rv = ritual_alloc( inst, sz );
+    rgc_allocated_object( inst, rv );
+    return rv;
+}
+
+void * ritual_alloc( struct ritual_instance *inst,
+                     int sz ) {
+    void *rv = malloc( sz );
     fprintf( stderr, "debug: allocated %p\n", rv );
     return rv;
 }
 
-void ritual_free( struct ritual_instance *inst,
-                  ritual_object_t * object ) {
-    fprintf( stderr, "debug: deallocated %p\n", object );
+void ritual_free_object( struct ritual_instance *inst,
+                         ritual_object_t * object ) {
     ritual_destroy( inst, object );
-    free( object );
+    ritual_free( inst, object );
+}
+
+void ritual_free( struct ritual_instance *inst,
+                  void * mem ) {
+    fprintf( stderr, "debug: deallocated %p\n", mem );
+    free( mem );
 }
 
 /* For convenience. */
 
 void * ritual_alloc_typed_object( struct ritual_instance *inst,
                                   ritual_type_t type, int sz ) {
-    void *rv = ritual_alloc( inst, sz );
+    void *rv = ritual_alloc_object( inst, sz );
     RITUAL_SET_TYPE( rv, type );
     return rv;
+}
+
+/* Lists obviously not thread-safe for multiple threads manipulating
+ * the same list (needs a mutex). */
+
+void ritual_olist_destroy( struct ritual_instance *inst,
+                           struct ritual_onode **list ) {
+    while( *list ) {
+        ritual_olist_pop( inst, list );
+    }
+}
+
+ritual_object_t * ritual_olist_pop( struct ritual_instance *inst,
+                                    struct ritual_onode ** list ) {
+    struct ritual_onode *node = *list;
+    ritual_object_t *rv = 0;
+    if( node ) {
+        *list = node->next;
+        rv = node->object;
+        ritual_free( inst, node );
+    }
+    return rv;
+}
+
+void ritual_olist_push( struct ritual_instance *inst,
+                        struct ritual_onode ** list,
+                        ritual_object_t * object ) {
+    if( object ) {
+        struct ritual_onode *node = ritual_alloc( inst, sizeof *node );
+        assert( node );
+        node->object = object;
+        node->next = *list;
+        *list = node;
+    }
 }
 

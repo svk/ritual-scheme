@@ -65,6 +65,7 @@ int pctx_push_back( struct parse_context *ctx, ritual_object_t * object ) {
 		ctx->expressions = rv;
 	}
 	ctx->expressions_tail = rv;
+    return 0;
 }
 
 ritual_object_t * pctx_pop( struct parse_context *ctx ) {

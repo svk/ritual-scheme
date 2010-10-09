@@ -13,7 +13,16 @@ extern int yyparse( struct parse_context* );
 int main(int argc, char *argv[]) {
     struct ritual_instance scheme;
     struct parse_context my;
-	struct rflo_filehandle *flo_stdout = rflo_filehandle_create( stdout );
+	struct rflo_filehandle *flo_stdout; 
+
+    int failure = ritual_initialize_instance( &scheme );
+    if( failure ) {
+        fprintf(stderr, "fatal error: unable to initialize Scheme instance\n" );
+        return 1;
+    }
+
+    flo_stdout = rflo_filehandle_create( stdout );
+
     pctx_init( &my, &scheme );
     yylex_init( &my.scanner );
     yyset_extra( &my, my.scanner );
@@ -21,7 +30,7 @@ int main(int argc, char *argv[]) {
 		char data[1024];
 		fputs( ">>> ", stdout );
 		fflush( stdout );
-		int fgrv = fgets( data, sizeof data, stdin );
+		void* fgrv = fgets( data, sizeof data, stdin );
         if( !fgrv ) {
             puts("");
             break;
@@ -40,7 +49,7 @@ int main(int argc, char *argv[]) {
 			while( pctx_has_more( &my ) ) {
 				ritual_object_t * object = pctx_pop( &my );
 				fputs( "-> ", stdout );
-				ritual_print( &scheme, flo_stdout, object );
+				ritual_print( &scheme, &flo_stdout->flo, object );
 				puts( "" );
 			}
 		}
@@ -48,6 +57,8 @@ int main(int argc, char *argv[]) {
 	rflo_filehandle_destroy( flo_stdout );
     yylex_destroy( my.scanner );
     pctx_destroy( &my );
+
+    ritual_deinitialize_instance( &scheme );
     return 0;
 }
 

@@ -11,8 +11,13 @@
  * allows us to e.g. impose quotas, down the line) -- this means that
  * the parser needs access to one in the context. */
 
+struct ritual_gc_instance;
+
 struct ritual_instance {
-    int dummy;
+    struct ritual_gc_instance *gc;
 };
+
+int ritual_initialize_instance( struct ritual_instance* );
+void ritual_deinitialize_instance( struct ritual_instance * );
 
 #endif
