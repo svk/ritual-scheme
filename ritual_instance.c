@@ -23,7 +23,7 @@ int ritual_initialize_instance( struct ritual_instance * inst ) {
 
         inst->root = malloc(sizeof *inst->root );
         if( !inst->root ) break;
-        ritual_env_init_root( inst, &inst->root );
+        ritual_env_init_root( inst, inst->root );
 
         return 0;
     } while(0);
