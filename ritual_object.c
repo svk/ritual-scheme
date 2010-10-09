@@ -91,3 +91,27 @@ void ritual_olist_push( struct ritual_instance *inst,
     }
 }
 
+
+const char * ritual_typename( const ritual_object_t * object ) {
+    static const char typenames[RTYPE_NUM_TYPES][256] = {
+        "(invalid - zero)",
+        "empty list",
+        "pair",
+        "symbol",
+        "procedure",
+        "boolean",
+        "native integer",
+        "ascii character",
+        "ascii string",
+        "vector",
+        "port"
+    };
+    static const char out_of_range[] = "(invalid - out of range)";
+    int typeid = RITUAL_TYPE( object );
+    if( typeid < 0 || typeid >= RTYPE_NUM_TYPES ) {
+        return out_of_range;
+    }
+    return typenames[ typeid ];
+
+}
+

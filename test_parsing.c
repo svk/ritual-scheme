@@ -10,6 +10,8 @@
 
 #include "ritual_error.h"
 
+#include "ritual_eval.h"
+
 extern int yyparse( struct parse_context* );
 
 int main(int argc, char *argv[]) {
@@ -56,6 +58,7 @@ int main(int argc, char *argv[]) {
             yy_delete_buffer( buffer, my.scanner );
 			while( pctx_has_more( &my ) ) {
 				ritual_object_t * object = pctx_pop( &my );
+                object = ritual_eval( &scheme, scheme.root, object );
 				fputs( "-> ", stdout );
 				ritual_print( &scheme, &flo_stdout->flo, object );
 				puts( "" );

@@ -43,11 +43,13 @@ int ritual_initialize_instance( struct ritual_instance * inst ) {
 }
 
 void ritual_deinitialize_instance( struct ritual_instance *inst ) {
-    rgc_deinitialize( inst, inst->gc );
-    free( inst->gc );
+    ritual_env_destroy( inst, inst->root );
+    free( inst->root );
 
     free( inst->error );
 
-    ritual_env_destroy( inst, inst->root );
-    free( inst->root );
+    rgc_deinitialize( inst, inst->gc );
+    free( inst->gc );
+
+
 }

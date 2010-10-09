@@ -86,4 +86,6 @@ void ritual_olist_push( struct ritual_instance *,
                         struct ritual_onode **,
                         ritual_object_t * );
 
+const char * ritual_typename( const ritual_object_t * );
+
 #endif
