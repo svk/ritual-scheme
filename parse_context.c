@@ -6,8 +6,10 @@
 
 #include <assert.h>
 
-void pctx_init(struct parse_context *ctx) {
+void pctx_init(struct parse_context *ctx,
+               struct ritual_instance *instance ) {
     memset( ctx, 0, sizeof *ctx );
+    ctx->instance = instance;
 }
 
 void pctx_destroy(struct parse_context *ctx) {

@@ -3,6 +3,14 @@
 
 #include <stdio.h>
 
+/* Note this ugliness: FLOs are, as of now, allocated in
+ * non-instance memory (without use of an instance pointer).
+ * When they are associated with the Scheme type ports,
+ * that'll be a bit strange. For instance, quotas imposed
+ * on the instance will not actually upper-bound the amount
+ * of memory spent on the heap if we allow allocating
+ * objects like this. */
+
 struct ritual_flo {
     int (*write)(void*, const void*, int);
     int (*read)(void*, void*, int);

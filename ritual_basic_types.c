@@ -13,10 +13,11 @@
 /* TODO: out of memory conditions are obvious candidates for
  *       ritual_error to longjmp to somewhere. */
 
-struct ritual_pair * ritual_pair_create( ritual_object_t *car,
+struct ritual_pair * ritual_pair_create( struct ritual_instance *inst,
+                                         ritual_object_t *car,
                                          ritual_object_t *cdr ) {
     struct ritual_pair *rv;
-    rv = ritual_alloc_typed_object( RTYPE_PAIR, sizeof *rv );
+    rv = ritual_alloc_typed_object( inst, RTYPE_PAIR, sizeof *rv );
     assert( rv ); 
     rv->car = car;
     rv->cdr = cdr;
@@ -24,55 +25,62 @@ struct ritual_pair * ritual_pair_create( ritual_object_t *car,
                     
 }
 
-struct ritual_symbol * ritual_symbol_create( const char *s ) {
+struct ritual_symbol * ritual_symbol_create( struct ritual_instance *inst,
+                                             const char *s ) {
     struct ritual_symbol *rv;
     const int len = strlen( s ),
           size = sizeof *rv + len; // 1 elt (NUL) included in sizeof
-    rv = ritual_alloc_typed_object( RTYPE_SYMBOL, size );
+    rv = ritual_alloc_typed_object( inst, RTYPE_SYMBOL, size );
     assert( rv );
     memcpy( rv->name, s, len + 1 );
     return rv;
 }
 
-struct ritual_ascii_string * ritual_ascii_string_create( const char *s ) {
+struct ritual_ascii_string * ritual_ascii_string_create( struct ritual_instance *inst,
+                                                         const char *s ) {
     struct ritual_ascii_string *rv;
     const int len = strlen( s ),
           size = sizeof *rv + len; // 1 elt (NUL) included in sizeof
-    rv = ritual_alloc_typed_object( RTYPE_ASCII_STRING, size );
+    rv = ritual_alloc_typed_object( inst, RTYPE_ASCII_STRING, size );
     assert( rv );
     memcpy( rv->data, s, len + 1 );
     return rv;
 }
 
-struct ritual_ascii_char * ritual_ascii_char_create( int8_t value ) {
+struct ritual_ascii_char * ritual_ascii_char_create( struct ritual_instance *inst,
+                                                     int8_t value ) {
     struct ritual_ascii_char *rv;
-    rv = ritual_alloc_typed_object( RTYPE_ASCII_CHAR, sizeof *rv );
+    rv = ritual_alloc_typed_object( inst, RTYPE_ASCII_CHAR, sizeof *rv );
     assert( rv );
     rv->value = value;
     return rv;
 }
 
-struct ritual_native_int * ritual_native_int_create( int32_t value ) {
+struct ritual_native_int * ritual_native_int_create( struct ritual_instance *inst,
+                                                     int32_t value ) {
     struct ritual_native_int *rv;
-    rv = ritual_alloc_typed_object( RTYPE_NATIVE_INTEGER, sizeof *rv );
+    rv = ritual_alloc_typed_object( inst, RTYPE_NATIVE_INTEGER, sizeof *rv );
     assert( rv );
     rv->value = value;
     return rv;
 }
 
-struct ritual_boolean * ritual_boolean_create( int value ) {
+struct ritual_boolean * ritual_boolean_create( struct ritual_instance *inst,
+                                               int value ) {
     struct ritual_boolean *rv;
-    rv = ritual_alloc_typed_object( RTYPE_BOOLEAN, sizeof *rv );
+    rv = ritual_alloc_typed_object( inst, RTYPE_BOOLEAN, sizeof *rv );
     assert( rv );
     rv->value = (value) ? 1 : 0;
     return rv;
 }
 
-void ritual_print_null( struct ritual_flo *flo, void *null ) {
+void ritual_print_null( struct ritual_instance *inst,
+                        struct ritual_flo *flo, void *null ) {
     rflo_putstring( flo, "()" );
 }
 
-void ritual_print_pair( struct ritual_flo *flo,
+void ritual_print_pair( struct ritual_instance *inst,
+                        struct ritual_flo *flo,
                         void *obj ) {
     struct ritual_pair *pair = obj;
     rflo_putstring( flo, "(" );
@@ -91,7 +99,8 @@ void ritual_print_pair( struct ritual_flo *flo,
     rflo_putstring( flo, ")" );
 }
 
-void ritual_print_ascii_string( struct ritual_flo *flo,
+void ritual_print_ascii_string( struct ritual_instance *inst,
+                                struct ritual_flo *flo,
                                 void *obj ) {
     struct ritual_ascii_string *string = obj;
     /* TODO: check quoting. */
@@ -112,13 +121,15 @@ void ritual_print_ascii_string( struct ritual_flo *flo,
     rflo_putchar( flo, '"' );
 }
 
-void ritual_print_symbol( struct ritual_flo *flo,
+void ritual_print_symbol( struct ritual_instance *inst,
+                          struct ritual_flo *flo,
                           void *obj ) {
     struct ritual_symbol *symbol = obj;
     rflo_putstring( flo, symbol->name );
 }
 
-void ritual_print_ascii_char( struct ritual_flo *flo,
+void ritual_print_ascii_char( struct ritual_instance *inst,
+                              struct ritual_flo *flo,
                               void *obj ) {
     struct ritual_ascii_char *ascii_char = obj;
     if( ascii_char->value == '\n' ) {
@@ -133,7 +144,8 @@ void ritual_print_ascii_char( struct ritual_flo *flo,
     }
 }
 
-void ritual_print_native_int( struct ritual_flo *flo,
+void ritual_print_native_int( struct ritual_instance *inst,
+                              struct ritual_flo *flo,
                               void *obj ) {
     struct ritual_native_int * nint = obj;
     char buffer[64];
@@ -141,7 +153,8 @@ void ritual_print_native_int( struct ritual_flo *flo,
     rflo_putstring( flo, buffer );
 }
 
-void ritual_print_boolean( struct ritual_flo *flo,
+void ritual_print_boolean( struct ritual_instance *inst,
+                           struct ritual_flo *flo,
                            void *obj ) {
     struct ritual_boolean *boolean = obj;
     if( boolean->value ) {

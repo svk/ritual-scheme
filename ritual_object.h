@@ -1,6 +1,8 @@
 #ifndef H_RITUAL_OBJECT
 #define H_RITUAL_OBJECT
 
+#include "ritual_instance.h"
+
 /* Is this model theoretically sound without doing something like
  * wrapping everything in a union? Yes. Quoth the C standard:
  *      "A pointer to a structure object, suitably converted,
@@ -50,9 +52,9 @@ typedef struct ritual_object ritual_object_t;
 
     /* Memory for objects must be managed by our own
      * functions since we need garbage collection. */
-ritual_object_t * ritual_alloc_object( int );
-void * ritual_alloc_typed_object( ritual_type_t, int );
-void ritual_free( ritual_object_t * );
+ritual_object_t * ritual_alloc_object( struct ritual_instance*, int );
+void * ritual_alloc_typed_object( struct ritual_instance*, ritual_type_t, int );
+void ritual_free( struct ritual_instance*, ritual_object_t * );
 
 #define RITUAL_SET_TYPE(x,t) {((struct ritual_object*)(x))->type = (t);}
 #define RITUAL_TYPE(x) ((x) ? ((struct ritual_object*)(x))->type : RTYPE_NULL)

@@ -5,6 +5,8 @@
 
 #include "ritual_object.h"
 
+#include "ritual_instance.h"
+
 struct object_node {
 	ritual_object_t *object;
 	struct object_node *next;
@@ -13,6 +15,8 @@ struct object_node {
 struct parse_context {
     void* scanner;
 
+    struct ritual_instance *instance;
+
     char* dynstring;
     int dynstring_size, dynstring_index;
 
@@ -20,7 +24,7 @@ struct parse_context {
 	struct object_node *expressions;
 };
 
-void pctx_init(struct parse_context *);
+void pctx_init(struct parse_context *, struct ritual_instance *);
 void pctx_destroy(struct parse_context *);
 
 char *pctx_dynstring_get( struct parse_context*);

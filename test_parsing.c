@@ -2,14 +2,17 @@
 #include "ritual-r5rs.tab.h"
 #include "lex.ritual-r5rs.h"
 
+#include "ritual_instance.h"
+
 #include "ritual_flo.h"
 
 extern int yyparse( struct parse_context* );
 
 int main(int argc, char *argv[]) {
+    struct ritual_instance scheme;
     struct parse_context my;
 	struct rflo_filehandle *flo_stdout = rflo_filehandle_create( stdout );
-    pctx_init( &my );
+    pctx_init( &my, &scheme );
     yylex_init( &my.scanner );
     yyset_extra( &my, my.scanner );
 	while( 1 ) {

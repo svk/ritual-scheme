@@ -22,15 +22,10 @@ struct ritual_pair {
     ritual_object_t *cdr;
 };
 
-struct ritual_pair * ritual_pair_create( ritual_object_t *,
-                                         ritual_object_t * );
-
 struct ritual_symbol {
     ritual_object_t header;
     char name[1]; // Simple but rather inefficient.
 };
-
-struct ritual_symbol * ritual_symbol_create( const char * );
 
 struct ritual_ascii_string {
         // null-terminated; can NOT contain binary data!
@@ -38,43 +33,68 @@ struct ritual_ascii_string {
     char data[1];
 };
 
-struct ritual_ascii_string * ritual_ascii_string_create( const char * );
-
 struct ritual_native_int {
     ritual_object_t header;
     int32_t value;
 };
-
-struct ritual_native_int * ritual_native_int_create( int32_t );
 
 struct ritual_ascii_char {
     ritual_object_t header;
     int8_t value;
 };
 
-struct ritual_ascii_char * ritual_ascii_char_create( int8_t );
-
 struct ritual_boolean {
     ritual_object_t header;
     uint8_t value; // nonzero?
 };
 
-struct ritual_boolean * ritual_boolean_create(int);
+struct ritual_pair * ritual_pair_create(
+    struct ritual_instance *,
+    ritual_object_t *,
+    ritual_object_t * );
+struct ritual_symbol * ritual_symbol_create(
+    struct ritual_instance *,
+    const char * );
+struct ritual_ascii_string * ritual_ascii_string_create(
+    struct ritual_instance *,
+    const char * );
+struct ritual_native_int * ritual_native_int_create(
+    struct ritual_instance *,
+    int32_t );
+struct ritual_ascii_char * ritual_ascii_char_create(
+    struct ritual_instance *,
+    int8_t );
+struct ritual_boolean * ritual_boolean_create(
+    struct ritual_instance *,
+    int);
 
-
-void ritual_print_null( struct ritual_flo *,
-                        void * );
-void ritual_print_pair( struct ritual_flo *,
-                        void * );
-void ritual_print_ascii_string( struct ritual_flo *,
-                                void * );
-void ritual_print_boolean( struct ritual_flo *,
-                           void * );
-void ritual_print_native_int( struct ritual_flo *,
-                              void * );
-void ritual_print_ascii_char( struct ritual_flo *,
-                              void * );
-void ritual_print_symbol( struct ritual_flo *,
-                          void * );
+void ritual_print_null(
+    struct ritual_instance *,
+    struct ritual_flo *,
+    void * );
+void ritual_print_pair(
+    struct ritual_instance *,
+    struct ritual_flo *,
+    void * );
+void ritual_print_ascii_string(
+    struct ritual_instance *,
+    struct ritual_flo *,
+    void * );
+void ritual_print_boolean(
+    struct ritual_instance *,
+    struct ritual_flo *,
+    void * );
+void ritual_print_native_int(
+    struct ritual_instance *,
+    struct ritual_flo *,
+    void * );
+void ritual_print_ascii_char(
+    struct ritual_instance *,
+    struct ritual_flo *,
+    void * );
+void ritual_print_symbol(
+    struct ritual_instance *,
+    struct ritual_flo *,
+    void * );
 
 #endif

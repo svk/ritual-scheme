@@ -3,23 +3,52 @@
 
 struct ritual_generic_functions {
         /* This is "write", not "display", confusingly (sorry!). */
-    void (*print)( struct ritual_flo*, void * );
+    void (*print)( struct ritual_instance *,
+                   struct ritual_flo*, void * );
+        /* Most objects actually don't have destroy methods; they
+         * are flat objects that can just be freed. This can then
+         * be left zeroed out. */
+    void (*destroy)( struct ritual_instance *,
+                     void * );
 };
 
-struct ritual_generic_functions ritual_genfun[ RTYPE_NUM_TYPES ] = {
-    { 0 },
-    { ritual_print_null },
-    { ritual_print_pair },
-    { ritual_print_symbol },
-    { 0 },
-    { ritual_print_boolean },
-    { ritual_print_native_int },
-    { ritual_print_ascii_char },
-    { ritual_print_ascii_string },
-    { 0 },
-    { 0 }
+const struct ritual_generic_functions ritual_genfun[ RTYPE_NUM_TYPES ] = {
+    { 0,
+      0 },
+    { ritual_print_null,
+      0 },
+    { ritual_print_pair,
+      0 },
+    { ritual_print_symbol,
+      0 },
+    { 0,
+      0},
+    { ritual_print_boolean,
+      0},
+    { ritual_print_native_int,
+      0 },
+    { ritual_print_ascii_char,
+      0 },
+    { ritual_print_ascii_string,
+      0 },
+    { 0,
+      0 },
+    { 0,
+      0 }
 };
 
-void ritual_print( struct ritual_flo *flo, ritual_object_t *obj ) {
-    ritual_genfun[ RITUAL_TYPE( obj ) ].print( flo, obj );
+void ritual_print( struct ritual_instance *inst,
+                   struct ritual_flo *flo, ritual_object_t *obj ) {
+    ritual_type_t type = RITUAL_TYPE( obj );
+    if( ritual_genfun[ type ].print ) {
+        ritual_genfun[ type ].print( inst, flo, obj );
+    }
+}
+
+void ritual_destroy( struct ritual_instance *inst,
+                     ritual_object_t *obj ) {
+    ritual_type_t type = RITUAL_TYPE( obj );
+    if( ritual_genfun[ type ].destroy ) {
+        ritual_genfun[ type ].destroy( inst, obj );
+    }
 }
