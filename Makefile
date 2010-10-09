@@ -24,8 +24,8 @@ clean:
 
 test_basic_types: test_basic_types.o ritual_generic.o ritual_basic_types.o ritual_object.o ritual_flo.o
 
-test_parsing: lex.ritual-r5rs.o ritual-r5rs.tab.o parse_context.o test_parsing.o ritual_generic.o ritual_basic_types.o ritual_object.o ritual_flo.o ritual_gc.o ritual_instance.o ritual_error.o
-	gcc $(CFLAGS) $^ -o $@
+test_parsing: lex.ritual-r5rs.o ritual-r5rs.tab.o parse_context.o test_parsing.o ritual_generic.o ritual_basic_types.o ritual_object.o ritual_flo.o ritual_gc.o ritual_instance.o ritual_error.o ritual_env.o ritual_hash_table.o lookup3.o
+	gcc $(CFLAGS) $^ $(LIB_PTHREAD) -o $@
 
 test_parsing.o: test_parsing.c lex.ritual-r5rs.c ritual-r5rs.tab.c
 

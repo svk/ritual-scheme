@@ -15,10 +15,13 @@
 
 struct ritual_gc_instance;
 struct ritual_error_instance;
+struct ritual_env;
 
 struct ritual_instance {
     struct ritual_gc_instance *gc;
     struct ritual_error_instance *error;
+
+    struct ritual_env *root;
 };
 
 int ritual_initialize_instance( struct ritual_instance* );
