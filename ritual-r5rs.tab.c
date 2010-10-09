@@ -1374,7 +1374,7 @@ yyreduce:
 
 /* Line 1464 of yacc.c  */
 #line 35 "ritual-r5rs.y"
-    { (yyval) = (ritual_object_t*) ritual_pair_create( (yyvsp[(1) - (2)]), (yyvsp[(2) - (2)]) ); ;}
+    { (yyval) = (ritual_object_t*) ritual_pair_create( ctx->instance, (yyvsp[(1) - (2)]), (yyvsp[(2) - (2)]) ); ;}
     break;
 
 

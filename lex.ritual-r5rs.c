@@ -478,7 +478,9 @@ static yyconst flex_int16_t yy_chk[133] =
 #include "parse_context.h"
 #include "ritual_basic_types.h"
 
-#line 482 "<stdout>"
+#define INST (((struct parse_context*)yyextra)->instance)
+
+#line 484 "<stdout>"
 
 #define INITIAL 0
 #define QUOTED_STRING 1
@@ -712,9 +714,9 @@ YY_DECL
 	register int yy_act;
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
 
-#line 18 "ritual-r5rs.l"
+#line 20 "ritual-r5rs.l"
 
-#line 718 "<stdout>"
+#line 720 "<stdout>"
 
     yylval = yylval_param;
 
@@ -802,126 +804,126 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 /* rule 1 can match eol */
 YY_RULE_SETUP
-#line 19 "ritual-r5rs.l"
+#line 21 "ritual-r5rs.l"
 ;
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 20 "ritual-r5rs.l"
+#line 22 "ritual-r5rs.l"
 ; /* comment */
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 21 "ritual-r5rs.l"
-{ *yylval_param = (ritual_object_t*) ritual_native_int_create( atoi( yytext ) );
+#line 23 "ritual-r5rs.l"
+{ *yylval_param = (ritual_object_t*) ritual_native_int_create( INST, atoi( yytext ) );
                   return NUMBER; }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 23 "ritual-r5rs.l"
+#line 25 "ritual-r5rs.l"
 {
-                  *yylval_param = (ritual_object_t*) ritual_symbol_create( yytext );
+                  *yylval_param = (ritual_object_t*) ritual_symbol_create( INST, yytext );
                   return IDENTIFIER; }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 26 "ritual-r5rs.l"
-{ *yylval_param = (ritual_object_t*) ritual_symbol_create("+");
+#line 28 "ritual-r5rs.l"
+{ *yylval_param = (ritual_object_t*) ritual_symbol_create( INST,"+");
                   return IDENTIFIER; }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 28 "ritual-r5rs.l"
-{ *yylval_param = (ritual_object_t*) ritual_symbol_create("-");
+#line 30 "ritual-r5rs.l"
+{ *yylval_param = (ritual_object_t*) ritual_symbol_create( INST,"-");
                   return IDENTIFIER; }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 30 "ritual-r5rs.l"
-{ *yylval_param = (ritual_object_t*) ritual_symbol_create("...");
+#line 32 "ritual-r5rs.l"
+{ *yylval_param = (ritual_object_t*) ritual_symbol_create( INST,"...");
                   return IDENTIFIER; }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 32 "ritual-r5rs.l"
+#line 34 "ritual-r5rs.l"
 { return COMMA_AT; }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 33 "ritual-r5rs.l"
+#line 35 "ritual-r5rs.l"
 { return HASH_LPAREN; }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 34 "ritual-r5rs.l"
-{ *yylval_param = (ritual_object_t*) ritual_boolean_create( 1 );
+#line 36 "ritual-r5rs.l"
+{ *yylval_param = (ritual_object_t*) ritual_boolean_create( INST, 1 );
                   return BOOLEAN; }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 36 "ritual-r5rs.l"
-{ *yylval_param = (ritual_object_t*) ritual_boolean_create( 0 );
+#line 38 "ritual-r5rs.l"
+{ *yylval_param = (ritual_object_t*) ritual_boolean_create( INST, 0 );
                   return BOOLEAN; }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 38 "ritual-r5rs.l"
-{ *yylval_param = (ritual_object_t*) ritual_ascii_char_create( ' ' );
+#line 40 "ritual-r5rs.l"
+{ *yylval_param = (ritual_object_t*) ritual_ascii_char_create( INST, ' ' );
                   return CHARACTER; }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 40 "ritual-r5rs.l"
-{ *yylval_param = (ritual_object_t*) ritual_ascii_char_create( '\n' );
+#line 42 "ritual-r5rs.l"
+{ *yylval_param = (ritual_object_t*) ritual_ascii_char_create( INST, '\n' );
                   return CHARACTER; }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 42 "ritual-r5rs.l"
-{ *yylval_param = (ritual_object_t*) ritual_ascii_char_create( yytext[2] );
+#line 44 "ritual-r5rs.l"
+{ *yylval_param = (ritual_object_t*) ritual_ascii_char_create( INST, yytext[2] );
                   return CHARACTER; }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 44 "ritual-r5rs.l"
+#line 46 "ritual-r5rs.l"
 { pctx_dynstring_init( yyextra ); BEGIN(QUOTED_STRING); }
 	YY_BREAK
 
 case 16:
 YY_RULE_SETUP
-#line 46 "ritual-r5rs.l"
+#line 48 "ritual-r5rs.l"
 { BEGIN(INITIAL);
                   pctx_dynstring_putc( yyextra, '\0' );
-                  *yylval_param = (ritual_object_t*) ritual_ascii_string_create( pctx_dynstring_get( yyextra ) );
+                  *yylval_param = (ritual_object_t*) ritual_ascii_string_create( INST, pctx_dynstring_get( yyextra ) );
                   return STRING; }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 50 "ritual-r5rs.l"
+#line 52 "ritual-r5rs.l"
 { pctx_dynstring_putc( yyextra, '"' ); }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 51 "ritual-r5rs.l"
+#line 53 "ritual-r5rs.l"
 { pctx_dynstring_putc( yyextra, '\\' ); }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 52 "ritual-r5rs.l"
+#line 54 "ritual-r5rs.l"
 { pctx_dynstring_putc( yyextra, yytext[0] ); }
 	YY_BREAK
 
 case 20:
 YY_RULE_SETUP
-#line 54 "ritual-r5rs.l"
+#line 56 "ritual-r5rs.l"
 return yytext[0];
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 55 "ritual-r5rs.l"
+#line 57 "ritual-r5rs.l"
 ECHO;
 	YY_BREAK
-#line 925 "<stdout>"
+#line 927 "<stdout>"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(QUOTED_STRING):
 	yyterminate();
@@ -2089,7 +2091,7 @@ void yyfree (void * ptr , yyscan_t yyscanner)
 
 #define YYTABLES_NAME "yytables"
 
-#line 55 "ritual-r5rs.l"
+#line 57 "ritual-r5rs.l"
 
 
 

@@ -8,7 +8,7 @@
 #include "parse_context.h"
 #include "ritual_basic_types.h"
 
-#define INST (yyextra->instance)
+#define INST (((struct parse_context*)yyextra)->instance)
 %}
 
 letter [a-z]

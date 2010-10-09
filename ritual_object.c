@@ -12,13 +12,13 @@
 ritual_object_t * ritual_alloc( struct ritual_instance *inst,
                                 int sz ) {
     ritual_object_t * rv = malloc( sz );
-    fprintf( stderr, "debug: allocated %p\n" );
+    fprintf( stderr, "debug: allocated %p\n", rv );
     return rv;
 }
 
 void ritual_free( struct ritual_instance *inst,
                   ritual_object_t * object ) {
-    fprintf( stderr, "debug: deallocated %p\n" );
+    fprintf( stderr, "debug: deallocated %p\n", object );
     ritual_destroy( inst, object );
     free( object );
 }

@@ -87,14 +87,14 @@ void ritual_print_pair( struct ritual_instance *inst,
     struct ritual_pair *current = pair;
     while( current->cdr &&
            RITUAL_TYPE(current->cdr) == RTYPE_PAIR ) {
-        ritual_print( flo, current->car );
+        ritual_print( inst, flo, current->car );
         rflo_putchar( flo,  ' ' );
         current = (struct ritual_pair*) current->cdr;
     }
-    ritual_print( flo, current->car );
+    ritual_print( inst, flo, current->car );
     if( current->cdr ) {
         rflo_putstring( flo,  " . " );
-        ritual_print( flo, current->cdr );
+        ritual_print( inst, flo, current->cdr );
     }
     rflo_putstring( flo, ")" );
 }

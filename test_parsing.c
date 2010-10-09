@@ -6,6 +6,8 @@
 
 #include "ritual_flo.h"
 
+#include "ritual_generic.h"
+
 extern int yyparse( struct parse_context* );
 
 int main(int argc, char *argv[]) {
@@ -34,7 +36,7 @@ int main(int argc, char *argv[]) {
 			while( pctx_has_more( &my ) ) {
 				ritual_object_t * object = pctx_pop( &my );
 				fputs( "-> ", stdout );
-				ritual_print( flo_stdout, object );
+				ritual_print( &scheme, flo_stdout, object );
 				puts( "" );
 			}
 		}

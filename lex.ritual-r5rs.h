@@ -332,7 +332,7 @@ extern int yylex \
 #undef YY_DECL
 #endif
 
-#line 55 "ritual-r5rs.l"
+#line 57 "ritual-r5rs.l"
 
 
 #line 339 "lex.ritual-r5rs.h"
