@@ -58,16 +58,20 @@ int main(int argc, char *argv[]) {
 			if( !strlen(data) ) {
 				continue;
 			}
-            YY_BUFFER_STATE buffer = yy_scan_string( data, my.scanner );
-			yyparse( &my );
-            yy_delete_buffer( buffer, my.scanner );
-			while( pctx_has_more( &my ) ) {
-				ritual_object_t * object = pctx_pop( &my );
-                object = ritual_eval( &scheme, scheme.root, object );
-				fputs( "-> ", stdout );
-				ritual_print( &scheme, &flo_stdout->flo, object );
-				puts( "" );
-			}
+            if( RITUAL_INTERACTIVE_LEVEL_ERROR( &scheme ) ) {
+                fprintf( stderr, "error: %s\n", scheme.error->reason );
+            } else {
+                YY_BUFFER_STATE buffer = yy_scan_string( data, my.scanner );
+                yyparse( &my );
+                yy_delete_buffer( buffer, my.scanner );
+                while( pctx_has_more( &my ) ) {
+                    ritual_object_t * object = pctx_pop( &my );
+                    object = ritual_eval( &scheme, scheme.root, object );
+                    fputs( "-> ", stdout );
+                    ritual_print( &scheme, &flo_stdout->flo, object );
+                    puts( "" );
+                }
+            }
 		}
 	}
 	rflo_filehandle_destroy( flo_stdout );

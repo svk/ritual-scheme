@@ -9,10 +9,12 @@ void ritual_error_initialize( struct ritual_error_instance *error ) {
 }
 
 void ritual_error_jump( struct ritual_error_instance *error ) {
-    if( error->top_valid ) {
+    if( error->interactive_valid ) {
+        longjmp( error->interactive, 1 );
+    } else if( error->top_valid ) {
         longjmp( error->top, 1 );
     } else {
-        fprintf( stderr, "warning: fatal error without top-level handler set\n" );
+        fprintf( stderr, "warning: fatal error without any handler set\n" );
         error->reason[ sizeof error->reason - 1 ] = '\0';
         fprintf( stderr, "last reason was: %s\n", error->reason );
         exit( 1 );

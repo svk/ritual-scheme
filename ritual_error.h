@@ -13,6 +13,9 @@ struct ritual_error_instance {
 
     int top_valid;
     jmp_buf top;
+
+    int interactive_valid;
+    jmp_buf interactive;
 };
 
 void ritual_error_initialize( struct ritual_error_instance * );
@@ -25,6 +28,11 @@ void ritual_error_str( struct ritual_instance *, const char * );
 
 #define RITUAL_TOP_LEVEL_ERROR(scheme) \
         ( (scheme)->error->top_valid = 1, setjmp( (scheme)->error->top ) )
+
+#define RITUAL_INTERACTIVE_LEVEL_ERROR(scheme) \
+        ( (scheme)->error->interactive_valid = 1, setjmp( (scheme)->error->interactive ) )
+
+#define RITUAL_END_INTERACTIVE_ERROR_LEVEL(scheme) { (scheme)->error->interactive_valid = 0; }
 
 /* Note that assertions should NOT be used to test for errors
  * that might actually occur, such as fatal out-of-memory
