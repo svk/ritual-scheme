@@ -12,6 +12,8 @@
 
 #include "ritual_eval.h"
 
+#include "ritual_basic_types.h"
+
 extern int yyparse( struct parse_context* );
 
 int main(int argc, char *argv[]) {
@@ -34,8 +36,9 @@ int main(int argc, char *argv[]) {
 
     ritual_env_define( &scheme, scheme.root,
                        "miriam",
-                       ritual_ascii_string_create( &scheme,
-                                                   "godwinson" ));
+                       (ritual_object_t*)
+                         ritual_ascii_string_create( &scheme,
+                                                     "godwinson" ));
 
     pctx_init( &my, &scheme );
     yylex_init( &my.scanner );
