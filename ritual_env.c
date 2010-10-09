@@ -49,7 +49,8 @@ void ritual_env_define( struct ritual_instance *inst,
 ritual_object_t * ritual_env_lookup( struct ritual_instance * inst,
                                      struct ritual_env * env,
                                      const char * name ) {
-    ritual_object_t *rv;
+    void *rv;
+    // Can't use the simple lookup because () is perfectly valid
     if( !rht_lookup_str( &env->table, name, &rv ) ) {
         return rv;
     }
@@ -57,4 +58,5 @@ ritual_object_t * ritual_env_lookup( struct ritual_instance * inst,
         return ritual_env_lookup( inst, env->parent, name );
     }
     ritual_error( inst, "lookup failed: \"%s\"", name );
+    return 0; // impossible
 }
