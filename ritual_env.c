@@ -56,5 +56,5 @@ ritual_object_t * ritual_env_lookup( struct ritual_instance * inst,
     if( env->parent ) {
         return ritual_env_lookup( inst, env->parent, name );
     }
-    return 0;
+    ritual_error( inst, "lookup failed: \"%s\"", name );
 }

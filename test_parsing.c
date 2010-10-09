@@ -32,6 +32,11 @@ int main(int argc, char *argv[]) {
 
     flo_stdout = rflo_filehandle_create( stdout );
 
+    ritual_env_define( &scheme, scheme.root,
+                       "miriam",
+                       ritual_ascii_string_create( &scheme,
+                                                   "godwinson" ));
+
     pctx_init( &my, &scheme );
     yylex_init( &my.scanner );
     yyset_extra( &my, my.scanner );
