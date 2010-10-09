@@ -9,7 +9,9 @@ int main(int argc, char *argv[]) {
     pctx_init( &my );
     yylex_init( &my.scanner );
     yyset_extra( &my, my.scanner );
-    yy_scan_string( "... someone open up a window?", my.scanner );
+    yy_scan_string( "(why\n\nyou  always giving me the bait-and-switch?)", my.scanner );
+    yyparse( &my );
+    yy_scan_string( "(why\n\nyou  always giving me the bait-and-switch?)", my.scanner );
     yyparse( &my );
     yylex_destroy( my.scanner );
     pctx_destroy( &my );

@@ -31,6 +31,18 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
+/* "%code requires" blocks.  */
+
+/* Line 1749 of yacc.c  */
+#line 5 "ritual-r5rs.y"
+
+#include "ritual_object.h"
+#define YYSTYPE ritual_object_t*
+
+
+
+/* Line 1749 of yacc.c  */
+#line 46 "ritual-r5rs.tab.h"
 
 /* Tokens.  */
 #ifndef YYTOKENTYPE
@@ -51,20 +63,7 @@
 
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef union YYSTYPE
-{
-
-/* Line 1749 of yacc.c  */
-#line 21 "ritual-r5rs.y"
-
-    int integer;
-    char *string;
-
-
-
-/* Line 1749 of yacc.c  */
-#line 67 "ritual-r5rs.tab.h"
-} YYSTYPE;
+typedef int YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1

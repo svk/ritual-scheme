@@ -2,10 +2,17 @@
 %parse-param { struct parse_context* ctx }
 %lex-param { void* scanner }
 
+%code requires {
+#include "ritual_object.h"
+#define YYSTYPE ritual_object_t*
+}
+
 %{
 #include <stdio.h>
 #include <string.h>
 #include "parse_context.h"
+#include "ritual_basic_types.h"
+
 
 #define YYLEX_PARAM ((struct parse_context*)ctx)->scanner
 
@@ -15,46 +22,28 @@ void yyerror( struct parse_context *ctx, const char *str ) {
 
 %}
 
-%token HASH_LPAREN COMMA_AT
-
-%union
-{
-    int integer;
-    char *string;
-}
-%token <integer> CHARACTER
-%token <string> NUMBER
-%token <string> STRING
-%token <integer> BOOLEAN
-%token <string> IDENTIFIER
+%token HASH_LPAREN COMMA_AT CHARACTER NUMBER STRING BOOLEAN IDENTIFIER
 %%
 
 tokens:
     | tokens token
     ;
 
+list: '(' rest_of_list { $$ = $2; }
+
+rest_of_list:
+    ')' { $$ = 0; }
+    | token rest_of_list { $$ = (ritual_object_t*) ritual_pair_create( $1, $2 ); }
+
 token:
-    NUMBER {
-        printf( "number: %s\n", $1 );
+    list {
+        struct rflo_filehandle *fhf = rflo_filehandle_create( stdout );
+        ritual_print( &fhf->flo, $1 );
+        printf( "\n" );
+        rflo_filehandle_destroy( fhf );
     }
-    | IDENTIFIER {
-        printf( "identifier: %s\n", $1 );
-    }
-    | STRING {
-        printf( "string: %s\n", $1 );
-    }
-    | CHARACTER {
-        printf( "character: %d (%c)\n", ($1), (char) $1);
-    }
-    | BOOLEAN {
-        printf( "boolean: %s\n", ($1) ? "#t" : "#f" );
-    }
-    | '(' {
-        printf( "(\n" );
-    }
-    | HASH_LPAREN {
-        printf( "#(\n" );
-    }
-    | ')' {
-        printf( ")\n" );
-    }
+    | NUMBER
+    | IDENTIFIER
+    | STRING
+    | CHARACTER
+    | BOOLEAN

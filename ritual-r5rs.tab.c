@@ -67,11 +67,13 @@
 /* Copy the first part of user declarations.  */
 
 /* Line 189 of yacc.c  */
-#line 5 "ritual-r5rs.y"
+#line 10 "ritual-r5rs.y"
 
 #include <stdio.h>
 #include <string.h>
 #include "parse_context.h"
+#include "ritual_basic_types.h"
+
 
 #define YYLEX_PARAM ((struct parse_context*)ctx)->scanner
 
@@ -82,7 +84,7 @@ void yyerror( struct parse_context *ctx, const char *str ) {
 
 
 /* Line 189 of yacc.c  */
-#line 86 "ritual-r5rs.tab.c"
+#line 88 "ritual-r5rs.tab.c"
 
 /* Enabling traces.  */
 #ifndef YYDEBUG
@@ -102,6 +104,18 @@ void yyerror( struct parse_context *ctx, const char *str ) {
 # define YYTOKEN_TABLE 0
 #endif
 
+/* "%code requires" blocks.  */
+
+/* Line 209 of yacc.c  */
+#line 5 "ritual-r5rs.y"
+
+#include "ritual_object.h"
+#define YYSTYPE ritual_object_t*
+
+
+
+/* Line 209 of yacc.c  */
+#line 119 "ritual-r5rs.tab.c"
 
 /* Tokens.  */
 #ifndef YYTOKENTYPE
@@ -122,20 +136,7 @@ void yyerror( struct parse_context *ctx, const char *str ) {
 
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef union YYSTYPE
-{
-
-/* Line 222 of yacc.c  */
-#line 21 "ritual-r5rs.y"
-
-    int integer;
-    char *string;
-
-
-
-/* Line 222 of yacc.c  */
-#line 138 "ritual-r5rs.tab.c"
-} YYSTYPE;
+typedef int YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
@@ -146,7 +147,7 @@ typedef union YYSTYPE
 
 
 /* Line 264 of yacc.c  */
-#line 150 "ritual-r5rs.tab.c"
+#line 151 "ritual-r5rs.tab.c"
 
 #ifdef short
 # undef short
@@ -361,16 +362,16 @@ union yyalloc
 /* YYFINAL -- State number of the termination state.  */
 #define YYFINAL  2
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   11
+#define YYLAST   17
 
 /* YYNTOKENS -- Number of terminals.  */
 #define YYNTOKENS  12
 /* YYNNTS -- Number of nonterminals.  */
-#define YYNNTS  3
+#define YYNNTS  5
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  11
+#define YYNRULES  12
 /* YYNRULES -- Number of states.  */
-#define YYNSTATES  12
+#define YYNSTATES  15
 
 /* YYTRANSLATE(YYLEX) -- Bison symbol number corresponding to YYLEX.  */
 #define YYUNDEFTOK  2
@@ -416,23 +417,23 @@ static const yytype_uint8 yytranslate[] =
    YYRHS.  */
 static const yytype_uint8 yyprhs[] =
 {
-       0,     0,     3,     4,     7,     9,    11,    13,    15,    17,
-      19,    21
+       0,     0,     3,     4,     7,    10,    12,    15,    17,    19,
+      21,    23,    25
 };
 
 /* YYRHS -- A `-1'-separated list of the rules' RHS.  */
 static const yytype_int8 yyrhs[] =
 {
-      13,     0,    -1,    -1,    13,    14,    -1,     6,    -1,     9,
-      -1,     7,    -1,     5,    -1,     8,    -1,    10,    -1,     3,
-      -1,    11,    -1
+      13,     0,    -1,    -1,    13,    16,    -1,    10,    15,    -1,
+      11,    -1,    16,    15,    -1,    14,    -1,     6,    -1,     9,
+      -1,     7,    -1,     5,    -1,     8,    -1
 };
 
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    32,    32,    33,    37,    40,    43,    46,    49,    52,
-      55,    58
+       0,    28,    28,    29,    32,    35,    36,    39,    45,    46,
+      47,    48,    49
 };
 #endif
 
@@ -443,7 +444,7 @@ static const char *const yytname[] =
 {
   "$end", "error", "$undefined", "HASH_LPAREN", "COMMA_AT", "CHARACTER",
   "NUMBER", "STRING", "BOOLEAN", "IDENTIFIER", "'('", "')'", "$accept",
-  "tokens", "token", 0
+  "tokens", "list", "rest_of_list", "token", 0
 };
 #endif
 
@@ -460,15 +461,15 @@ static const yytype_uint16 yytoknum[] =
 /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_uint8 yyr1[] =
 {
-       0,    12,    13,    13,    14,    14,    14,    14,    14,    14,
-      14,    14
+       0,    12,    13,    13,    14,    15,    15,    16,    16,    16,
+      16,    16,    16
 };
 
 /* YYR2[YYN] -- Number of symbols composing right hand side of rule YYN.  */
 static const yytype_uint8 yyr2[] =
 {
-       0,     2,     0,     2,     1,     1,     1,     1,     1,     1,
-       1,     1
+       0,     2,     0,     2,     2,     1,     2,     1,     1,     1,
+       1,     1,     1
 };
 
 /* YYDEFACT[STATE-NAME] -- Default rule to reduce with in state
@@ -476,29 +477,29 @@ static const yytype_uint8 yyr2[] =
    means the default is an error.  */
 static const yytype_uint8 yydefact[] =
 {
-       2,     0,     1,    10,     7,     4,     6,     8,     5,     9,
-      11,     3
+       2,     0,     1,    11,     8,    10,    12,     9,     0,     7,
+       3,     5,     4,     0,     6
 };
 
 /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-      -1,     1,    11
+      -1,     1,     9,    12,    13
 };
 
 /* YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
    STATE-NUM.  */
-#define YYPACT_NINF -1
+#define YYPACT_NINF -13
 static const yytype_int8 yypact[] =
 {
-      -1,     0,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1
+     -13,     0,   -13,   -13,   -13,   -13,   -13,   -13,     6,   -13,
+     -13,   -13,   -13,     6,   -13
 };
 
 /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-      -1,    -1,    -1
+     -13,   -13,   -13,   -12,     1
 };
 
 /* YYTABLE[YYPACT[STATE-NUM]].  What to do in state STATE-NUM.  If
@@ -508,22 +509,22 @@ static const yytype_int8 yypgoto[] =
 #define YYTABLE_NINF -1
 static const yytype_uint8 yytable[] =
 {
-       2,     0,     0,     3,     0,     4,     5,     6,     7,     8,
-       9,    10
+       2,    14,    10,     0,     0,     3,     4,     5,     6,     7,
+       8,     3,     4,     5,     6,     7,     8,    11
 };
 
 static const yytype_int8 yycheck[] =
 {
-       0,    -1,    -1,     3,    -1,     5,     6,     7,     8,     9,
-      10,    11
+       0,    13,     1,    -1,    -1,     5,     6,     7,     8,     9,
+      10,     5,     6,     7,     8,     9,    10,    11
 };
 
 /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
    symbol of state STATE-NUM.  */
 static const yytype_uint8 yystos[] =
 {
-       0,    13,     0,     3,     5,     6,     7,     8,     9,    10,
-      11,    14
+       0,    13,     0,     5,     6,     7,     8,     9,    10,    14,
+      16,    11,    15,    16,    15
 };
 
 #define yyerrok		(yyerrstatus = 0)
@@ -1351,79 +1352,40 @@ yyreduce:
         case 4:
 
 /* Line 1464 of yacc.c  */
-#line 37 "ritual-r5rs.y"
-    {
-        printf( "number: %s\n", (yyvsp[(1) - (1)].string) );
-    ;}
+#line 32 "ritual-r5rs.y"
+    { (yyval) = (yyvsp[(2) - (2)]); ;}
     break;
 
   case 5:
 
 /* Line 1464 of yacc.c  */
-#line 40 "ritual-r5rs.y"
-    {
-        printf( "identifier: %s\n", (yyvsp[(1) - (1)].string) );
-    ;}
+#line 35 "ritual-r5rs.y"
+    { (yyval) = 0; ;}
     break;
 
   case 6:
 
 /* Line 1464 of yacc.c  */
-#line 43 "ritual-r5rs.y"
-    {
-        printf( "string: %s\n", (yyvsp[(1) - (1)].string) );
-    ;}
+#line 36 "ritual-r5rs.y"
+    { (yyval) = (ritual_object_t*) ritual_pair_create( (yyvsp[(1) - (2)]), (yyvsp[(2) - (2)]) ); ;}
     break;
 
   case 7:
 
 /* Line 1464 of yacc.c  */
-#line 46 "ritual-r5rs.y"
+#line 39 "ritual-r5rs.y"
     {
-        printf( "character: %d (%c)\n", ((yyvsp[(1) - (1)].integer)), (char) (yyvsp[(1) - (1)].integer));
-    ;}
-    break;
-
-  case 8:
-
-/* Line 1464 of yacc.c  */
-#line 49 "ritual-r5rs.y"
-    {
-        printf( "boolean: %s\n", ((yyvsp[(1) - (1)].integer)) ? "#t" : "#f" );
-    ;}
-    break;
-
-  case 9:
-
-/* Line 1464 of yacc.c  */
-#line 52 "ritual-r5rs.y"
-    {
-        printf( "(\n" );
-    ;}
-    break;
-
-  case 10:
-
-/* Line 1464 of yacc.c  */
-#line 55 "ritual-r5rs.y"
-    {
-        printf( "#(\n" );
-    ;}
-    break;
-
-  case 11:
-
-/* Line 1464 of yacc.c  */
-#line 58 "ritual-r5rs.y"
-    {
-        printf( ")\n" );
+        struct rflo_filehandle *fhf = rflo_filehandle_create( stdout );
+        ritual_print( &fhf->flo, (yyvsp[(1) - (1)]) );
+        printf( "\n" );
+        rflo_filehandle_destroy( fhf );
     ;}
     break;
 
 
 
 /* Line 1464 of yacc.c  */
-#line 1427 "ritual-r5rs.tab.c"
+#line 1389 "ritual-r5rs.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);

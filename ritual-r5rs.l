@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include "ritual-r5rs.tab.h"
 #include "parse_context.h"
+#include "ritual_basic_types.h"
 %}
 
 letter [a-z]
@@ -17,23 +18,34 @@ subsequents [a-z\!\$\%\&\*\/\:\<\=\>\?\^\_\~0-9\+\-\.\@]*
 %%
 [ \n]           ;
 ;[^\n]*         ; /* comment */
-[0-9]+          { yylval_param->string = yytext; return NUMBER; }
-{initial}{subsequents}  { yylval_param->string = yytext; return IDENTIFIER; }
-"+"             { yylval_param->string = yytext; return IDENTIFIER; }
-"-"             { yylval_param->string = yytext; return IDENTIFIER; }
-"..."           { yylval_param->string = yytext; return IDENTIFIER; }
+[0-9]+          { *yylval_param = (ritual_object_t*) ritual_native_int_create( atoi( yytext ) );
+                  return NUMBER; }
+{initial}{subsequents}  {
+                  *yylval_param = (ritual_object_t*) ritual_symbol_create( yytext );
+                  return IDENTIFIER; }
+"+"             { *yylval_param = (ritual_object_t*) ritual_symbol_create("+");
+                  return IDENTIFIER; }
+"-"             { *yylval_param = (ritual_object_t*) ritual_symbol_create("-");
+                  return IDENTIFIER; }
+"..."           { *yylval_param = (ritual_object_t*) ritual_symbol_create("...");
+                  return IDENTIFIER; }
 ",@"            { return COMMA_AT; }
 "#("            { return HASH_LPAREN; }
-"#t"            { yylval_param->integer = 1; return BOOLEAN; }
-"#f"            { yylval_param->integer = 0; return BOOLEAN; }
-"#\\space"      { yylval_param->integer = ' '; return CHARACTER; }
-"#\\newline"    { yylval_param->integer = '\n'; return CHARACTER; }
-#\\.            { yylval_param->integer = yytext[2]; return CHARACTER; }
+"#t"            { *yylval_param = (ritual_object_t*) ritual_boolean_create( 1 );
+                  return BOOLEAN; }
+"#f"            { *yylval_param = (ritual_object_t*) ritual_boolean_create( 0 );
+                  return BOOLEAN; }
+"#\\space"      { *yylval_param = (ritual_object_t*) ritual_ascii_char_create( ' ' );
+                  return CHARACTER; }
+"#\\newline"    { *yylval_param = (ritual_object_t*) ritual_ascii_char_create( '\n' );
+                  return CHARACTER; }
+#\\.            { *yylval_param = (ritual_object_t*) ritual_ascii_char_create( yytext[2] );
+                  return CHARACTER; }
 \"              { pctx_dynstring_init( yyextra ); BEGIN(QUOTED_STRING); }
 <QUOTED_STRING>{
     \"          { BEGIN(INITIAL);
                   pctx_dynstring_putc( yyextra, '\0' );
-                  yylval_param->string = pctx_dynstring_get( yyextra );
+                  *yylval_param = (ritual_object_t*) ritual_ascii_string_create( pctx_dynstring_get( yyextra ) );
                   return STRING; }
     \\\"        { pctx_dynstring_putc( yyextra, '"' ); }
     \\\\        { pctx_dynstring_putc( yyextra, '\\' ); }
