@@ -44,8 +44,9 @@ int main(int argc, char *argv[]) {
 			if( !strlen(data) ) {
 				continue;
 			}
-			yy_scan_string( data, my.scanner );
+            YY_BUFFER_STATE buffer = yy_scan_string( data, my.scanner );
 			yyparse( &my );
+            yy_delete_buffer( buffer, my.scanner );
 			while( pctx_has_more( &my ) ) {
 				ritual_object_t * object = pctx_pop( &my );
 				fputs( "-> ", stdout );
