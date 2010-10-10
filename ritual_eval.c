@@ -12,6 +12,14 @@ ritual_object_t * ritual_eval( struct ritual_instance *inst,
                                ritual_object_t *value ) {
     struct ritual_pair * body = 0;
     while( 1 ) {
+        /* Note for the future (multithreading): this seems like
+         * a great place for a pthread_yield(), and even a great
+         * place to stop and check whether we've been suspended
+         * (and wait on a condition variable) or terminated.
+         * (Of course at that point (internal multithreading)
+         * most procedures will need to take a per-thread
+         * argument "thread" similar to inst and env.) */
+
         if( body ) {
             while( body->cdr ) {
                 if( RITUAL_TYPE( body->cdr ) != RTYPE_PAIR ) {
