@@ -43,7 +43,7 @@ int ritual_initialize_instance( struct ritual_instance * inst ) {
          * implement proper GC! */
         inst->scheme_true = ritual_boolean_create( inst, 1 );
         inst->scheme_false = ritual_boolean_create( inst, 0 );
-        for(int i=0;i<256;i++) {
+        for(int i=0;i<128;i++) {
             inst->scheme_ascii_char[i] = ritual_ascii_char_create( inst, i );
         }
 
