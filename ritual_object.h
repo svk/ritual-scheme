@@ -23,6 +23,7 @@ typedef enum ritual_type {
     RTYPE_PORT,
     RTYPE_NATIVE_PROC,
     RTYPE_QUOTE,
+    RTYPE_LAMBDA_PROC,
     RTYPE_NUM_TYPES
 } ritual_type_t;
 

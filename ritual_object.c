@@ -107,7 +107,8 @@ const char * ritual_typename( const ritual_object_t * object ) {
         "vector",
         "port",
         "native procedure",
-        "quote"
+        "quote",
+        "lambda procedure"
     };
     static const char out_of_range[] = "(invalid - out of range)";
     int typeid = RITUAL_TYPE( object );

@@ -4,10 +4,12 @@
 #include "ritual_eval.h"
 #include "ritual_error.h"
 
+#include "ritual_lambda.h"
+
 void ritual_print_native_proc( struct ritual_instance *inst,
                                struct ritual_flo *flo,
                                void *obj ) {
-    rflo_putstring( flo, "#<procedure>" );
+    rflo_putstring( flo, "#<native procedure>" );
 }
 
 struct ritual_native_proc * ritual_native_proc_create( struct ritual_instance *inst,
@@ -61,8 +63,6 @@ ritual_object_t * rnp_ritual_print_diagnostics( struct ritual_instance *inst,
 ritual_object_t * rnp_define( struct ritual_instance *inst,
                               struct ritual_env *env,
                               struct ritual_pair *args ) {
-        /* Doesn't yet recognize the lambda forms of define,
-         * since we don't have lambda yet.. */
         /* Also, we need to restrict the contexts in which this
          * is valid; top level or FIRST in a body. */
     static const char bail[] = "syntax error: define";
@@ -70,7 +70,21 @@ ritual_object_t * rnp_define( struct ritual_instance *inst,
         ritual_error( inst, bail );
     }
     if( RITUAL_TYPE( args->car ) == RTYPE_PAIR ) {
-        ritual_error( inst, "lambda defines not yet implemented!" );
+        struct ritual_pair *first = (struct ritual_pair*) args->car;
+        if( RITUAL_TYPE( first->car ) != RTYPE_SYMBOL ) {
+            ritual_error( inst, "procedure name has wrong type" );
+        }
+        if( RITUAL_TYPE( args->cdr ) != RTYPE_PAIR ) {
+            ritual_error( inst, "body has wrong type" );
+        }
+        struct ritual_symbol *procname = (struct ritual_symbol*) first->car;
+        void *formals = first->cdr;
+        struct ritual_pair * body = (struct ritual_pair*) args->cdr;
+        struct ritual_lambda_proc * lambda = ritual_lambda_create( inst,
+                                                                   env,
+                                                                   formals,
+                                                                   body );
+        ritual_env_define( inst, env, procname->name, (ritual_object_t*) lambda );
     } else if( RITUAL_TYPE( args->car ) == RTYPE_SYMBOL ) {
         struct ritual_symbol *sym = (struct ritual_symbol*) args->car;
         if( !args->cdr || RITUAL_TYPE( args->cdr ) != RTYPE_PAIR ) {
@@ -83,5 +97,13 @@ ritual_object_t * rnp_define( struct ritual_instance *inst,
     }
     return 0; // should return "nothing"
 
+}
+
+ritual_object_t * rnp_lambda( struct ritual_instance *inst,
+                              struct ritual_env *env,
+                              struct ritual_pair *args ) {
+    return (ritual_object_t*) ritual_lambda_create( inst, env,
+        args->car,
+        (struct ritual_pair*) args->cdr );
 }
 

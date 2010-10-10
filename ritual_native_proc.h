@@ -73,4 +73,8 @@ ritual_object_t * rnp_define( struct ritual_instance *,
                               struct ritual_env *,
                               struct ritual_pair * );
 
+ritual_object_t * rnp_lambda( struct ritual_instance *,
+                              struct ritual_env *,
+                              struct ritual_pair * );
+
 #endif

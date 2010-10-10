@@ -20,15 +20,31 @@
  * Execute:
  * ... is that trampoline function supposed to be eval? */
 
+#include "ritual_env.h"
+
 struct ritual_lambda_proc {
     ritual_object_t header;
-    struct ritual_pair *argsyms; // list of symbols, possibly improper (which also means it might just be one symbol), possibly null
+    struct ritual_env *parent;
+    ritual_object_t *argsyms; // list of symbols, possibly improper (which also means it might just be one symbol), possibly null
+    struct ritual_pair *body;
 };
 
-struct ritual_env * ritual_lambda_subenv( struct ritual_instance *,
-                                          struct ritual_env *,
-                                          struct ritual_lambda_proc *,
-                                          struct ritual_pair * );
+struct ritual_env * ritual_lambda_env( struct ritual_instance *,
+                                       struct ritual_env *,
+                                       struct ritual_env *,
+                                       ritual_object_t *,
+                                       struct ritual_pair * );
+
+void ritual_print_lambda_proc(
+    struct ritual_instance *,
+    struct ritual_flo *,
+    void * );
+
+struct ritual_lambda_proc * ritual_lambda_create(
+    struct ritual_instance *,
+    struct ritual_env *,
+    ritual_object_t *,
+    struct ritual_pair * );
 
 
 #endif

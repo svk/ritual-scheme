@@ -1,6 +1,7 @@
 #include "ritual_generic.h"
 #include "ritual_basic_types.h"
 #include "ritual_native_proc.h"
+#include "ritual_lambda.h"
 
 struct ritual_generic_functions {
         /* This is "write", not "display", confusingly (sorry!). */
@@ -39,6 +40,8 @@ const struct ritual_generic_functions ritual_genfun[ RTYPE_NUM_TYPES ] = {
     { ritual_print_native_proc, // native procedure
       0 },
     { ritual_print_quote,
+      0 },
+    { ritual_print_lambda_proc,
       0 }
 };
 

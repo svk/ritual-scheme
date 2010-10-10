@@ -37,6 +37,7 @@ int ritual_initialize_instance( struct ritual_instance * inst ) {
         inst->scheme_false = ritual_boolean_create( inst, 0 );
 
         ritual_define_native_proc( inst, inst->root, "define", rnp_define );
+        ritual_define_native_proc( inst, inst->root, "lambda", rnp_lambda );
 
         return 0;
     } while(0);

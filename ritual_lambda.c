@@ -8,17 +8,26 @@
 
 #include "ritual_error.h"
 
-struct ritual_env * ritual_lambda_subenv( struct ritual_instance * inst,
-                                          struct ritual_env *env,
-                                          struct ritual_lambda_proc *proc,
-                                          struct ritual_pair * arglist ) {
+void ritual_print_lambda_proc( struct ritual_instance *inst,
+                               struct ritual_flo *flo,
+                               void *obj ) {
+    rflo_putstring( flo, "#<lambda procedure>" );
+}
+
+
+struct ritual_env * ritual_lambda_env( struct ritual_instance * inst,
+                                       struct ritual_env *env,
+                                       struct ritual_env *parent,
+                                       ritual_object_t *argsyms,
+                                       struct ritual_pair * arglist ) {
     struct ritual_env *rv = ritual_alloc( inst, sizeof *rv );
     if( !rv ) {
         ritual_error( inst, "unable to allocate lambda subenvironment (out of memory)" );
     }
-    ritual_env_init_sub( inst, rv, env );
 
-    void *nextsym = proc->argsyms;
+    ritual_env_init_sub( inst, rv, parent );
+
+    void *nextsym = argsyms;
     struct ritual_pair *nextarg = arglist;
 
     if( RITUAL_TYPE( nextarg ) != RTYPE_PAIR ) {
@@ -76,4 +85,24 @@ struct ritual_env * ritual_lambda_subenv( struct ritual_instance * inst,
     }
 
     return rv;
+}
+
+struct ritual_lambda_proc * ritual_lambda_create( struct ritual_instance *inst,
+                                                  struct ritual_env *env,
+                                                  ritual_object_t *formals,
+                                                  struct ritual_pair *body ) {
+    /* TODO verify listproperness etc */
+    if( !body ) {
+        ritual_error( inst, "cannot define bodiless lambda" );
+    }
+
+    struct ritual_lambda_proc *rv;
+    rv = ritual_alloc_typed_object( inst, RTYPE_LAMBDA_PROC, sizeof *rv );
+    RITUAL_ASSERT( inst, rv, "object allocation failure should not return" ); 
+    /* Verify all the tricky/costly stuff such as properlistness */
+    rv->argsyms = formals;
+    rv->body = body;
+    rv->parent = env;
+    return rv;
+                    
 }
