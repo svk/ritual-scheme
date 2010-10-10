@@ -30,7 +30,7 @@ struct ritual_env * ritual_lambda_env( struct ritual_instance * inst,
     void *nextsym = argsyms;
     struct ritual_pair *nextarg = arglist;
 
-    if( RITUAL_TYPE( nextarg ) != RTYPE_PAIR ) {
+    if( nextarg && RITUAL_TYPE( nextarg ) != RTYPE_PAIR ) {
         ritual_env_destroy( inst, rv );
         ritual_free( inst, rv );
         ritual_error( inst, "argument list must be proper list" );
