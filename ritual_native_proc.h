@@ -60,4 +60,17 @@ ritual_object_t * rnp_ritual_print_diagnostics( struct ritual_instance *,
                                                 struct ritual_env *,
                                                 struct ritual_pair * );
 
+    /* Shocker: the Scheme keywords (lambda, define, and so on)
+     * are supposed to be redefinable. This means that they're not so
+     * much keywords that should be understood as tokens on the bison/flex
+     * level as builtin procedures. So here they are (well, not all of
+     * them, yet): */
+
+    /* Of course, now it comes in handy that the arglist is unevaluated.
+     * I wish that was foresight and not luck! */
+
+ritual_object_t * rnp_define( struct ritual_instance *,
+                              struct ritual_env *,
+                              struct ritual_pair * );
+
 #endif

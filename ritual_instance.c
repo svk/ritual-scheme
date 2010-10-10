@@ -6,6 +6,8 @@
 
 #include "ritual_basic_types.h"
 
+#include "ritual_native_proc.h"
+
 #include <string.h>
 #include <stdlib.h>
 
@@ -33,6 +35,8 @@ int ritual_initialize_instance( struct ritual_instance * inst ) {
          * implement proper GC! */
         inst->scheme_true = ritual_boolean_create( inst, 1 );
         inst->scheme_false = ritual_boolean_create( inst, 0 );
+
+        ritual_define_native_proc( inst, inst->root, "define", rnp_define );
 
         return 0;
     } while(0);

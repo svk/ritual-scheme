@@ -19,7 +19,7 @@ ritual_object_t * ritual_apply_proc( struct ritual_instance *inst,
                 return native_proc->procedure( inst, env, uneval_args );
             }
     }
-    ritual_error( inst, "expected procedure, got \"%s\"", ritual_typename( proc ) );
+    ritual_error( inst, "expected procedure, got \"%s\" (%d)", ritual_typename( proc ), RITUAL_TYPE(proc) );
     return 0; // impossible
 }
 
