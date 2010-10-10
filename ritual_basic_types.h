@@ -145,5 +145,9 @@ ritual_object_t *ritual_list_next( struct ritual_instance *,
                                    struct ritual_pair ** );
 void ritual_list_assert_end( struct ritual_instance *,
                              struct ritual_pair * );
+int ritual_list_has_cdr( struct ritual_instance *,
+                         struct ritual_pair * );
+
+#define RITUAL_AS_BOOLEAN( inst, obj ) ( (obj) != ((inst)->scheme_false) )
 
 #endif

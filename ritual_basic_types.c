@@ -213,3 +213,10 @@ void ritual_list_assert_end( struct ritual_instance *inst,
     }
 }
 
+int ritual_list_has_cdr( struct ritual_instance *inst,
+                         struct ritual_pair * list ) {
+    if( list && RITUAL_TYPE( (list) ) != RTYPE_PAIR ) {
+        ritual_error( inst, "expected proper list" );
+    }
+    return list->cdr != 0;
+}

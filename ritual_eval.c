@@ -76,13 +76,51 @@ ritual_object_t * ritual_eval( struct ritual_instance *inst,
                                             ritual_list_next( inst, &pair );
                                             ritual_object_t *condition = ritual_list_next( inst, &pair );
                                             ritual_object_t *clause_true = ritual_list_next( inst, &pair );
-                                            ritual_object_t *clause_false = ritual_list_next( inst, &pair );
-                                            ritual_list_assert_end( inst, pair );
+                                            ritual_object_t *clause_false = 0;
+                                            if( pair ) {
+                                                clause_false = ritual_list_next( inst, &pair );
+                                                ritual_list_assert_end( inst, pair );
+                                            }
                                             if( ritual_eval( inst, env, condition ) != inst->scheme_false ) {
                                                 value = clause_true;
                                             } else {
                                                 value = clause_false;
                                             }
+                                            break;
+                                        }
+                                    case RKW_BEGIN:
+                                        body = (struct ritual_pair*) pair->cdr;
+                                        break;
+                                    case RKW_OR:
+                                        {
+                                            ritual_list_next( inst, &pair );
+                                            if( !pair ) {
+                                                return inst->scheme_false;
+                                            }
+                                            while( ritual_list_has_cdr( inst, pair ) ) {
+                                                ritual_object_t *condition = ritual_list_next( inst, &pair );
+                                                if( RITUAL_AS_BOOLEAN( inst, condition ) ) {
+                                                    return condition;
+                                                }
+                                            }
+                                            value = ritual_list_next( inst, &pair );
+                                            ritual_list_assert_end( inst, pair );
+                                        }
+                                        break;
+                                    case RKW_AND:
+                                        {
+                                            ritual_list_next( inst, &pair );
+                                            if( !pair ) {
+                                                return inst->scheme_true;
+                                            }
+                                            while( ritual_list_has_cdr( inst, pair ) ) {
+                                                ritual_object_t *condition = ritual_list_next( inst, &pair );
+                                                if( !RITUAL_AS_BOOLEAN( inst, condition ) ) {
+                                                    return condition;
+                                                }
+                                            }
+                                            value = ritual_list_next( inst, &pair );
+                                            ritual_list_assert_end( inst, pair );
                                         }
                                         break;
                                     default:

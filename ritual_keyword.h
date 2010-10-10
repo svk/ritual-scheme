@@ -25,7 +25,10 @@ void ritual_define_rnp_as_keyword( struct ritual_instance*,
 
 enum {
     RKW_INVALID = 0,
-    RKW_IF
+    RKW_IF,
+    RKW_BEGIN,
+    RKW_AND,
+    RKW_OR
 };
 
 #endif

@@ -53,6 +53,9 @@ int ritual_initialize_instance( struct ritual_instance * inst ) {
         }
 
         ritual_define_keyword( inst, inst->root, "if", RKW_IF );
+        ritual_define_keyword( inst, inst->root, "begin", RKW_BEGIN );
+        ritual_define_keyword( inst, inst->root, "and", RKW_AND );
+        ritual_define_keyword( inst, inst->root, "or", RKW_OR );
 
         ritual_define_rnp_as_keyword( inst, inst->root, "define", rnp_define );
         ritual_define_rnp_as_keyword( inst, inst->root, "lambda", rnp_lambda );
