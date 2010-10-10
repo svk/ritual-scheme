@@ -36,6 +36,9 @@ int ritual_initialize_instance( struct ritual_instance * inst ) {
             inst->symbol_table = 0;
             break;
         }
+        inst->symbol_table->memory_context = inst;
+        inst->symbol_table->ht_alloc = (void* (*)(void*,int)) ritual_alloc;
+        inst->symbol_table->ht_free = (void (*)(void*,void*)) ritual_free;
 
         /* These objects are GCed on deinitialization as all others
          * and we do not need to free them. On the contrary, we need

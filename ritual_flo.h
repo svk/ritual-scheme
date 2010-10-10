@@ -3,6 +3,8 @@
 
 #include <stdio.h>
 
+#include "ritual_instance.h"
+
 /* Note this ugliness: FLOs are, as of now, allocated in
  * non-instance memory (without use of an instance pointer).
  * When they are associated with the Scheme type ports,
@@ -30,8 +32,8 @@ void rflo_putchar( struct ritual_flo *, char );
 
     /* Mostly for wrapping stdin, stdout, stderr -- note
      * that it does not deal with closing handles at all */
-struct rflo_filehandle * rflo_filehandle_create( FILE *f );
-void rflo_filehandle_destroy( struct rflo_filehandle * );
+struct rflo_filehandle * rflo_filehandle_create( struct ritual_instance*, FILE *f );
+void rflo_filehandle_destroy( struct ritual_instance*, struct rflo_filehandle * );
 
 
 #endif

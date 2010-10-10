@@ -14,6 +14,9 @@ void ritual_env_init_root(struct ritual_instance * inst,
     if( rht_table_init( &rv->table, RITUAL_ENV_SIZE_ROOT ) ) {
         ritual_error( inst, "unable to allocate root environment table" );
     }
+    rv->table.memory_context = inst;
+    rv->table.ht_alloc = (void* (*)(void*,int)) ritual_alloc;
+    rv->table.ht_free = (void (*)(void*,void*)) ritual_free;
 }
 
 void ritual_env_init_sub(struct ritual_instance *inst,
@@ -25,6 +28,9 @@ void ritual_env_init_sub(struct ritual_instance *inst,
     if( rht_table_init( &rv->table, RITUAL_ENV_SIZE_SUB ) ) {
         ritual_error( inst, "unable to allocate subenvironment table" );
     }
+    rv->table.memory_context = inst;
+    rv->table.ht_alloc = (void* (*)(void*,int)) ritual_alloc;
+    rv->table.ht_free = (void (*)(void*,void*)) ritual_free;
 }
 
 void ritual_env_destroy( struct ritual_instance *inst,

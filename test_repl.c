@@ -33,7 +33,7 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    flo_stdout = rflo_filehandle_create( stdout );
+    flo_stdout = rflo_filehandle_create( &scheme, stdout );
 
     ritual_define_native_proc( &scheme, scheme.root, "eq?", rnp_eqp );
     ritual_define_native_proc( &scheme, scheme.root, "ritual-print-diagnostics", rnp_ritual_print_diagnostics );
@@ -75,7 +75,7 @@ int main(int argc, char *argv[]) {
             }
 		}
 	}
-	rflo_filehandle_destroy( flo_stdout );
+	rflo_filehandle_destroy( &scheme, flo_stdout );
     yylex_destroy( my.scanner );
     pctx_destroy( &my );
 

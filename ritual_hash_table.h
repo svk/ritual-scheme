@@ -38,6 +38,8 @@ struct rht_entry {
 struct rht_table {
     void (*free_value)(void*);
 
+        // Somewhat memory-wasteful; we could pass the memory context
+        // (including pointers to alloc and free) as an argument.
     void *memory_context;
     void* (*ht_alloc)(void*,int);
     void (*ht_free)(void*,void*);
