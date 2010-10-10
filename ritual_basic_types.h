@@ -16,6 +16,19 @@
  * defined for now. That'd correspond to a null pointer
  * in a function pointer table eventually. */
 
+/* Next up:
+ *   -if, as a "keyword" (not a native proc)
+ *   -integral arithmetic
+ *   -GMP integers, seamless
+ * Small optimizations etc.:
+ *   -Symbols can include a hash, for
+ *    quickly establishing inequality.
+ *   -make some symbols singleton symbols
+ *    by checking in _create() to see
+ *    whether they were already created;
+ *    this allows very fast checking
+ *    vs #f */
+
 struct ritual_quote {
     ritual_object_t header;
     ritual_object_t *quoted;
