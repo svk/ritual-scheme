@@ -20,14 +20,25 @@
  *   -if, as a "keyword" (not a native proc)
  *   -integral arithmetic
  *   -GMP integers, seamless
- * Small optimizations etc.:
- *   -Symbols can include a hash, for
- *    quickly establishing inequality.
- *   -make some symbols singleton symbols
- *    by checking in _create() to see
- *    whether they were already created;
- *    this allows very fast checking
- *    vs #f */
+ */
+/* Those weren't optimizations but correctness.
+ * Optimizations to think about, tagged pointers for:
+ *   1 bit:
+ *      -native integers
+ *   2 bits:
+ *      -native integers
+ *      -ascii characters
+ *      -?
+ * In anticipation of this, should perhaps begin using
+ * a macro like RITUAL_POINTER(type,obj) -> obj, as it'll
+ * otherwise be hell to convert. (The type just does an
+ * assertion. Actually, this could also do a cast for us!)
+ *
+ * Note that it is absolutely NECESSARY that any trick we
+ * use here works fine with both 32-bit and 64-bit pointers.
+ * Frankly, it should work fine for any size >= 32 bits.
+ * No funny business.
+ */
 
 struct ritual_quote {
     ritual_object_t header;
