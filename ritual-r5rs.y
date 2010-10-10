@@ -30,12 +30,15 @@ tokens:
 
 list: '(' rest_of_list { $$ = $2; }
 
+quoted: '\'' token { $$ = (ritual_object_t*) ritual_quote_create( ctx->instance, $2 ); }
+
 rest_of_list:
     ')' { $$ = 0; }
     | token rest_of_list { $$ = (ritual_object_t*) ritual_pair_create( ctx->instance, $1, $2 ); }
 
 token:
     list
+    | quoted
     | NUMBER
     | IDENTIFIER
     | STRING

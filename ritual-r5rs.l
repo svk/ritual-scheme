@@ -33,9 +33,9 @@ subsequents [a-z\!\$\%\&\*\/\:\<\=\>\?\^\_\~0-9\+\-\.\@]*
                   return IDENTIFIER; }
 ",@"            { return COMMA_AT; }
 "#("            { return HASH_LPAREN; }
-"#t"            { *yylval_param = (ritual_object_t*) ritual_boolean_create( INST, 1 );
+"#t"            { *yylval_param = INST->scheme_true;
                   return BOOLEAN; }
-"#f"            { *yylval_param = (ritual_object_t*) ritual_boolean_create( INST, 0 );
+"#f"            { *yylval_param = INST->scheme_false;
                   return BOOLEAN; }
 "#\\space"      { *yylval_param = (ritual_object_t*) ritual_ascii_char_create( INST, ' ' );
                   return CHARACTER; }

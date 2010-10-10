@@ -856,13 +856,13 @@ YY_RULE_SETUP
 case 10:
 YY_RULE_SETUP
 #line 36 "ritual-r5rs.l"
-{ *yylval_param = (ritual_object_t*) ritual_boolean_create( INST, 1 );
+{ *yylval_param = INST->scheme_true;
                   return BOOLEAN; }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
 #line 38 "ritual-r5rs.l"
-{ *yylval_param = (ritual_object_t*) ritual_boolean_create( INST, 0 );
+{ *yylval_param = INST->scheme_false;
                   return BOOLEAN; }
 	YY_BREAK
 case 12:
