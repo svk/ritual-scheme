@@ -38,6 +38,10 @@ struct rht_entry {
 struct rht_table {
     void (*free_value)(void*);
 
+    void *memory_context;
+    void* (*ht_alloc)(void*,int);
+    void (*ht_free)(void*,void*);
+
     int slots, entries;
     struct rht_entry ** slot;
 
@@ -55,8 +59,8 @@ ritual_hash_t rht_get_hash( const void *, int );
 int rht_table_init( struct rht_table*, int );
 void rht_table_destroy( struct rht_table* );
 
-struct rht_entry * rht_entry_create( const void*, int, void* );
-void rht_entry_delete( struct rht_entry **, void (*)(void*) );
+struct rht_entry * rht_entry_create( struct rht_table*, const void*, int, void* );
+void rht_entry_delete( struct rht_table*, struct rht_entry **, void (*)(void*) );
 
 struct rht_entry ** rht_find_entry_in_list( struct rht_entry **, const void*, int );
 struct rht_entry ** rht_find_entry( const struct rht_table*, const void*, int );

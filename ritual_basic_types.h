@@ -29,6 +29,14 @@
  *      -native integers
  *      -ascii characters
  *      -?
+ *   2 bits:
+ *     -mutability flag
+ *     -native integers
+ *   3 bits:
+ *     -mutability flag
+ *     -native integers
+ *     -ascii characters
+ *     -?
  * In anticipation of this, should perhaps begin using
  * a macro like RITUAL_POINTER(type,obj) -> obj, as it'll
  * otherwise be hell to convert. (The type just does an

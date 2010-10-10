@@ -11,6 +11,14 @@
  * Public domain. */
 extern uint32_t hashlittle( const void*, size_t, uint32_t );
 
+void * standard_malloc(void *ctx, int sz) {
+    return malloc( sz );
+}
+
+void standard_free(void *ctx, void *p) {
+    free( p );
+}
+
 ritual_hash_t rht_get_hash( const void *s, int l ) {
     return hashlittle( s, l, 0 );
 }
@@ -27,10 +35,12 @@ int rht_get_best_size( int lower_bound ) {
 
 int rht_table_init( struct rht_table* table, int initial_size ) {
     memset( table, 0, sizeof *table );
+    table->ht_alloc = standard_malloc;
+    table->ht_free = standard_free;
 
     initial_size = rht_get_best_size( initial_size );
 
-    table->slot = malloc( sizeof *table->slot * initial_size );
+    table->slot = table->ht_alloc( table->memory_context, sizeof *table->slot * initial_size );
     if( !table->slot ) return 1;
 
     memset( table->slot, 0, sizeof *table->slot * initial_size );
@@ -38,7 +48,7 @@ int rht_table_init( struct rht_table* table, int initial_size ) {
 
 #ifdef RHT_THREAD_SAFE
     if( pthread_rwlock_init( &table->lock, 0 ) ) {
-        free( table->slot );
+        table->ht_free( table->memory_context, table->slot );
         return 1;
     }
 #endif
@@ -49,19 +59,19 @@ int rht_table_init( struct rht_table* table, int initial_size ) {
 void rht_table_destroy( struct rht_table* table ) {
     for(int i=0;i<table->slots;i++) {
         while( table->slot[i] ) {
-            rht_entry_delete( &table->slot[i], table->free_value );
+            rht_entry_delete( table, &table->slot[i], table->free_value );
         }
     }
-    free( table->slot );
+    table->ht_free( table->memory_context, table->slot );
     table->slot = 0;
     
     if( table->old_slot ) {
         for(int i=0;i<table->old_slots;i++) {
             while( table->old_slot[i] ) {
-                rht_entry_delete( &table->old_slot[i], table->free_value );
+                rht_entry_delete( table, &table->old_slot[i], table->free_value );
             }
         }
-        free( table->old_slot );
+        table->ht_free( table->memory_context, table->old_slot );
         table->old_slot = 0;
     }
 
@@ -70,14 +80,15 @@ void rht_table_destroy( struct rht_table* table ) {
 #endif
 }
 
-struct rht_entry * rht_entry_create( const void *key, int keylen,
+struct rht_entry * rht_entry_create( struct rht_table *table,
+                                     const void *key, int keylen,
                                      void *value ) {
-    struct rht_entry *rv = malloc(sizeof *rv);
+    struct rht_entry *rv = table->ht_alloc( table->memory_context,sizeof *rv);
     if( !rv ) return 0;
 
-    rv->key = malloc( keylen );
+    rv->key = table->ht_alloc( table->memory_context, keylen );
     if( !rv->key ) {
-        free( rv );
+        table->ht_free( table->memory_context, rv );
         return 0;
     }
 
@@ -120,15 +131,16 @@ struct rht_entry ** rht_find_entry( const struct rht_table* table,
     return rv;
 }
 
-void rht_entry_delete( struct rht_entry **pp,
+void rht_entry_delete( struct rht_table *table,
+                       struct rht_entry **pp,
                        void (*free_value)(void*) ) {
     if( *pp ) {
         struct rht_entry *next = (*pp)->next;
         if( free_value ) {
             free_value( (*pp)->value );
         }
-        free( (*pp)->key );
-        free( *pp );
+        table->ht_free( table->memory_context, (*pp)->key );
+        table->ht_free( table->memory_context, *pp );
         *pp = next;
     }
 }
@@ -190,7 +202,7 @@ int rht_set( struct rht_table *table,
 
     struct rht_entry **pp = rht_find_entry( table, key, keylen );
     if( !pp ) {
-        struct rht_entry * newentry = rht_entry_create( key, keylen, value );
+        struct rht_entry * newentry = rht_entry_create( table, key, keylen, value );
         if( !newentry ) {
             rv = 1;
         } else {
@@ -229,7 +241,7 @@ int rht_delete( struct rht_table *table, const void *key, int keylen ) {
     struct rht_entry **pp = rht_find_entry( table, key, keylen );
     if( pp ) {
         rv = 0;
-        rht_entry_delete( pp, table->free_value  );
+        rht_entry_delete( table, pp, table->free_value  );
         --table->entries;
     } else {
         rv = 1;
@@ -245,7 +257,7 @@ int rht_delete( struct rht_table *table, const void *key, int keylen ) {
 int rht_realloc_table( struct rht_table *table, int newsize ) {
     assert( !table->old_slot );
 
-    struct rht_entry **newslot = malloc( sizeof *newslot * newsize );
+    struct rht_entry **newslot = table->ht_alloc( table->memory_context, sizeof *newslot * newsize );
     if( !newslot ) {
 #ifdef DEBUG
         fprintf( stderr, "warning: failed to reallocate table\n" );
@@ -293,7 +305,7 @@ int rht_do_move( struct rht_table *table ) {
 #ifdef DEBUG_VERBOSE
             fprintf(stderr, "notice: transition completed, freeing old table\n" );
 #endif
-            free( table->old_slot );
+            table->ht_free( table->memory_context, table->old_slot );
             table->old_slot = 0;
         }
 
