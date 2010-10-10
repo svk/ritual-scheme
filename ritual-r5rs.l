@@ -20,7 +20,7 @@ subsequents [a-z\!\$\%\&\*\/\:\<\=\>\?\^\_\~0-9\+\-\.\@]*
 %%
 [ \n]           ;
 ;[^\n]*         ; /* comment */
-[0-9]+          { *yylval_param = (ritual_object_t*) ritual_native_int_create( INST, atoi( yytext ) );
+[0-9][0-9/]*      { *yylval_param = (ritual_object_t*) ritual_string_to_number( INST, yytext );
                   return NUMBER; }
 {initial}{subsequents}  {
                   *yylval_param = (ritual_object_t*) ritual_symbol_create( INST, yytext );
