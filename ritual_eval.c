@@ -5,6 +5,8 @@
 #include "ritual_native_proc.h"
 #include "ritual_lambda.h"
 
+#include "ritual_env.h"
+
 #include "ritual_keyword.h"
 
 ritual_object_t * ritual_eval( struct ritual_instance *inst,
@@ -79,6 +81,32 @@ ritual_object_t * ritual_eval( struct ritual_instance *inst,
                                     }
                                     return keyword->rnp( inst, env, (struct ritual_pair*) pair->cdr );
                                 } else switch( keyword->value ) {
+                                    case RKW_LET:
+                                        {
+                                            ritual_list_next( inst, &pair );
+                                            ritual_object_t *bindings = ritual_list_next( inst, &pair );
+                                            env = ritual_let_env( inst, env,
+                                                                  rconvto_list( inst, bindings ) );
+                                            body = pair;
+                                            break;
+                                        }
+                                    case RKW_LETREC:
+                                        {
+                                            ritual_list_next( inst, &pair );
+                                            ritual_object_t *bindings = ritual_list_next( inst, &pair );
+                                            env = ritual_letrec_env( inst, env,
+                                                                     rconvto_list( inst, bindings ) );
+                                            body = pair;
+                                            break;
+                                        }
+                                    case RKW_LET_STAR:
+                                        {
+                                            ritual_list_next( inst, &pair );
+                                            ritual_object_t *bindings = ritual_list_next( inst, &pair );
+                                            env = ritual_let_star_env( inst, env, rconvto_list( inst, bindings ) );
+                                            body = pair;
+                                            break;
+                                        }
                                     case RKW_IF:
                                         {
                                             ritual_list_next( inst, &pair );
@@ -140,11 +168,6 @@ ritual_object_t * ritual_eval( struct ritual_instance *inst,
                             {
                                 struct ritual_lambda_proc *lambda_proc = (struct ritual_lambda_proc*) proc;
                                 body = lambda_proc->body;
-                                /* XXX: much like all the other GC work that needs to be done, we need
-                                 *      to figure out how to reclaim environments. The difficulty is
-                                 *      that these are currently NOT objects. Perhaps they should be?
-                                 *      (They have a lot in common with objects, including GC-important
-                                 *      stuff like containing references to objects.) */
                                 if( pair->cdr && RITUAL_TYPE( pair->cdr ) != RTYPE_PAIR ) {
                                     ritual_error( inst, "must pass proper list as argument list" );
                                 }

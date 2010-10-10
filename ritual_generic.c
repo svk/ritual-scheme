@@ -3,6 +3,8 @@
 #include "ritual_native_proc.h"
 #include "ritual_lambda.h"
 
+#include "ritual_env.h"
+
 struct ritual_generic_functions {
         /* This is "write", not "display", confusingly (sorry!). */
     void (*print)( struct ritual_instance *,
@@ -44,7 +46,9 @@ const struct ritual_generic_functions ritual_genfun[ RTYPE_NUM_TYPES ] = {
     { ritual_print_lambda_proc,
       0 },
     { 0, // keyword
-      0 }
+      0 },
+    { 0,
+      ritual_env_destroy }
 };
 
 void ritual_print( struct ritual_instance *inst,

@@ -27,7 +27,7 @@ int ritual_initialize_instance( struct ritual_instance * inst ) {
         if( !inst->error ) break;
         ritual_error_initialize( inst->error );
 
-        inst->root = malloc(sizeof *inst->root );
+        inst->root = (struct ritual_env*) ritual_alloc_typed_object( inst, RTYPE_ENVIRONMENT, sizeof *inst->root );
         if( !inst->root ) break;
         ritual_env_init_root( inst, inst->root );
 
@@ -56,6 +56,9 @@ int ritual_initialize_instance( struct ritual_instance * inst ) {
         ritual_define_keyword( inst, inst->root, "begin", RKW_BEGIN );
         ritual_define_keyword( inst, inst->root, "and", RKW_AND );
         ritual_define_keyword( inst, inst->root, "or", RKW_OR );
+        ritual_define_keyword( inst, inst->root, "let", RKW_LET );
+        ritual_define_keyword( inst, inst->root, "let*", RKW_LET_STAR );
+        ritual_define_keyword( inst, inst->root, "letrec", RKW_LETREC );
 
         ritual_define_rnp_as_keyword( inst, inst->root, "define", rnp_define );
         ritual_define_rnp_as_keyword( inst, inst->root, "lambda", rnp_lambda );
@@ -78,13 +81,8 @@ int ritual_initialize_instance( struct ritual_instance * inst ) {
 }
 
 void ritual_deinitialize_instance( struct ritual_instance *inst ) {
-    ritual_env_destroy( inst, inst->root );
-    free( inst->root );
-
     free( inst->error );
 
     rgc_deinitialize( inst, inst->gc );
     free( inst->gc );
-
-
 }

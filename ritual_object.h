@@ -25,6 +25,7 @@ typedef enum ritual_type {
     RTYPE_QUOTE,
     RTYPE_LAMBDA_PROC,
     RTYPE_KEYWORD,
+    RTYPE_ENVIRONMENT,
     RTYPE_NUM_TYPES
 } ritual_type_t;
 

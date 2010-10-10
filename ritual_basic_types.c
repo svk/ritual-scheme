@@ -220,3 +220,32 @@ int ritual_list_has_cdr( struct ritual_instance *inst,
     }
     return list->cdr != 0;
 }
+
+struct ritual_pair *rconvto_pair( struct ritual_instance *inst,
+                                  ritual_object_t *obj ) {
+    if( RITUAL_TYPE( obj ) != RTYPE_PAIR ) {
+        ritual_error( inst, "expected pair, got \"%s\"", ritual_typename( obj ) );
+    }
+    return (struct ritual_pair*) obj;
+}
+
+ritual_object_t * rconvfrom_pair( struct ritual_instance *inst,
+                                  struct ritual_pair *pair ) {
+    if( !pair ) {
+        ritual_error( inst, "expected pair, got null" );
+    }
+    return (ritual_object_t*) pair;
+}
+
+struct ritual_pair *rconvto_list( struct ritual_instance *inst,
+                                  ritual_object_t *obj ) {
+    if( obj && RITUAL_TYPE( obj ) != RTYPE_PAIR ) {
+        ritual_error( inst, "expected list, got \"%s\"", ritual_typename( obj ) );
+    }
+    return (struct ritual_pair*) obj;
+}
+
+ritual_object_t * rconvfrom_list( struct ritual_instance *inst,
+                                  struct ritual_pair *list ) {
+    return (ritual_object_t*) list;
+}

@@ -28,7 +28,10 @@ enum {
     RKW_IF,
     RKW_BEGIN,
     RKW_AND,
-    RKW_OR
+    RKW_OR,
+    RKW_LET,
+    RKW_LET_STAR,
+    RKW_LETREC
 };
 
 #endif

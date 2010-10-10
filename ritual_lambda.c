@@ -20,11 +20,10 @@ struct ritual_env * ritual_lambda_env( struct ritual_instance * inst,
                                        struct ritual_env *parent,
                                        ritual_object_t *argsyms,
                                        struct ritual_pair * arglist ) {
-    struct ritual_env *rv = ritual_alloc( inst, sizeof *rv );
+    struct ritual_env *rv = (struct ritual_env*) ritual_alloc_typed_object( inst, RTYPE_ENVIRONMENT, sizeof *rv );
     if( !rv ) {
         ritual_error( inst, "unable to allocate lambda subenvironment (out of memory)" );
     }
-
     ritual_env_init_sub( inst, rv, parent );
 
     void *nextsym = argsyms;

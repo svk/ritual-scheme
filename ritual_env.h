@@ -5,7 +5,10 @@
 #include "ritual_object.h"
 #include "ritual_hash_table.h"
 
+#include "ritual_basic_types.h"
+
 struct ritual_env {
+    ritual_object_t header;
     struct ritual_env *parent;
     struct rht_table table;
 };
@@ -19,7 +22,7 @@ void ritual_env_init_sub(struct ritual_instance *,
                          struct ritual_env *,
                          struct ritual_env *);
 void ritual_env_destroy( struct ritual_instance *,
-                         struct ritual_env * );
+                         void * );
 
 void ritual_env_set( struct ritual_instance *,
                      struct ritual_env *,
@@ -33,6 +36,17 @@ ritual_object_t * ritual_env_lookup( struct ritual_instance *,
                                      struct ritual_env *,
                                      const char * );
 
+
+
+struct ritual_env * ritual_let_env( struct ritual_instance *,
+                                    struct ritual_env *,
+                                    struct ritual_pair * );
+struct ritual_env * ritual_let_star_env( struct ritual_instance *,
+                                         struct ritual_env *,
+                                         struct ritual_pair * );
+struct ritual_env * ritual_letrec_env( struct ritual_instance *,
+                                       struct ritual_env *,
+                                       struct ritual_pair * );
 
 
 

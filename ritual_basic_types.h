@@ -141,6 +141,8 @@ void ritual_print_quote(
     struct ritual_flo *,
     void * );
 
+
+
 ritual_object_t *ritual_list_next( struct ritual_instance *,
                                    struct ritual_pair ** );
 void ritual_list_assert_end( struct ritual_instance *,
@@ -149,5 +151,18 @@ int ritual_list_has_cdr( struct ritual_instance *,
                          struct ritual_pair * );
 
 #define RITUAL_AS_BOOLEAN( inst, obj ) ( (obj) != ((inst)->scheme_false) )
+
+    /* Conversion functions! If I can eventually drop all the casts
+     * and use these it'll be easier (aka possible) to introduce stuff
+     * like tagged pointers.
+     * Wrt efficiency, they should probably be inlined, but this is
+     * much better (code-wise) than macros. */
+struct ritual_pair *rconvto_pair( struct ritual_instance *, ritual_object_t* );
+ritual_object_t * rconvfrom_pair( struct ritual_instance *, struct ritual_pair * );
+                                        
+    // These are a special case for pairs; a list here is either null or a pair.
+    // Doesn't check properness in any way.
+struct ritual_pair *rconvto_list( struct ritual_instance *, ritual_object_t* );
+ritual_object_t * rconvfrom_list( struct ritual_instance *, struct ritual_pair * );
 
 #endif
