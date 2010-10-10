@@ -61,3 +61,19 @@ ritual_object_t * ritual_eval( struct ritual_instance *inst,
     ritual_error( inst, "evaluation of type \"%s\" not implemented", ritual_typename( value ) );
     return 0; // impossible
 }
+
+struct ritual_pair * ritual_mapeval( struct ritual_instance *inst,
+                                     struct ritual_env *env,
+                                     struct ritual_pair * l ) {
+    struct ritual_pair *rv = 0;
+    struct ritual_pair **rrv = &rv;
+    while( l ) {
+        if( l->cdr && RITUAL_TYPE( l->cdr ) != RTYPE_PAIR ) {
+            ritual_error( inst, "mapping over improper list" );
+        }
+        *rrv = ritual_pair_create( inst, ritual_eval( inst, env, l->car ), 0 );
+        rrv = (struct ritual_pair **) &(*rrv)->cdr;
+
+    }
+    return rv;
+}

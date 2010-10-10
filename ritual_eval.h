@@ -16,4 +16,9 @@ ritual_object_t * ritual_eval( struct ritual_instance *,
                                struct ritual_env *,
                                ritual_object_t * );
 
+struct ritual_pair * ritual_mapeval( struct ritual_instance *,
+                                     struct ritual_env *,
+                                     struct ritual_pair * );
+
+
 #endif
