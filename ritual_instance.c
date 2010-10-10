@@ -29,12 +29,23 @@ int ritual_initialize_instance( struct ritual_instance * inst ) {
         if( !inst->root ) break;
         ritual_env_init_root( inst, inst->root );
 
+        inst->symbol_table = malloc( sizeof *inst->root );
+        if( !inst->symbol_table ) break;
+        if( rht_table_init( inst->symbol_table, RITUAL_SYMBOL_TABLE_SIZE ) ) {
+            free( inst->symbol_table );
+            inst->symbol_table = 0;
+            break;
+        }
+
         /* These objects are GCed on deinitialization as all others
          * and we do not need to free them. On the contrary, we need
          * to make sure they're never GCed automatically when we
          * implement proper GC! */
         inst->scheme_true = ritual_boolean_create( inst, 1 );
         inst->scheme_false = ritual_boolean_create( inst, 0 );
+        for(int i=0;i<256;i++) {
+            inst->scheme_ascii_char[i] = ritual_ascii_char_create( inst, i );
+        }
 
         ritual_define_native_proc( inst, inst->root, "define", rnp_define );
         ritual_define_native_proc( inst, inst->root, "lambda", rnp_lambda );

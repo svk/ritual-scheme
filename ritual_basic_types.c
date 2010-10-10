@@ -10,6 +10,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "ritual_hash_table.h"
+
 struct ritual_quote * ritual_quote_create( struct ritual_instance *inst,
                                            ritual_object_t *quoted ) {
     struct ritual_quote *rv;
@@ -34,12 +36,17 @@ struct ritual_pair * ritual_pair_create( struct ritual_instance *inst,
 
 struct ritual_symbol * ritual_symbol_create( struct ritual_instance *inst,
                                              const char *s ) {
-    struct ritual_symbol *rv;
-    const int len = strlen( s ),
-          size = sizeof *rv + len; // 1 elt (NUL) included in sizeof
-    rv = ritual_alloc_typed_object( inst, RTYPE_SYMBOL, size );
-    RITUAL_ASSERT( inst, rv, "object allocation failure should not return" ); 
-    memcpy( rv->name, s, len + 1 );
+    const int len = strlen( s );
+    struct ritual_symbol *rv = rht_qlookup( inst->symbol_table, s, len );
+    if( !rv ) {
+        const int size = sizeof *rv + len; // 1 elt (NUL) included in sizeof
+        rv = ritual_alloc_typed_object( inst, RTYPE_SYMBOL, size );
+        RITUAL_ASSERT( inst, rv, "object allocation failure should not return" ); 
+        memcpy( rv->name, s, len + 1 );
+
+        rht_set( inst->symbol_table, s, len, rv );
+    }
+
     return rv;
 }
 
@@ -56,6 +63,9 @@ struct ritual_ascii_string * ritual_ascii_string_create( struct ritual_instance 
 
 struct ritual_ascii_char * ritual_ascii_char_create( struct ritual_instance *inst,
                                                      int8_t value ) {
+    if( value >= 0 && value < 256 && inst->scheme_ascii_char[value] ) {
+        return inst->scheme_ascii_char[ value ];
+    }
     struct ritual_ascii_char *rv;
     rv = ritual_alloc_typed_object( inst, RTYPE_ASCII_CHAR, sizeof *rv );
     RITUAL_ASSERT( inst, rv, "object allocation failure should not return" ); 
@@ -74,6 +84,11 @@ struct ritual_native_int * ritual_native_int_create( struct ritual_instance *ins
 
 struct ritual_boolean * ritual_boolean_create( struct ritual_instance *inst,
                                                int value ) {
+    if( !value && inst->scheme_false ) {
+        return inst->scheme_false;
+    } else if( value && inst->scheme_true ) {
+        return inst->scheme_true;
+    }
     struct ritual_boolean *rv;
     rv = ritual_alloc_typed_object( inst, RTYPE_BOOLEAN, sizeof *rv );
     RITUAL_ASSERT( inst, rv, "object allocation failure should not return" ); 

@@ -11,6 +11,10 @@
  * allows us to e.g. impose quotas, down the line) -- this means that
  * the parser needs access to one in the context. */
 
+#include "ritual_hash_table.h"
+
+#define RITUAL_SYMBOL_TABLE_SIZE 1024
+
 #include <setjmp.h>
 
 struct ritual_gc_instance;
@@ -23,8 +27,11 @@ struct ritual_instance {
 
     struct ritual_env *root;
 
+    struct rht_table * symbol_table;
+
     // XXX hax: these being void* 
     void *scheme_true, *scheme_false;
+    void *scheme_ascii_char[256];
 
     // diagnostics
     int total_bytes_allocated;
