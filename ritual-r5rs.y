@@ -28,16 +28,17 @@ void yyerror( struct parse_context *ctx, const char *str ) {
 tokens:
     | tokens token { pctx_push_back( ctx, $2 ); }
 
-list: '(' rest_of_list { $$ = $2; }
+improper_list: '(' rest_of_improper_list { $$ = $2; }
 
 quoted: '\'' token { $$ = (ritual_object_t*) ritual_quote_create( ctx->instance, $2 ); }
 
-rest_of_list:
+rest_of_improper_list:
     ')' { $$ = 0; }
-    | token rest_of_list { $$ = (ritual_object_t*) ritual_pair_create( ctx->instance, $1, $2 ); }
+    | '.' token ')' { $$ = $2; }
+    | token rest_of_improper_list { $$ = (ritual_object_t*) ritual_pair_create( ctx->instance, $1, $2 ); }
 
 token:
-    list
+    improper_list
     | quoted
     | NUMBER
     | IDENTIFIER

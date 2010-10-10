@@ -109,6 +109,7 @@ struct ritual_pair * ritual_mapeval( struct ritual_instance *inst,
         }
         *rrv = ritual_pair_create( inst, ritual_eval( inst, env, l->car ), 0 );
         rrv = (struct ritual_pair **) &(*rrv)->cdr;
+        l = (struct ritual_pair*) l->cdr;
 
     }
     return rv;
