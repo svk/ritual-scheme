@@ -193,3 +193,23 @@ void ritual_print_boolean( struct ritual_instance *inst,
         rflo_putstring( flo, "#f" );
     }
 }
+
+ritual_object_t *ritual_list_next( struct ritual_instance *inst,
+                                   struct ritual_pair ** list ) {
+    if( !(*list) ) {
+        ritual_error( inst, "premature end of list" );
+    }
+    if( RITUAL_TYPE( (*list) ) != RTYPE_PAIR ) {
+        ritual_error( inst, "expected proper list" );
+    }
+    ritual_object_t *rv = (*list)->car;
+    *list = (*list)->cdr;
+    return rv;
+}
+void ritual_list_assert_end( struct ritual_instance *inst,
+                             struct ritual_pair *p ) {
+    if( p ) {
+        ritual_error( inst, "expected end of list" );
+    }
+}
+

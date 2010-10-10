@@ -141,4 +141,9 @@ void ritual_print_quote(
     struct ritual_flo *,
     void * );
 
+ritual_object_t *ritual_list_next( struct ritual_instance *,
+                                   struct ritual_pair ** );
+void ritual_list_assert_end( struct ritual_instance *,
+                             struct ritual_pair * );
+
 #endif

@@ -8,6 +8,8 @@
 
 #include "ritual_native_proc.h"
 
+#include "ritual_keyword.h"
+
 #include <string.h>
 #include <stdlib.h>
 
@@ -50,8 +52,10 @@ int ritual_initialize_instance( struct ritual_instance * inst ) {
             inst->scheme_ascii_char[i] = ritual_ascii_char_create( inst, i );
         }
 
-        ritual_define_native_proc( inst, inst->root, "define", rnp_define );
-        ritual_define_native_proc( inst, inst->root, "lambda", rnp_lambda );
+        ritual_define_keyword( inst, inst->root, "if", RKW_IF );
+
+        ritual_define_rnp_as_keyword( inst, inst->root, "define", rnp_define );
+        ritual_define_rnp_as_keyword( inst, inst->root, "lambda", rnp_lambda );
 
         return 0;
     } while(0);

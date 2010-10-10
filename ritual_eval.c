@@ -5,6 +5,8 @@
 #include "ritual_native_proc.h"
 #include "ritual_lambda.h"
 
+#include "ritual_keyword.h"
+
 ritual_object_t * ritual_eval( struct ritual_instance *inst,
                                struct ritual_env *env,
                                ritual_object_t *value ) {
@@ -60,6 +62,34 @@ ritual_object_t * ritual_eval( struct ritual_instance *inst,
                     ritual_object_t *proc = ritual_eval( inst, env, pair->car );
                     
                     switch( RITUAL_TYPE ( proc ) ) {
+                        case RTYPE_KEYWORD:
+                            {
+                                struct ritual_keyword *keyword = (struct ritual_keyword*) proc;
+                                if( keyword->rnp ) {
+                                    if( pair->cdr && RITUAL_TYPE( pair->cdr ) != RTYPE_PAIR ) {
+                                        ritual_error( inst, "must pass proper list as argument list" );
+                                    }
+                                    return keyword->rnp( inst, env, (struct ritual_pair*) pair->cdr );
+                                } else switch( keyword->value ) {
+                                    case RKW_IF:
+                                        {
+                                            ritual_list_next( inst, &pair );
+                                            ritual_object_t *condition = ritual_list_next( inst, &pair );
+                                            ritual_object_t *clause_true = ritual_list_next( inst, &pair );
+                                            ritual_object_t *clause_false = ritual_list_next( inst, &pair );
+                                            ritual_list_assert_end( inst, pair );
+                                            if( ritual_eval( inst, env, condition ) != inst->scheme_false ) {
+                                                value = clause_true;
+                                            } else {
+                                                value = clause_false;
+                                            }
+                                        }
+                                        break;
+                                    default:
+                                        ritual_error( inst, "unknown keyword" );
+                                }
+                                break;
+                            }
                         case RTYPE_LAMBDA_PROC:
                             {
                                 struct ritual_lambda_proc *lambda_proc = (struct ritual_lambda_proc*) proc;
@@ -91,6 +121,8 @@ ritual_object_t * ritual_eval( struct ritual_instance *inst,
                     }
                     break;
                 }
+            case RTYPE_KEYWORD:
+                ritual_error( inst, "syntax error; cannot evaluate keyword" );
             default:
                 ritual_error( inst, "evaluation of type \"%s\" not implemented", ritual_typename( value ) );
         }

@@ -42,6 +42,8 @@ const struct ritual_generic_functions ritual_genfun[ RTYPE_NUM_TYPES ] = {
     { ritual_print_quote,
       0 },
     { ritual_print_lambda_proc,
+      0 },
+    { 0, // keyword
       0 }
 };
 
