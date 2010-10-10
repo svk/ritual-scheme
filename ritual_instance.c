@@ -81,6 +81,9 @@ int ritual_initialize_instance( struct ritual_instance * inst ) {
 }
 
 void ritual_deinitialize_instance( struct ritual_instance *inst ) {
+    rht_table_destroy( inst->symbol_table );
+    free( inst->symbol_table );
+
     free( inst->error );
 
     rgc_deinitialize( inst, inst->gc );
