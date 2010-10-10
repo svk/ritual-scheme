@@ -30,6 +30,9 @@ ritual_object_t * ritual_alloc_object( struct ritual_instance *inst,
 void * ritual_alloc( struct ritual_instance *inst,
                      int sz ) {
     void *rv = malloc( sz );
+    if( rv ) {
+        inst->total_bytes_allocated += sz;
+    }
     return rv;
 }
 

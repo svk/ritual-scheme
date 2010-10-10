@@ -36,6 +36,7 @@ int main(int argc, char *argv[]) {
     flo_stdout = rflo_filehandle_create( stdout );
 
     ritual_define_native_proc( &scheme, scheme.root, "eq?", rnp_eqp );
+    ritual_define_native_proc( &scheme, scheme.root, "ritual-print-diagnostics", rnp_ritual_print_diagnostics );
 
     pctx_init( &my, &scheme );
     yylex_init( &my.scanner );

@@ -25,6 +25,9 @@ struct ritual_instance {
 
     // XXX hax: these being void* 
     void *scheme_true, *scheme_false;
+
+    // diagnostics
+    int total_bytes_allocated;
 };
 
 int ritual_initialize_instance( struct ritual_instance* );
