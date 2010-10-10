@@ -203,7 +203,7 @@ ritual_object_t *ritual_list_next( struct ritual_instance *inst,
         ritual_error( inst, "expected proper list" );
     }
     ritual_object_t *rv = (*list)->car;
-    *list = (*list)->cdr;
+    *list = rconvto_list( inst, (*list)->cdr );
     return rv;
 }
 void ritual_list_assert_end( struct ritual_instance *inst,

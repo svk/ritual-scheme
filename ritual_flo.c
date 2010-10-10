@@ -6,6 +6,10 @@
 
 #include <assert.h>
 
+
+#include "ritual_instance.h"
+#include "ritual_object.h"
+
 int rflo_filehandle_write( void *flo, const void *data, int len) {
     struct rflo_filehandle *floh = flo; 
     return fwrite( data, 1, len, floh->f );

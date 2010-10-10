@@ -813,7 +813,7 @@ YY_BREAK
 case 3:
 YY_RULE_SETUP
 #line 23 "ritual-r5rs.l"
-{ *yylval_param = (ritual_object_t*) ritual_native_int_create( INST, atoi( yytext ) );
+{ *yylval_param = (ritual_object_t*) ritual_string_to_number( INST, yytext );
                   return NUMBER; }
 YY_BREAK
 case 4:

@@ -5,6 +5,8 @@
 
 #include "ritual_env.h"
 
+#include "ritual_bignum.h"
+
 struct ritual_generic_functions {
         /* This is "write", not "display", confusingly (sorry!). */
     void (*print)( struct ritual_instance *,
@@ -48,7 +50,11 @@ const struct ritual_generic_functions ritual_genfun[ RTYPE_NUM_TYPES ] = {
     { 0, // keyword
       0 },
     { 0,
-      ritual_env_destroy }
+      ritual_env_destroy },
+    { ritual_print_big_int,
+      ritual_big_int_destroy },
+    { ritual_print_big_rational,
+      ritual_big_rational_destroy }
 };
 
 void ritual_print( struct ritual_instance *inst,

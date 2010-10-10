@@ -1,7 +1,7 @@
 BISONFLAGS=
 
 CC=gcc
-CFLAGS=-D_XOPEN_SOURCE=500 -std=c99 -Wall -g
+CFLAGS=-D_XOPEN_SOURCE=500 -std=c99 -Wall -g -IC:/Lib/GMP5/include -LC:/Lib/GMP5/Lib
 CCSYSTEM=$(shell $(CC) -dumpmachine)
 
 ifeq ($(CCSYSTEM), mingw32)
@@ -22,8 +22,8 @@ clean:
 	rm -f *.o
 	rm -f *.exe
 
-test_repl: lex.ritual-r5rs.o ritual-r5rs.tab.o parse_context.o test_repl.o ritual_generic.o ritual_basic_types.o ritual_object.o ritual_flo.o ritual_gc.o ritual_instance.o ritual_error.o ritual_env.o ritual_hash_table.o lookup3.o ritual_eval.o ritual_native_proc.o ritual_lambda.o ritual_keyword.o
-	gcc $(CFLAGS) $^ $(LIB_PTHREAD) -o $@
+test_repl: lex.ritual-r5rs.o ritual-r5rs.tab.o parse_context.o test_repl.o ritual_generic.o ritual_basic_types.o ritual_object.o ritual_flo.o ritual_gc.o ritual_instance.o ritual_error.o ritual_env.o ritual_hash_table.o lookup3.o ritual_eval.o ritual_native_proc.o ritual_lambda.o ritual_keyword.o ritual_bignum.o
+	gcc $(CFLAGS) $^ $(LIB_PTHREAD) -lgmp -o $@
 
 test_repl.o: test_repl.c lex.ritual-r5rs.c ritual-r5rs.tab.c
 

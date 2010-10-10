@@ -55,6 +55,8 @@ ritual_object_t * ritual_eval( struct ritual_instance *inst,
             case RTYPE_ASCII_CHAR:
             case RTYPE_VECTOR:
             case RTYPE_PORT:
+            case RTYPE_BIG_INTEGER:
+            case RTYPE_BIG_RATIONAL:
                 return value;
             case RTYPE_QUOTE:
                 {

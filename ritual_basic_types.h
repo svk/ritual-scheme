@@ -4,6 +4,12 @@
 #include "ritual_object.h"
 #include "ritual_flo.h"
 
+#include <limits.h>
+
+    // These could get unconventional if we use tagged pointers!
+#define NATIVE_INT_MIN (-0x7fffffff)
+#define NATIVE_INT_MAX ( 0x7fffffff)
+
 /* The _destroy() functions should be called by the GC.
  * Note that the presence of a GC means that no object
  * should assert ownership over any other -- "deep freeing"
@@ -11,10 +17,6 @@
  * cell is shallow. The final freeing of an object should
  * be done with ritual_free() to allow the GC to process
  * it. */
-
-/* Objects that don't need a destroy function have none
- * defined for now. That'd correspond to a null pointer
- * in a function pointer table eventually. */
 
 /* Next up:
  *   -if, as a "keyword" (not a native proc)

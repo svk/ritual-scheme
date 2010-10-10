@@ -93,7 +93,8 @@ void ritual_olist_push( struct ritual_instance *inst,
 }
 
 
-const char * ritual_typename( const ritual_object_t * object ) {
+const char * ritual_typename( const void* p) {
+    const ritual_object_t *object = (const ritual_object_t*) p;
     static const char typenames[RTYPE_NUM_TYPES][256] = {
         "(invalid - zero)",
         "empty list",
@@ -110,7 +111,9 @@ const char * ritual_typename( const ritual_object_t * object ) {
         "quote",
         "lambda procedure",
         "keyword",
-        "environment"
+        "environment",
+        "big integer",
+        "big rational"
     };
     static const char out_of_range[] = "(invalid - out of range)";
     int typeid = RITUAL_TYPE( object );

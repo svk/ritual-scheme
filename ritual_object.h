@@ -26,6 +26,8 @@ typedef enum ritual_type {
     RTYPE_LAMBDA_PROC,
     RTYPE_KEYWORD,
     RTYPE_ENVIRONMENT,
+    RTYPE_BIG_INTEGER,
+    RTYPE_BIG_RATIONAL,
     RTYPE_NUM_TYPES
 } ritual_type_t;
 
@@ -94,6 +96,6 @@ void ritual_olist_push( struct ritual_instance *,
                         struct ritual_onode **,
                         ritual_object_t * );
 
-const char * ritual_typename( const ritual_object_t * );
+const char * ritual_typename( const void * );
 
 #endif

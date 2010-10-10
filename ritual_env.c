@@ -2,6 +2,7 @@
 
 #include "ritual_object.h"
 
+#include "ritual_eval.h"
 #include "ritual_error.h"
 
 #include "ritual_basic_types.h"
@@ -79,8 +80,8 @@ struct ritual_env * ritual_let_env( struct ritual_instance *inst,
     ritual_env_init_sub( inst, rv, env );
 
     while( bindlist ) {
-        struct ritual_pair * symdeflist = ritual_list_next( inst, &bindlist );
-        struct ritual_symbol * sym = ritual_list_next( inst, &symdeflist );
+        struct ritual_pair * symdeflist = (struct ritual_pair*) ritual_list_next( inst, &bindlist );
+        struct ritual_symbol * sym = (struct ritual_symbol*) ritual_list_next( inst, &symdeflist );
         ritual_object_t * def = ritual_list_next( inst, &symdeflist );
         ritual_list_assert_end( inst, symdeflist );
         if( RITUAL_TYPE( sym ) != RTYPE_SYMBOL ) {
@@ -104,8 +105,8 @@ struct ritual_env * ritual_let_star_env( struct ritual_instance *inst,
     ritual_env_init_sub( inst, rv, env );
 
     while( bindlist ) {
-        struct ritual_pair * symdeflist = ritual_list_next( inst, &bindlist );
-        struct ritual_symbol * sym = ritual_list_next( inst, &symdeflist );
+        struct ritual_pair * symdeflist = (struct ritual_pair*) ritual_list_next( inst, &bindlist );
+        struct ritual_symbol * sym = (struct ritual_symbol*) ritual_list_next( inst, &symdeflist );
         ritual_object_t * def = ritual_list_next( inst, &symdeflist );
         ritual_list_assert_end( inst, symdeflist );
         if( RITUAL_TYPE( sym ) != RTYPE_SYMBOL ) {
@@ -123,4 +124,5 @@ struct ritual_env * ritual_letrec_env( struct ritual_instance *inst,
                                        struct ritual_env *env,
                                        struct ritual_pair *bindlist ) {
     ritual_error( inst, "letrec not yet implemented" );
+    return 0;
 }
