@@ -10,7 +10,7 @@ else
 LIB_PTHREAD=-lpthread
 endif
 
-all: test_parsing test_hash_table test_basic_types test_basic_types test_basic_types test_basic_types
+all: test_repl test_hash_table test_basic_types test_basic_types test_basic_types test_basic_types
 
 reflex:
 	rm -rf lex.ritual-r5rs.c ritual-r5rs.tab.c ritual-r5rs.tab.h lex.ritual-r5rs.h
@@ -24,10 +24,10 @@ clean:
 
 test_basic_types: test_basic_types.o ritual_generic.o ritual_basic_types.o ritual_object.o ritual_flo.o
 
-test_parsing: lex.ritual-r5rs.o ritual-r5rs.tab.o parse_context.o test_parsing.o ritual_generic.o ritual_basic_types.o ritual_object.o ritual_flo.o ritual_gc.o ritual_instance.o ritual_error.o ritual_env.o ritual_hash_table.o lookup3.o ritual_eval.o ritual_native_proc.o ritual_lambda.o
+test_repl: lex.ritual-r5rs.o ritual-r5rs.tab.o parse_context.o test_repl.o ritual_generic.o ritual_basic_types.o ritual_object.o ritual_flo.o ritual_gc.o ritual_instance.o ritual_error.o ritual_env.o ritual_hash_table.o lookup3.o ritual_eval.o ritual_native_proc.o ritual_lambda.o
 	gcc $(CFLAGS) $^ $(LIB_PTHREAD) -o $@
 
-test_parsing.o: test_parsing.c lex.ritual-r5rs.c ritual-r5rs.tab.c
+test_repl.o: test_repl.c lex.ritual-r5rs.c ritual-r5rs.tab.c
 
 lex.ritual-r5rs.c: ritual-r5rs.l ritual-r5rs.tab.c
 	flex --header-file=lex.ritual-r5rs.h -t ritual-r5rs.l > $@
