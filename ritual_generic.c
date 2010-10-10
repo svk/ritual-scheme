@@ -37,6 +37,8 @@ const struct ritual_generic_functions ritual_genfun[ RTYPE_NUM_TYPES ] = {
     { 0, // port
       0 },
     { ritual_print_native_proc, // native procedure
+      0 },
+    { ritual_print_quote,
       0 }
 };
 

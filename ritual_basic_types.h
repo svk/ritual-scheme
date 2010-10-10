@@ -16,6 +16,11 @@
  * defined for now. That'd correspond to a null pointer
  * in a function pointer table eventually. */
 
+struct ritual_quote {
+    ritual_object_t header;
+    ritual_object_t *quoted;
+};
+
 struct ritual_pair {
     ritual_object_t header;
     ritual_object_t *car;
@@ -48,6 +53,9 @@ struct ritual_boolean {
     uint8_t value; // nonzero?
 };
 
+struct ritual_quote * ritual_quote_create(
+    struct ritual_instance *,
+    ritual_object_t * );
 struct ritual_pair * ritual_pair_create(
     struct ritual_instance *,
     ritual_object_t *,
@@ -93,6 +101,10 @@ void ritual_print_ascii_char(
     struct ritual_flo *,
     void * );
 void ritual_print_symbol(
+    struct ritual_instance *,
+    struct ritual_flo *,
+    void * );
+void ritual_print_quote(
     struct ritual_instance *,
     struct ritual_flo *,
     void * );

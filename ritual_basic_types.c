@@ -10,8 +10,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-/* TODO: out of memory conditions are obvious candidates for
- *       ritual_error to longjmp to somewhere. */
+struct ritual_quote * ritual_quote_create( struct ritual_instance *inst,
+                                           ritual_object_t *quoted ) {
+    struct ritual_quote *rv;
+    rv = ritual_alloc_typed_object( inst, RTYPE_QUOTE, sizeof *rv );
+    RITUAL_ASSERT( inst, rv, "object allocation failure should not return" ); 
+    rv->quoted = quoted;
+    return rv;
+}
+
 
 struct ritual_pair * ritual_pair_create( struct ritual_instance *inst,
                                          ritual_object_t *car,
@@ -77,6 +84,14 @@ struct ritual_boolean * ritual_boolean_create( struct ritual_instance *inst,
 void ritual_print_null( struct ritual_instance *inst,
                         struct ritual_flo *flo, void *null ) {
     rflo_putstring( flo, "()" );
+}
+
+void ritual_print_quote( struct ritual_instance *inst,
+                         struct ritual_flo *flo,
+                         void *obj ) {
+    struct ritual_quote *quote = obj;
+    rflo_putchar( flo,  '\'' );
+    ritual_print( inst, flo, quote->quoted );
 }
 
 void ritual_print_pair( struct ritual_instance *inst,
