@@ -20,6 +20,7 @@
 struct ritual_gc_instance;
 struct ritual_error_instance;
 struct ritual_env;
+struct ritual_flo;
 
 struct ritual_instance {
     struct ritual_gc_instance *gc;
@@ -32,6 +33,11 @@ struct ritual_instance {
     // XXX hax: these being void* 
     void *scheme_true, *scheme_false;
     void *scheme_ascii_char[256];
+
+
+    // handy for debugging
+    struct ritual_flo * flo_stdout;
+    struct ritual_flo * flo_stderr;
 
     // diagnostics
     int total_bytes_allocated;

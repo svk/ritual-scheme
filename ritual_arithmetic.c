@@ -149,14 +149,13 @@ ritual_object_t* rnum_native_int_simple_add(
         struct ritual_pair *list ) {
     RNUM_ARITHMETIC_BEGIN
         RNUM_CASE_NATIVE_INTEGER_AS(nint) {
-            int64_t sum = *acc + nint->value;
+            int64_t sum = ((int64_t)*acc) + ((int64_t)nint->value);
             int32_t value = (int32_t) sum;
             if( value == sum ) {
                 *acc = value;
             } else {
                 mpz_t bigint;
-                mpz_init_set_si( bigint, sum );
-                ritual_list_next( inst, &list );
+                mpz_init_set_si( bigint, *acc );
                 return rnum_mpz_simple_add( inst, env, &bigint, list );
             }
         } RNUM_CASE_END
@@ -254,14 +253,13 @@ ritual_object_t* rnum_native_int_simple_sub(
         struct ritual_pair *list ) {
     RNUM_ARITHMETIC_BEGIN
         RNUM_CASE_NATIVE_INTEGER_AS(nint) {
-            int64_t sum = *acc - nint->value;
-            int32_t value = (int32_t) sum;
-            if( value == sum ) {
+            int64_t diff = ((int64_t)*acc) -((int64_t)nint->value);
+            int32_t value = (int32_t) diff;
+            if( value == diff ) {
                 *acc = value;
             } else {
                 mpz_t bigint;
-                mpz_init_set_si( bigint, sum );
-                ritual_list_next( inst, &list );
+                mpz_init_set_si( bigint, *acc );
                 return rnum_mpz_simple_sub( inst, env, &bigint, list );
             }
         } RNUM_CASE_END
@@ -388,14 +386,16 @@ ritual_object_t* rnum_native_int_simple_mul(
         struct ritual_pair *list ) {
     RNUM_ARITHMETIC_BEGIN
         RNUM_CASE_NATIVE_INTEGER_AS(nint) {
-            int64_t sum = *acc * nint->value;
-            int32_t value = (int32_t) sum; // verify: is this test still safe?
-            if( value == sum ) {
+            int64_t prod = ((int64_t)*acc) * ((int64_t)nint->value);
+            int32_t value = (int32_t) prod; // verify: is this test still safe?
+            fprintf( stderr, "%d * %d is %lld, guessing %d\n", *acc, nint->value, prod, value );
+            if( 0 && prod == (int64_t) value) {
+                fprintf( stderr, "guess accepted\n" );
                 *acc = value;
             } else {
                 mpz_t bigint;
-                mpz_init_set_si( bigint, sum );
-                ritual_list_next( inst, &list );
+                mpz_init_set_si( bigint, *acc );
+                fprintf( stderr, "guess denied\n" );
                 return rnum_mpz_simple_mul( inst, env, &bigint, list );
             }
         } RNUM_CASE_END
@@ -403,6 +403,7 @@ ritual_object_t* rnum_native_int_simple_mul(
         case RTYPE_BIG_INTEGER: {
             mpz_t bigint;
             mpz_init_set_si( bigint, *acc );
+            fprintf( stderr, "need conversion!" );
             return rnum_mpz_simple_mul( inst, env, &bigint, list );
         }
 
@@ -421,6 +422,8 @@ ritual_object_t* rnp_mul( struct ritual_instance* inst,
                           struct ritual_env* env,
                           struct ritual_pair * list ) {
     int32_t value = 1;
+    fprintf( stderr, "performing multiplication:\n" );
+    ritual_print( inst->flo_stderr, inst->scheme_true );
     return rnum_native_int_simple_mul( inst, env, &value, list );
 }
 

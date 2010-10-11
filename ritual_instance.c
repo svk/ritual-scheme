@@ -12,8 +12,12 @@
 
 #include "ritual_arithmetic.h"
 
+#include "ritual_flo.h"
+
 #include <string.h>
 #include <stdlib.h>
+
+#include <stdio.h>
 
 /* These use normal malloc/free; since they allocate the context
  * within other memory will operate that's natural. */
@@ -83,6 +87,11 @@ int ritual_initialize_instance( struct ritual_instance * inst ) {
         ritual_define_native_proc( inst, inst->root, "vector?", rnp_vectorp );
         ritual_define_native_proc( inst, inst->root, "pair?", rnp_pairp );
 
+        inst->flo_stdout = (void*) rflo_filehandle_create( inst, stdout );
+        inst->flo_stderr = (void*) rflo_filehandle_create( inst, stderr );
+
+        ritual_print( inst->flo_stderr, inst->scheme_true );
+
         return 0;
     } while(0);
     if( inst->gc ) {
@@ -105,6 +114,9 @@ void ritual_deinitialize_instance( struct ritual_instance *inst ) {
     free( inst->symbol_table );
 
     free( inst->error );
+
+    rflo_filehandle_destroy( inst, (void*) inst->flo_stdout );
+    rflo_filehandle_destroy( inst, (void*) inst->flo_stderr );
 
     rgc_deinitialize( inst, inst->gc );
     free( inst->gc );
