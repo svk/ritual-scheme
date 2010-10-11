@@ -10,19 +10,6 @@
 #include <gmp.h>
 #include <stdint.h>
 
-    /* How can this be factored so that it's more tolerable to write
-     * and maintain more arithmetic code? (Not just *-/, but also
-     * the comparison functions.)
-     *   - the simplest thing to factor out is the
-     *     "downgrade if possible" part at the end of each
-     *     simple add; it has nothing whatsoever to do with
-     *     addition.
-     *   - the loop structure is equal and is likely to be
-     *     equal for naïve implementations of any operation.
-     *     I think this is a rare case where a monster macro
-     *     might actually improve read- and maintainability.
-     */
-
     /* In retrospect, "simple add" is a bit of an ironic name for this
      * class of functions. (The intention was simple as opposed to
      * complex (but not real, since that means something entirely
