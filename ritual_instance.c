@@ -69,6 +69,8 @@ int ritual_initialize_instance( struct ritual_instance * inst ) {
         ritual_define_native_proc( inst, inst->root, "-", rnp_sub );
         ritual_define_native_proc( inst, inst->root, "*", rnp_mul );
 
+        ritual_define_native_proc( inst, inst->root, "=", rnp_number_eqp );
+
         return 0;
     } while(0);
     if( inst->gc ) {
