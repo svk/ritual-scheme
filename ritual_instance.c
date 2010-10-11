@@ -71,6 +71,18 @@ int ritual_initialize_instance( struct ritual_instance * inst ) {
 
         ritual_define_native_proc( inst, inst->root, "=", rnp_number_eqp );
 
+        ritual_define_native_proc( inst, inst->root, "zero?", rnp_zerop );
+
+        ritual_define_native_proc( inst, inst->root, "boolean?", rnp_booleanp );
+        ritual_define_native_proc( inst, inst->root, "symbol?", rnp_symbolp );
+        ritual_define_native_proc( inst, inst->root, "number?", rnp_numberp );
+        ritual_define_native_proc( inst, inst->root, "char?", rnp_charp );
+        ritual_define_native_proc( inst, inst->root, "string?", rnp_stringp );
+        ritual_define_native_proc( inst, inst->root, "procedure?", rnp_procedurep );
+        ritual_define_native_proc( inst, inst->root, "port?", rnp_portp );
+        ritual_define_native_proc( inst, inst->root, "vector?", rnp_vectorp );
+        ritual_define_native_proc( inst, inst->root, "pair?", rnp_pairp );
+
         return 0;
     } while(0);
     if( inst->gc ) {

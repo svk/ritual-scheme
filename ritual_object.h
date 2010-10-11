@@ -8,6 +8,7 @@
 
 /* Keep in sync with:
  *      - ritual_genfun[] in ritual_generic.c
+ *      - ritual_typepred[] in ritual_object.c
  *      - ritual_typename() in ritual_object.c */
 typedef enum ritual_type {
     RTYPE_INVALID = 0,
@@ -30,6 +31,19 @@ typedef enum ritual_type {
     RTYPE_BIG_RATIONAL,
     RTYPE_NUM_TYPES
 } ritual_type_t;
+
+enum {
+    RTYPEPRED_NONE = 0,
+    RTYPEPRED_BOOLEAN,
+    RTYPEPRED_PAIR,
+    RTYPEPRED_SYMBOL,
+    RTYPEPRED_NUMBER,
+    RTYPEPRED_CHAR,
+    RTYPEPRED_STRING,
+    RTYPEPRED_VECTOR,
+    RTYPEPRED_PORT,
+    RTYPEPRED_PROCEDURE
+};
 
 struct ritual_object {
     ritual_type_t type;
@@ -97,5 +111,10 @@ void ritual_olist_push( struct ritual_instance *,
                         ritual_object_t * );
 
 const char * ritual_typename( const void * );
+
+ritual_object_t * ritual_object_satisfies_typepred(
+        struct ritual_instance *,
+        ritual_object_t *,
+        int);
 
 #endif

@@ -566,3 +566,14 @@ ritual_object_t* rnp_number_eqp( struct ritual_instance* inst,
     }
 }
 
+ritual_object_t* rnp_zerop( struct ritual_instance *inst,
+                            struct ritual_env *env,
+                            struct ritual_pair *list ) {
+    struct ritual_pair *evald = ritual_mapeval( inst, env, list );
+    ritual_object_t *second = ritual_list_peek( inst, evald );
+    if( !second ) {
+        ritual_error( inst, "comparison to nothing" );
+    }
+    int32_t zeroval = 0;
+    return rnum_native_int_simple_eqp( inst, env, &zeroval, evald );
+}

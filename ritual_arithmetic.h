@@ -18,4 +18,8 @@ ritual_object_t* rnp_number_eqp( struct ritual_instance*,
                                  struct ritual_pair * );
 
 
+ritual_object_t* rnp_zerop( struct ritual_instance*,
+                            struct ritual_env*,
+                            struct ritual_pair* );
+
 #endif

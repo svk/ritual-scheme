@@ -56,6 +56,34 @@ ritual_object_t * rnp_eqp( struct ritual_instance *,
                            struct ritual_env *,
                            struct ritual_pair * );
 
+ritual_object_t * rnp_booleanp( struct ritual_instance *,
+                               struct ritual_env *,
+                               struct ritual_pair * );
+ritual_object_t * rnp_pairp( struct ritual_instance *,
+                             struct ritual_env *,
+                             struct ritual_pair * );
+ritual_object_t * rnp_symbolp( struct ritual_instance *,
+                               struct ritual_env *,
+                               struct ritual_pair * );
+ritual_object_t * rnp_numberp( struct ritual_instance *,
+                               struct ritual_env *,
+                               struct ritual_pair * );
+ritual_object_t * rnp_charp( struct ritual_instance *,
+                             struct ritual_env *,
+                             struct ritual_pair * );
+ritual_object_t * rnp_stringp( struct ritual_instance *,
+                               struct ritual_env *,
+                               struct ritual_pair * );
+ritual_object_t * rnp_vectorp( struct ritual_instance *,
+                               struct ritual_env *,
+                               struct ritual_pair * );
+ritual_object_t * rnp_portp( struct ritual_instance *,
+                               struct ritual_env *,
+                               struct ritual_pair * );
+ritual_object_t * rnp_procedurep( struct ritual_instance *,
+                                  struct ritual_env *,
+                                  struct ritual_pair * );
+
 ritual_object_t * rnp_ritual_print_diagnostics( struct ritual_instance *,
                                                 struct ritual_env *,
                                                 struct ritual_pair * );

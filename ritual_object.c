@@ -12,6 +12,37 @@
 
 #include <assert.h>
 
+int ritual_typepred[RTYPE_NUM_TYPES] = {
+    RTYPEPRED_NONE,
+    RTYPEPRED_NONE,
+    RTYPEPRED_PAIR,
+    RTYPEPRED_SYMBOL,
+    RTYPEPRED_PROCEDURE,
+    RTYPEPRED_BOOLEAN,
+    RTYPEPRED_NUMBER,
+    RTYPEPRED_CHAR,
+    RTYPEPRED_STRING,
+    RTYPEPRED_VECTOR,
+    RTYPEPRED_PORT,
+    RTYPEPRED_PROCEDURE,
+    RTYPEPRED_NONE, // quote -- ?
+    RTYPEPRED_PROCEDURE,
+    RTYPEPRED_NONE, // keyword
+    RTYPEPRED_NONE, // environment
+    RTYPEPRED_NUMBER,
+    RTYPEPRED_NUMBER
+};
+
+ritual_object_t * ritual_object_satisfies_typepred(
+        struct ritual_instance *inst,
+        ritual_object_t *object,
+        int predicate ) {
+    if( ritual_typepred[ RITUAL_TYPE( object ) ] == predicate ) {
+        return inst->scheme_true;
+    }
+    return inst->scheme_false;
+}
+
 /* Current GC: a very naïve implementation of tricolour
  * marking. We keep a linked list of ALL OBJECTS;
  * very wasteful.

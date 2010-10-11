@@ -106,6 +106,7 @@ ritual_object_t * rnp_lambda( struct ritual_instance *inst,
         args->car,
         (struct ritual_pair*) args->cdr );
 }
+
 ritual_object_t * rnp_ritual_get_typename( struct ritual_instance *inst,
                                            struct ritual_env *env,
                                            struct ritual_pair *list ) {
@@ -115,3 +116,59 @@ ritual_object_t * rnp_ritual_get_typename( struct ritual_instance *inst,
     return (ritual_object_t*) ritual_ascii_string_create( inst, ritual_typename( obj ) );
 }
 
+ritual_object_t * rnp_procedurep( struct ritual_instance *inst, struct ritual_env *env, struct ritual_pair *list ) {
+    ritual_object_t * val = ritual_eval( inst, env, ritual_list_next( inst, &list ) );
+    return ritual_object_satisfies_typepred( inst,
+            val,
+            RTYPEPRED_PROCEDURE );
+}
+
+ritual_object_t * rnp_portp( struct ritual_instance *inst, struct ritual_env *env, struct ritual_pair *list ) {
+    ritual_object_t * val = ritual_eval( inst, env, ritual_list_next( inst, &list ) );
+    return ritual_object_satisfies_typepred( inst,
+            val,
+            RTYPEPRED_PORT );
+}
+
+ritual_object_t * rnp_vectorp( struct ritual_instance *inst, struct ritual_env *env, struct ritual_pair *list ) {
+    ritual_object_t * val = ritual_eval( inst, env, ritual_list_next( inst, &list ) );
+    return ritual_object_satisfies_typepred( inst,
+            val,
+            RTYPEPRED_VECTOR );
+}
+ritual_object_t * rnp_stringp( struct ritual_instance *inst, struct ritual_env *env, struct ritual_pair *list ) {
+    ritual_object_t * val = ritual_eval( inst, env, ritual_list_next( inst, &list ) );
+    return ritual_object_satisfies_typepred( inst,
+            val,
+            RTYPEPRED_STRING );
+}
+ritual_object_t * rnp_charp( struct ritual_instance *inst, struct ritual_env *env, struct ritual_pair *list ) {
+    ritual_object_t * val = ritual_eval( inst, env, ritual_list_next( inst, &list ) );
+    return ritual_object_satisfies_typepred( inst,
+            val,
+            RTYPEPRED_CHAR );
+}
+ritual_object_t * rnp_numberp( struct ritual_instance *inst, struct ritual_env *env, struct ritual_pair *list ) {
+    ritual_object_t * val = ritual_eval( inst, env, ritual_list_next( inst, &list ) );
+    return ritual_object_satisfies_typepred( inst,
+            val,
+            RTYPEPRED_NUMBER );
+}
+ritual_object_t * rnp_symbolp( struct ritual_instance *inst, struct ritual_env *env, struct ritual_pair *list ) {
+    ritual_object_t * val = ritual_eval( inst, env, ritual_list_next( inst, &list ) );
+    return ritual_object_satisfies_typepred( inst,
+            val,
+            RTYPEPRED_SYMBOL );
+}
+ritual_object_t * rnp_pairp( struct ritual_instance *inst, struct ritual_env *env, struct ritual_pair *list ) {
+    ritual_object_t * val = ritual_eval( inst, env, ritual_list_next( inst, &list ) );
+    return ritual_object_satisfies_typepred( inst,
+            val,
+            RTYPEPRED_PAIR );
+}
+ritual_object_t * rnp_booleanp( struct ritual_instance *inst, struct ritual_env *env, struct ritual_pair *list ) {
+    ritual_object_t * val = ritual_eval( inst, env, ritual_list_next( inst, &list ) );
+    return ritual_object_satisfies_typepred( inst,
+            val,
+            RTYPEPRED_BOOLEAN );
+}
