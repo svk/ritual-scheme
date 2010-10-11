@@ -66,6 +66,8 @@ int ritual_initialize_instance( struct ritual_instance * inst ) {
         ritual_define_rnp_as_keyword( inst, inst->root, "lambda", rnp_lambda );
 
         ritual_define_native_proc( inst, inst->root, "+", rnp_add );
+        ritual_define_native_proc( inst, inst->root, "-", rnp_sub );
+        ritual_define_native_proc( inst, inst->root, "*", rnp_mul );
 
         return 0;
     } while(0);
