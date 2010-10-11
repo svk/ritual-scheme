@@ -4,6 +4,7 @@
 #include "ritual_bignum.h"
 
 
+#include "ritual_generic.h"
 #include "ritual_error.h"
 #include "ritual_eval.h"
 
@@ -422,8 +423,9 @@ ritual_object_t* rnp_mul( struct ritual_instance* inst,
                           struct ritual_env* env,
                           struct ritual_pair * list ) {
     int32_t value = 1;
-    fprintf( stderr, "performing multiplication:\n" );
-    ritual_print( inst->flo_stderr, inst->scheme_true );
+    fprintf( stderr, "performing multiplication: " );
+    ritual_print( inst, inst->flo_stderr, list );
+    fprintf( stderr, "\n" );
     return rnum_native_int_simple_mul( inst, env, &value, list );
 }
 

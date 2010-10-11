@@ -12,6 +12,7 @@
 
 #include "ritual_arithmetic.h"
 
+#include "ritual_generic.h"
 #include "ritual_flo.h"
 
 #include <string.h>
@@ -89,8 +90,6 @@ int ritual_initialize_instance( struct ritual_instance * inst ) {
 
         inst->flo_stdout = (void*) rflo_filehandle_create( inst, stdout );
         inst->flo_stderr = (void*) rflo_filehandle_create( inst, stderr );
-
-        ritual_print( inst->flo_stderr, inst->scheme_true );
 
         return 0;
     } while(0);
