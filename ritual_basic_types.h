@@ -142,6 +142,10 @@ void ritual_print_quote(
     struct ritual_instance *,
     struct ritual_flo *,
     void * );
+void ritual_print_double(
+    struct ritual_instance *,
+    struct ritual_flo *,
+    void * );
 
 
 
