@@ -60,6 +60,11 @@ ritual_object_t * rnp_ritual_print_diagnostics( struct ritual_instance *,
                                                 struct ritual_env *,
                                                 struct ritual_pair * );
 
+ritual_object_t * rnp_ritual_get_typename( struct ritual_instance *,
+                                           struct ritual_env *,
+                                           struct ritual_pair * );
+
+
     /* Shocker: the Scheme keywords (lambda, define, and so on)
      * are supposed to be redefinable. This means that they're not so
      * much keywords that should be understood as tokens on the bison/flex

@@ -106,4 +106,12 @@ ritual_object_t * rnp_lambda( struct ritual_instance *inst,
         args->car,
         (struct ritual_pair*) args->cdr );
 }
+ritual_object_t * rnp_ritual_get_typename( struct ritual_instance *inst,
+                                           struct ritual_env *env,
+                                           struct ritual_pair *list ) {
+    ritual_object_t * obj = ritual_eval( inst, env, 
+                                         ritual_list_next( inst, &list ) );
+    ritual_list_assert_end( inst, list );
+    return (ritual_object_t*) ritual_ascii_string_create( inst, ritual_typename( obj ) );
+}
 

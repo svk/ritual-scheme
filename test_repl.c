@@ -37,6 +37,7 @@ int main(int argc, char *argv[]) {
 
     ritual_define_native_proc( &scheme, scheme.root, "eq?", rnp_eqp );
     ritual_define_native_proc( &scheme, scheme.root, "ritual-print-diagnostics", rnp_ritual_print_diagnostics );
+    ritual_define_native_proc( &scheme, scheme.root, "ritual-typename", rnp_ritual_get_typename );
 
     pctx_init( &my, &scheme );
     yylex_init( &my.scanner );
