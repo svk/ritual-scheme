@@ -150,12 +150,12 @@ ritual_object_t* rnum_native_int_simple_add(
                 struct ritual_native_int * nint = rconvto_native_int( inst, next );
                 int64_t sum = *acc + nint->value;
                 int32_t value = (int32_t) sum;
-                ritual_list_next( inst, &list );
                 if( value == sum ) {
                     *acc = value;
                 } else {
                     mpz_t bigint;
                     mpz_init_set_si( bigint, sum );
+                    ritual_list_next( inst, &list );
                     return rnum_mpz_simple_add( inst, env, &bigint, list );
                 }
                 break;
