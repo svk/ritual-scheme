@@ -3,4 +3,9 @@
 
 #include "ritual_native_proc.h"
 
+ritual_object_t* rnp_add( struct ritual_instance*,
+                          struct ritual_env*,
+                          struct ritual_pair * );
+
+
 #endif

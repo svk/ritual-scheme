@@ -194,6 +194,18 @@ void ritual_print_boolean( struct ritual_instance *inst,
     }
 }
 
+ritual_object_t *ritual_list_peek( struct ritual_instance *inst,
+                                   struct ritual_pair * list ) {
+    if( !list ) {
+        ritual_error( inst, "premature end of list" );
+    }
+    if( RITUAL_TYPE( list ) != RTYPE_PAIR ) {
+        ritual_error( inst, "expected proper list" );
+    }
+    ritual_object_t *rv = list->car;
+    return rv;
+}
+
 ritual_object_t *ritual_list_next( struct ritual_instance *inst,
                                    struct ritual_pair ** list ) {
     if( !(*list) ) {
@@ -248,4 +260,20 @@ struct ritual_pair *rconvto_list( struct ritual_instance *inst,
 ritual_object_t * rconvfrom_list( struct ritual_instance *inst,
                                   struct ritual_pair *list ) {
     return (ritual_object_t*) list;
+}
+
+struct ritual_native_int *rconvto_native_int( struct ritual_instance *inst,
+                                  ritual_object_t *obj ) {
+    if( RITUAL_TYPE( obj ) != RTYPE_NATIVE_INTEGER ) {
+        ritual_error( inst, "expected native int, got \"%s\"", ritual_typename( obj ) );
+    }
+    return (struct ritual_native_int*) obj;
+}
+
+ritual_object_t * rconvfrom_native_int( struct ritual_instance *inst,
+                                        struct ritual_native_int *native_int ) {
+    if( !native_int ) {
+        ritual_error( inst, "expected native int, got null" );
+    }
+    return (ritual_object_t*) native_int;
 }

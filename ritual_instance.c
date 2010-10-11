@@ -10,6 +10,8 @@
 
 #include "ritual_keyword.h"
 
+#include "ritual_arithmetic.h"
+
 #include <string.h>
 #include <stdlib.h>
 
@@ -62,6 +64,8 @@ int ritual_initialize_instance( struct ritual_instance * inst ) {
 
         ritual_define_rnp_as_keyword( inst, inst->root, "define", rnp_define );
         ritual_define_rnp_as_keyword( inst, inst->root, "lambda", rnp_lambda );
+
+        ritual_define_native_proc( inst, inst->root, "+", rnp_add );
 
         return 0;
     } while(0);

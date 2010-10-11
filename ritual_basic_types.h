@@ -7,8 +7,8 @@
 #include <limits.h>
 
     // These could get unconventional if we use tagged pointers!
-#define NATIVE_INT_MIN (-0x7fffffff)
-#define NATIVE_INT_MAX ( 0x7fffffff)
+#define RITUAL_NATIVE_INT_MIN (-0x7fffffff)
+#define RITUAL_NATIVE_INT_MAX ( 0x7fffffff)
 
 /* The _destroy() functions should be called by the GC.
  * Note that the presence of a GC means that no object
@@ -149,6 +149,8 @@ void ritual_print_double(
 
 
 
+ritual_object_t *ritual_list_peek( struct ritual_instance *,
+                                   struct ritual_pair * );
 ritual_object_t *ritual_list_next( struct ritual_instance *,
                                    struct ritual_pair ** );
 void ritual_list_assert_end( struct ritual_instance *,
@@ -165,6 +167,9 @@ int ritual_list_has_cdr( struct ritual_instance *,
      * much better (code-wise) than macros. */
 struct ritual_pair *rconvto_pair( struct ritual_instance *, ritual_object_t* );
 ritual_object_t * rconvfrom_pair( struct ritual_instance *, struct ritual_pair * );
+
+struct ritual_native_int *rconvto_native_int( struct ritual_instance *, ritual_object_t* );
+ritual_object_t * rconvfrom_native_int( struct ritual_instance *, struct ritual_native_int * );
                                         
     // These are a special case for pairs; a list here is either null or a pair.
     // Doesn't check properness in any way.

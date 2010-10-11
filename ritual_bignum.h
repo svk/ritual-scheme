@@ -37,6 +37,9 @@ struct ritual_big_rational {
     mpq_t value;
 };
 
+struct ritual_big_int * ritual_big_int_create_copy( struct ritual_instance *, mpz_t* );
+struct ritual_big_rational * ritual_big_rational_create_copy( struct ritual_instance *, mpq_t* );
+
 struct ritual_big_int * ritual_big_int_create( struct ritual_instance *, mpz_t );
 struct ritual_big_int * ritual_big_int_create_decimal( struct ritual_instance *, const char* );
 void ritual_big_int_destroy( struct ritual_instance *, void* );
@@ -48,4 +51,9 @@ void ritual_print_big_rational( struct ritual_instance *, struct ritual_flo *, v
 
 ritual_object_t * ritual_string_to_number( struct ritual_instance *, const char * ); 
 
+struct ritual_big_int *rconvto_big_int( struct ritual_instance *, ritual_object_t* );
+ritual_object_t * rconvfrom_big_int( struct ritual_instance *, struct ritual_big_int * );
+
+struct ritual_big_rational *rconvto_big_rational( struct ritual_instance *, ritual_object_t* );
+ritual_object_t * rconvfrom_big_rational( struct ritual_instance *, struct ritual_big_rational * );
 #endif

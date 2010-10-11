@@ -10,6 +10,30 @@
 
 #include <string.h>
 
+struct ritual_big_rational * ritual_big_rational_create_copy( struct ritual_instance *inst, mpq_t* value ) {
+    struct ritual_big_rational *rv;
+    rv = ritual_alloc_typed_object( inst, RTYPE_BIG_INTEGER, sizeof *rv );
+    RITUAL_ASSERT( inst, rv, "object allocation failure should not return" ); 
+        // this is "risky" but should work -- the semantics that may
+        // be tricky to keep in mind are that the copied-from value
+        // should not now be freed, ever.
+        // also, technically not supported in the manual.
+    memcpy( &rv->value, value, sizeof rv->value );
+    return rv;
+}
+
+struct ritual_big_int * ritual_big_int_create_copy( struct ritual_instance *inst, mpz_t* value ) {
+    struct ritual_big_int *rv;
+    rv = ritual_alloc_typed_object( inst, RTYPE_BIG_INTEGER, sizeof *rv );
+    RITUAL_ASSERT( inst, rv, "object allocation failure should not return" ); 
+        // this is "risky" but should work -- the semantics that may
+        // be tricky to keep in mind are that the copied-from value
+        // should not now be freed, ever.
+        // also, technically not supported in the manual.
+    memcpy( &rv->value, value, sizeof rv->value );
+    return rv;
+}
+
 struct ritual_big_int * ritual_big_int_create( struct ritual_instance *inst, mpz_t value ) {
     struct ritual_big_int *rv;
     rv = ritual_alloc_typed_object( inst, RTYPE_BIG_INTEGER, sizeof *rv );
@@ -102,8 +126,8 @@ ritual_object_t * ritual_string_to_number( struct ritual_instance *inst, const c
             if( *endp != '\0' ) {
                 ritual_error( inst, "unable to parse integer \"%s\"", s );
             }
-            const long long int llimin = NATIVE_INT_MIN;
-            const long long int llimax = NATIVE_INT_MAX;
+            const long long int llimin = RITUAL_NATIVE_INT_MIN;
+            const long long int llimax = RITUAL_NATIVE_INT_MAX;
             if( lli < llimin || lli > llimax ) {
                 return (ritual_object_t*) ritual_big_int_create_decimal( inst, s );
             }
@@ -111,4 +135,36 @@ ritual_object_t * ritual_string_to_number( struct ritual_instance *inst, const c
             return (ritual_object_t*) ritual_native_int_create( inst, value );
         }
     }
+}
+
+struct ritual_big_int *rconvto_big_int( struct ritual_instance *inst,
+                                  ritual_object_t *obj ) {
+    if( RITUAL_TYPE( obj ) != RTYPE_BIG_INTEGER ) {
+        ritual_error( inst, "expected big int, got \"%s\"", ritual_typename( obj ) );
+    }
+    return (struct ritual_big_int*) obj;
+}
+
+ritual_object_t * rconvfrom_big_int( struct ritual_instance *inst,
+                                        struct ritual_big_int *big_int ) {
+    if( !big_int ) {
+        ritual_error( inst, "expected big int, got null" );
+    }
+    return (ritual_object_t*) big_int;
+}
+
+struct ritual_big_rational *rconvto_big_rational( struct ritual_instance *inst,
+                                  ritual_object_t *obj ) {
+    if( RITUAL_TYPE( obj ) != RTYPE_BIG_RATIONAL ) {
+        ritual_error( inst, "expected big rational, got \"%s\"", ritual_typename( obj ) );
+    }
+    return (struct ritual_big_rational*) obj;
+}
+
+ritual_object_t * rconvfrom_big_rational( struct ritual_instance *inst,
+                                        struct ritual_big_rational *big_rational ) {
+    if( !big_rational ) {
+        ritual_error( inst, "expected big rational, got null" );
+    }
+    return (ritual_object_t*) big_rational;
 }
