@@ -34,6 +34,7 @@ ritual_object_t * ritual_eval( struct ritual_instance *inst,
                 body = (struct ritual_pair*) body->cdr;
             }
             value = body->car;
+            body = 0;
         }
         /* The remaining is a tail call. If there is more to be
          * evaluated after this switch:
