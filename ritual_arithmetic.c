@@ -291,7 +291,7 @@ ritual_object_t* rnp_sub( struct ritual_instance* inst,
         int32_t value = 0;
         return rnum_native_int_simple_sub( inst, env, &value, list );
     }
-    ritual_object_t* first = ritual_list_next( inst, &list );
+    ritual_object_t* first = ritual_eval( inst, env, ritual_list_next( inst, &list ) );
     switch( RITUAL_TYPE( first ) ) {
         case RTYPE_NATIVE_INTEGER:
             {
