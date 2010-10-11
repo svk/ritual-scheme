@@ -389,14 +389,14 @@ ritual_object_t* rnum_native_int_simple_mul(
         RNUM_CASE_NATIVE_INTEGER_AS(nint) {
             int64_t prod = ((int64_t)*acc) * ((int64_t)nint->value);
             int32_t value = (int32_t) prod; // verify: is this test still safe?
-            fprintf( stderr, "%d * %d is %lld, guessing %d\n", *acc, nint->value, prod, value );
-            if( 0 && prod == (int64_t) value) {
-                fprintf( stderr, "guess accepted\n" );
+//            fprintf( stderr, "%d * %d is %lld, guessing %d\n", *acc, nint->value, prod, value );
+            if(  prod == (int64_t) value) {
+//                fprintf( stderr, "guess accepted\n" );
                 *acc = value;
             } else {
                 mpz_t bigint;
                 mpz_init_set_si( bigint, *acc );
-                fprintf( stderr, "guess denied\n" );
+//                fprintf( stderr, "guess denied\n" );
                 return rnum_mpz_simple_mul( inst, env, &bigint, list );
             }
         } RNUM_CASE_END
@@ -425,6 +425,8 @@ ritual_object_t* rnp_mul( struct ritual_instance* inst,
     int32_t value = 1;
     fprintf( stderr, "performing multiplication: " );
     ritual_print( inst, inst->flo_stderr, list );
+    fprintf(stderr, " where n is " );
+    ritual_print( inst, inst->flo_stderr, ritual_env_lookup( inst, env, "n" ) );
     fprintf( stderr, "\n" );
     return rnum_native_int_simple_mul( inst, env, &value, list );
 }
