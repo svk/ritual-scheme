@@ -16,8 +16,17 @@
      * complex (but not real, since that means something entirely
      * different in our scheme...)) */
 
+    /* Not sure wait-to-eval is ever going to be a useful optimization;
+     * you have to be absolutely sure that you're only going to need
+     * to evaluate something once. For arithmetic that's a hassle
+     * because we occasionally need to switch to a better type.
+     * What I should really do is implement a proper map(-eval), one
+     * that doesn't construct a whole list first.
+     */
+
 #define RNUM_ARITHMETIC_BEGIN \
     while( list ) { \
+        fprintf( stderr, "warning: RNUM_ARITHMETIC_BEGIN is deprecated for now (you probably want NOEVAL)\n"); \
         ritual_object_t * next = ritual_eval( inst, env, \
                                               ritual_list_peek(inst, list ) ); \
         switch( RITUAL_TYPE( next ) ) { \
@@ -90,7 +99,7 @@ ritual_object_t* rnum_mpq_simple_add(
     mpq_t tempq;
     mpq_init( tempq );
 
-    RNUM_ARITHMETIC_BEGIN
+    RNUM_ARITHMETIC_NOEVAL_BEGIN
 
         RNUM_CASE_NATIVE_INTEGER_AS(nint) {
             mpz_set_si( mpq_numref( tempq ), nint->value );
@@ -118,7 +127,7 @@ ritual_object_t* rnum_mpz_simple_add(
         struct ritual_env *env,
         mpz_t *acc,
         struct ritual_pair *list ) {
-    RNUM_ARITHMETIC_BEGIN
+    RNUM_ARITHMETIC_NOEVAL_BEGIN
         RNUM_CASE_NATIVE_INTEGER_AS(nint) {
             if( nint->value >= 0 ) {
                 mpz_add_ui( *acc, *acc, (unsigned long int) nint->value );
@@ -148,7 +157,7 @@ ritual_object_t* rnum_native_int_simple_add(
         struct ritual_env *env,
         int32_t *acc,
         struct ritual_pair *list ) {
-    RNUM_ARITHMETIC_BEGIN
+    RNUM_ARITHMETIC_NOEVAL_BEGIN
         RNUM_CASE_NATIVE_INTEGER_AS(nint) {
             int64_t sum = ((int64_t)*acc) + ((int64_t)nint->value);
             int32_t value = (int32_t) sum;
@@ -182,6 +191,7 @@ ritual_object_t* rnp_add( struct ritual_instance* inst,
                           struct ritual_env* env,
                           struct ritual_pair * list ) {
     int32_t value = 0;
+    list = ritual_mapeval( inst, env, list );
     return rnum_native_int_simple_add( inst, env, &value, list );
 }
 
@@ -194,7 +204,7 @@ ritual_object_t* rnum_mpq_simple_sub(
     mpq_t tempq;
     mpq_init( tempq );
 
-    RNUM_ARITHMETIC_BEGIN
+    RNUM_ARITHMETIC_NOEVAL_BEGIN
 
         RNUM_CASE_NATIVE_INTEGER_AS(nint) {
             mpz_set_si( mpq_numref( tempq ), nint->value );
@@ -222,7 +232,7 @@ ritual_object_t* rnum_mpz_simple_sub(
         struct ritual_env *env,
         mpz_t *acc,
         struct ritual_pair *list ) {
-    RNUM_ARITHMETIC_BEGIN
+    RNUM_ARITHMETIC_NOEVAL_BEGIN
         RNUM_CASE_NATIVE_INTEGER_AS(nint) {
             if( nint->value >= 0 ) {
                 mpz_sub_ui( *acc, *acc, (unsigned long int) nint->value );
@@ -252,7 +262,7 @@ ritual_object_t* rnum_native_int_simple_sub(
         struct ritual_env *env,
         int32_t *acc,
         struct ritual_pair *list ) {
-    RNUM_ARITHMETIC_BEGIN
+    RNUM_ARITHMETIC_NOEVAL_BEGIN
         RNUM_CASE_NATIVE_INTEGER_AS(nint) {
             int64_t diff = ((int64_t)*acc) -((int64_t)nint->value);
             int32_t value = (int32_t) diff;
@@ -285,12 +295,13 @@ ritual_object_t* rnum_native_int_simple_sub(
 ritual_object_t* rnp_sub( struct ritual_instance* inst,
                           struct ritual_env* env,
                           struct ritual_pair * list ) {
+    list = ritual_mapeval( inst, env, list );
     if( !ritual_list_has_cdr( inst, list ) ) {
         // (- x) is negation, not subtraction
         int32_t value = 0;
         return rnum_native_int_simple_sub( inst, env, &value, list );
     }
-    ritual_object_t* first = ritual_eval( inst, env, ritual_list_next( inst, &list ) );
+    ritual_object_t* first = ritual_list_next( inst, &list );
     switch( RITUAL_TYPE( first ) ) {
         case RTYPE_NATIVE_INTEGER:
             {
@@ -328,7 +339,7 @@ ritual_object_t* rnum_mpq_simple_mul(
     mpq_t tempq;
     mpq_init( tempq );
 
-    RNUM_ARITHMETIC_BEGIN
+    RNUM_ARITHMETIC_NOEVAL_BEGIN
 
         RNUM_CASE_NATIVE_INTEGER_AS(nint) {
             mpz_set_si( mpq_numref( tempq ), nint->value );
@@ -356,8 +367,7 @@ ritual_object_t* rnum_mpz_simple_mul(
         struct ritual_env *env,
         mpz_t *acc,
         struct ritual_pair *list ) {
-    ritual_print( inst, inst->flo_stderr, list );
-    RNUM_ARITHMETIC_BEGIN
+    RNUM_ARITHMETIC_NOEVAL_BEGIN
         RNUM_CASE_NATIVE_INTEGER_AS(nint) {
             mpz_mul_si( *acc, *acc, nint->value );
         } RNUM_CASE_END
@@ -383,7 +393,7 @@ ritual_object_t* rnum_native_int_simple_mul(
         struct ritual_env *env,
         int32_t *acc,
         struct ritual_pair *list ) {
-    RNUM_ARITHMETIC_BEGIN
+    RNUM_ARITHMETIC_NOEVAL_BEGIN
         RNUM_CASE_NATIVE_INTEGER_AS(nint) {
             int64_t prod = ((int64_t)*acc) * ((int64_t)nint->value);
             int32_t value = (int32_t) prod; // verify: is this test still safe?
@@ -417,6 +427,7 @@ ritual_object_t* rnp_mul( struct ritual_instance* inst,
                           struct ritual_env* env,
                           struct ritual_pair * list ) {
     int32_t value = 1;
+    list = ritual_mapeval( inst, env, list );
     return rnum_native_int_simple_mul( inst, env, &value, list );
 }
 

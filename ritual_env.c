@@ -52,7 +52,6 @@ void ritual_env_define( struct ritual_instance *inst,
                         struct ritual_env *env,
                         const char *name,
                         ritual_object_t * value ) {
-    fprintf( stderr, "set_str of %s in %p\n", name, env );
     rht_set_str( &env->table, name, value );
 }
 
