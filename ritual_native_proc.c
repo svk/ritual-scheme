@@ -14,6 +14,23 @@ void ritual_print_native_proc( struct ritual_instance *inst,
     rflo_putstring( flo, "#<native procedure>" );
 }
 
+struct ritual_easy_tail_proc * ritual_easy_tail_proc_create( struct ritual_instance *inst,
+                                                       ritual_native_procedure_t proc) {
+    struct ritual_easy_tail_proc *rv;
+    rv = ritual_alloc_typed_object( inst, RTYPE_EASY_TAIL_PROC, sizeof *rv );
+    RITUAL_ASSERT( inst, rv, "object allocation failure should not return" ); 
+    rv->procedure = proc;
+    return rv;
+}
+
+struct ritual_easy_proc * ritual_easy_proc_create( struct ritual_instance *inst,
+                                                       ritual_native_procedure_t proc) {
+    struct ritual_easy_proc *rv;
+    rv = ritual_alloc_typed_object( inst, RTYPE_EASY_PROC, sizeof *rv );
+    RITUAL_ASSERT( inst, rv, "object allocation failure should not return" ); 
+    rv->procedure = proc;
+    return rv;
+}
 struct ritual_native_proc * ritual_native_proc_create( struct ritual_instance *inst,
                                                        ritual_native_procedure_t proc) {
     struct ritual_native_proc *rv;
@@ -21,6 +38,25 @@ struct ritual_native_proc * ritual_native_proc_create( struct ritual_instance *i
     RITUAL_ASSERT( inst, rv, "object allocation failure should not return" ); 
     rv->procedure = proc;
     return rv;
+}
+
+void ritual_define_easy_tail_proc( struct ritual_instance * inst,
+                                   struct ritual_env * env,
+                                   const char * name,
+                                   ritual_native_procedure_t proc ) {
+    struct ritual_easy_tail_proc * pobj = ritual_easy_tail_proc_create( inst, proc );
+    RITUAL_ASSERT( inst, pobj, "object allocation failure should not return" ); 
+    ritual_env_define( inst, env, name, (ritual_object_t*) pobj );
+}
+
+
+void ritual_define_easy_proc( struct ritual_instance * inst,
+                                struct ritual_env * env,
+                                const char * name,
+                                ritual_native_procedure_t proc ) {
+    struct ritual_easy_proc * pobj = ritual_easy_proc_create( inst, proc );
+    RITUAL_ASSERT( inst, pobj, "object allocation failure should not return" ); 
+    ritual_env_define( inst, env, name, (ritual_object_t*) pobj );
 }
 
 void ritual_define_native_proc( struct ritual_instance * inst,

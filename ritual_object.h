@@ -9,7 +9,9 @@
 /* Keep in sync with:
  *      - ritual_genfun[] in ritual_generic.c
  *      - ritual_typepred[] in ritual_object.c
- *      - ritual_typename() in ritual_object.c */
+ *      - ritual_typename() in ritual_object.c
+ *      - ritual_eval(), even for self-evaluating types
+ */
 typedef enum ritual_type {
     RTYPE_INVALID = 0,
     RTYPE_NULL,
@@ -29,6 +31,8 @@ typedef enum ritual_type {
     RTYPE_ENVIRONMENT,
     RTYPE_BIG_INTEGER,
     RTYPE_BIG_RATIONAL,
+    RTYPE_EASY_PROC,
+    RTYPE_EASY_TAIL_PROC,
     RTYPE_NUM_TYPES
 } ritual_type_t;
 
@@ -116,5 +120,8 @@ ritual_object_t * ritual_object_satisfies_typepred(
         struct ritual_instance *,
         ritual_object_t *,
         int);
+
+    // A cast by any other name, but it fits with the proper style.
+ritual_object_t * rconvto_object( void* );
 
 #endif

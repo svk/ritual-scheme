@@ -67,6 +67,8 @@ ritual_object_t * ritual_eval( struct ritual_instance *inst,
             case RTYPE_PORT:
             case RTYPE_BIG_INTEGER:
             case RTYPE_BIG_RATIONAL:
+            case RTYPE_EASY_PROC:
+            case RTYPE_EASY_TAIL_PROC:
                 return value;
             case RTYPE_QUOTE:
                 {
@@ -188,6 +190,19 @@ ritual_object_t * ritual_eval( struct ritual_instance *inst,
                                                          lambda_proc->argsyms,
                                                          (struct ritual_pair*) pair->cdr );
                                 break;
+                            }
+                        case RTYPE_EASY_TAIL_PROC:
+                            {
+                                struct ritual_easy_tail_proc *easy_tail_proc = (struct ritual_easy_tail_proc*) proc;
+                                struct ritual_pair *arglist = rconvto_list( inst, pair->cdr );
+                                value = easy_tail_proc->procedure( inst, env, ritual_mapeval( inst, env, arglist ) );
+                                break;
+                            }
+                        case RTYPE_EASY_PROC:
+                            {
+                                struct ritual_easy_proc *easy_proc = (struct ritual_easy_proc*) proc;
+                                struct ritual_pair *arglist = rconvto_list( inst, pair->cdr );
+                                return easy_proc->procedure( inst, env, ritual_mapeval( inst, env, arglist ) );
                             }
                         case RTYPE_NATIVE_PROC:
                             {

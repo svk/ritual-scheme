@@ -30,7 +30,9 @@ int ritual_typepred[RTYPE_NUM_TYPES] = {
     RTYPEPRED_NONE, // keyword
     RTYPEPRED_NONE, // environment
     RTYPEPRED_NUMBER,
-    RTYPEPRED_NUMBER
+    RTYPEPRED_NUMBER,
+    RTYPEPRED_PROCEDURE,
+    RTYPEPRED_PROCEDURE
 };
 
 ritual_object_t * ritual_object_satisfies_typepred(
@@ -144,7 +146,9 @@ const char * ritual_typename( const void* p) {
         "keyword",
         "environment",
         "big integer",
-        "big rational"
+        "big rational",
+        "native procedure (easy)",
+        "native procedure (easy tail)"
     };
     static const char out_of_range[] = "(invalid - out of range)";
     int typeid = RITUAL_TYPE( object );
@@ -155,3 +159,6 @@ const char * ritual_typename( const void* p) {
 
 }
 
+ritual_object_t * rconvto_object( void*p ) {
+    return p;
+}

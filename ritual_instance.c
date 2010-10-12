@@ -15,6 +15,8 @@
 #include "ritual_generic.h"
 #include "ritual_flo.h"
 
+#include "ritual_basic_procs.h"
+
 #include <string.h>
 #include <stdlib.h>
 
@@ -87,6 +89,21 @@ int ritual_initialize_instance( struct ritual_instance * inst ) {
         ritual_define_native_proc( inst, inst->root, "port?", rnp_portp );
         ritual_define_native_proc( inst, inst->root, "vector?", rnp_vectorp );
         ritual_define_native_proc( inst, inst->root, "pair?", rnp_pairp );
+
+        ritual_define_easy_proc( inst, inst->root, "list", rep_list );
+        ritual_define_easy_proc( inst, inst->root, "cons", rep_cons );
+        ritual_define_easy_proc( inst, inst->root, "car", rep_car );
+        ritual_define_easy_proc( inst, inst->root, "cdr", rep_cdr );
+        ritual_define_easy_proc( inst, inst->root, "append", rep_append );
+        ritual_define_easy_proc( inst, inst->root, "length", rep_length );
+        ritual_define_easy_proc( inst, inst->root, "null?", rep_nullp );
+        ritual_define_easy_proc( inst, inst->root, "not", rep_not );
+
+        ritual_define_easy_proc( inst, inst->root, "map", rep_map );
+        ritual_define_easy_proc( inst, inst->root, "filter", rep_map );
+        ritual_define_easy_proc( inst, inst->root, "compose", rep_compose ); // is this not standard!?
+
+        ritual_define_easy_tail_proc( inst, inst->root, "apply", retp_apply );
 
         inst->flo_stdout = (void*) rflo_filehandle_create( inst, stdout );
         inst->flo_stderr = (void*) rflo_filehandle_create( inst, stderr );

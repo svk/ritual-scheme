@@ -32,9 +32,37 @@ struct ritual_native_proc {
     ritual_native_procedure_t procedure;
 };
 
+struct ritual_easy_proc {
+    ritual_object_t header;
+    ritual_native_procedure_t procedure;
+};
+
+struct ritual_easy_tail_proc {
+    ritual_object_t header;
+    ritual_native_procedure_t procedure;
+};
+
 struct ritual_native_proc * ritual_native_proc_create(
     struct ritual_instance *,
     ritual_native_procedure_t);
+
+struct ritual_easy_proc * ritual_easy_proc_create(
+    struct ritual_instance *,
+    ritual_native_procedure_t);
+
+struct ritual_easy_tail_proc * ritual_easy_tail_proc_create(
+    struct ritual_instance *,
+    ritual_native_procedure_t);
+
+void ritual_define_easy_proc( struct ritual_instance *,
+                                struct ritual_env *,
+                                const char *,
+                                ritual_native_procedure_t);
+
+void ritual_define_easy_tail_proc( struct ritual_instance *,
+                                   struct ritual_env *,
+                                   const char *,
+                                   ritual_native_procedure_t);
 
 void ritual_define_native_proc( struct ritual_instance *,
                                 struct ritual_env *,

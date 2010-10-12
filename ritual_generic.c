@@ -54,7 +54,11 @@ const struct ritual_generic_functions ritual_genfun[ RTYPE_NUM_TYPES ] = {
     { ritual_print_big_int,
       ritual_big_int_destroy },
     { ritual_print_big_rational,
-      ritual_big_rational_destroy }
+      ritual_big_rational_destroy },
+    { ritual_print_native_proc, // "easy" native procedure
+      0 },
+    { ritual_print_native_proc, // "easy tail" native procedure
+      0 }
 };
 
 void ritual_print( struct ritual_instance *inst,
