@@ -6,6 +6,8 @@
 #include "ritual_instance.h"
 #include "ritual_basic_types.h"
 
+#include "ritual_generic.h"
+
 
 ritual_object_t * ritual_apply_proc( struct ritual_instance *,
                                      struct ritual_env *,

@@ -88,6 +88,10 @@ ritual_object_t * rnp_ritual_print_diagnostics( struct ritual_instance *,
                                                 struct ritual_env *,
                                                 struct ritual_pair * );
 
+ritual_object_t * rnp_ritual_trace( struct ritual_instance *,
+                                    struct ritual_env *,
+                                    struct ritual_pair * );
+
 ritual_object_t * rnp_ritual_get_typename( struct ritual_instance *,
                                            struct ritual_env *,
                                            struct ritual_pair * );

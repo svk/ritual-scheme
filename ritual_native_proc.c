@@ -4,6 +4,8 @@
 #include "ritual_eval.h"
 #include "ritual_error.h"
 
+
+#include "ritual_generic.h"
 #include "ritual_lambda.h"
 
 void ritual_print_native_proc( struct ritual_instance *inst,
@@ -49,6 +51,19 @@ ritual_object_t * rnp_eqp( struct ritual_instance *inst,
         return inst->scheme_false;
     }
 }
+
+ritual_object_t * rnp_ritual_trace( struct ritual_instance *inst,
+                                                struct ritual_env *env,
+                                                struct ritual_pair * args ) {
+    fprintf(stderr, "trace environment is %p\n", env );
+    while( args ) {
+        ritual_object_t *obj = ritual_eval( inst, env, ritual_list_next( inst, &args ) );
+        ritual_print( inst, inst->flo_stderr, obj );
+    }
+    fprintf(stderr, "\n" );
+    return 0;
+}
+
 
 ritual_object_t * rnp_ritual_print_diagnostics( struct ritual_instance *inst,
                                                 struct ritual_env *env,

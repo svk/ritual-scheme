@@ -43,6 +43,7 @@ struct ritual_env * ritual_lambda_env( struct ritual_instance * inst,
                     RITUAL_ASSERT( inst, RITUAL_TYPE( currentpair->car ) == RTYPE_SYMBOL, "formals list must consist of symbols" );
                     struct ritual_symbol *currentsym = (struct ritual_symbol*) currentpair->car;
 
+                    fprintf( stderr, "changing definition of %s in %p\n", currentsym->name, rv );
                     ritual_env_define( inst, rv, currentsym->name,
                                        ritual_eval( inst, env, nextarg->car ) );
 

@@ -13,6 +13,7 @@ ritual_object_t * ritual_eval( struct ritual_instance *inst,
                                struct ritual_env *env,
                                ritual_object_t *value ) {
     struct ritual_pair * body = 0;
+    //fprintf(stderr, "hello mom, entering a new eval\n" );
     while( 1 ) {
         /* Note for the future (multithreading): this seems like
          * a great place for a pthread_yield(), and even a great
@@ -22,7 +23,9 @@ ritual_object_t * ritual_eval( struct ritual_instance *inst,
          * most procedures will need to take a per-thread
          * argument "thread" similar to inst and env.) */
 
+        //fprintf(stderr, "new eval iteration\n" );
         if( body ) {
+            //fprintf(stderr, "new eval body handling\n" );
             while( body->cdr ) {
                 if( RITUAL_TYPE( body->cdr ) != RTYPE_PAIR ) {
                     ritual_error( inst, "body must be proper list" );
@@ -35,7 +38,13 @@ ritual_object_t * ritual_eval( struct ritual_instance *inst,
             }
             value = body->car;
             body = 0;
+            //fprintf(stderr, "done with body\n" );
         }
+
+        //fprintf(stderr, "handling tail value which is: " );
+//        ritual_print( inst, inst->flo_stderr, value );
+        //fprintf( stderr, "\n" );
+
         /* The remaining is a tail call. If there is more to be
          * evaluated after this switch:
          *   - If there is a list of expressions, assign it to the
@@ -207,6 +216,7 @@ struct ritual_pair * ritual_mapeval( struct ritual_instance *inst,
                                      struct ritual_pair * l ) {
     struct ritual_pair *rv = 0;
     struct ritual_pair **rrv = &rv;
+    //fprintf(stderr, "hello mom, I'm in mapeval\n" );
     while( l ) {
         if( l->cdr && RITUAL_TYPE( l->cdr ) != RTYPE_PAIR ) {
             ritual_error( inst, "mapping over improper list" );
@@ -216,5 +226,6 @@ struct ritual_pair * ritual_mapeval( struct ritual_instance *inst,
         l = (struct ritual_pair*) l->cdr;
 
     }
+    //fprintf(stderr, "hello mom, I'm done with mapeval\n" );
     return rv;
 }
