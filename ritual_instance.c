@@ -99,9 +99,11 @@ int ritual_initialize_instance( struct ritual_instance * inst ) {
         ritual_define_easy_proc( inst, inst->root, "null?", rep_nullp );
         ritual_define_easy_proc( inst, inst->root, "not", rep_not );
 
+        /*
         ritual_define_easy_proc( inst, inst->root, "map", rep_map );
         ritual_define_easy_proc( inst, inst->root, "filter", rep_map );
         ritual_define_easy_proc( inst, inst->root, "compose", rep_compose ); // is this not standard!?
+        */
 
         ritual_define_easy_tail_proc( inst, inst->root, "apply", retp_apply );
 

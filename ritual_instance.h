@@ -11,7 +11,10 @@
  * allows us to e.g. impose quotas, down the line) -- this means that
  * the parser needs access to one in the context. */
 
+struct ritual_instance;
+
 #include "ritual_hash_table.h"
+#include "ritual_object.h"
 
 #define RITUAL_SYMBOL_TABLE_SIZE 1024
 
@@ -41,6 +44,14 @@ struct ritual_instance {
 
     // diagnostics
     int total_bytes_allocated;
+    int cons_cells_allocated;
+    int subenvironments_allocated;
+    int bytes_allocated_to_subenvironments;
+
+    int olist_allocated;
+    int env_hash_tables_allocated;
+    int typed_objects_allocated[ RTYPE_NUM_TYPES ];
+    int typed_objects_bytes_allocated[ RTYPE_NUM_TYPES ];
 };
 
 int ritual_initialize_instance( struct ritual_instance* );

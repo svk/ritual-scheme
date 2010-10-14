@@ -30,6 +30,7 @@ struct ritual_pair * ritual_pair_create( struct ritual_instance *inst,
     RITUAL_ASSERT( inst, rv, "object allocation failure should not return" ); 
     rv->car = car;
     rv->cdr = cdr;
+    inst->cons_cells_allocated++;
     return rv;
                     
 }

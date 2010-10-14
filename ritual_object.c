@@ -86,6 +86,10 @@ void * ritual_alloc_typed_object( struct ritual_instance *inst,
                                   ritual_type_t type, int sz ) {
     void *rv = ritual_alloc_object( inst, sz );
     RITUAL_SET_TYPE( rv, type );
+    if( rv ) {
+        inst->typed_objects_allocated[ type ]++;
+        inst->typed_objects_bytes_allocated[ type ] += sz;
+    }
     return rv;
 }
 
@@ -122,12 +126,12 @@ void ritual_olist_push( struct ritual_instance *inst,
         node->object = object;
         node->next = *list;
         *list = node;
+
+        inst->olist_allocated += sizeof *node;
     }
 }
 
-
-const char * ritual_typename( const void* p) {
-    const ritual_object_t *object = (const ritual_object_t*) p;
+const char * ritual_typename_abstract(int typeid) {
     static const char typenames[RTYPE_NUM_TYPES][256] = {
         "(invalid - zero)",
         "empty list",
@@ -151,12 +155,16 @@ const char * ritual_typename( const void* p) {
         "native procedure (easy tail)"
     };
     static const char out_of_range[] = "(invalid - out of range)";
-    int typeid = RITUAL_TYPE( object );
     if( typeid < 0 || typeid >= RTYPE_NUM_TYPES ) {
         return out_of_range;
     }
     return typenames[ typeid ];
+}
 
+const char * ritual_typename( const void* p) {
+    const ritual_object_t *object = (const ritual_object_t*) p;
+    int typeid = RITUAL_TYPE( object );
+    return ritual_typename_abstract( typeid );
 }
 
 ritual_object_t * rconvto_object( void*p ) {

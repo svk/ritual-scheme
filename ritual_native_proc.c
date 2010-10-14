@@ -107,7 +107,19 @@ ritual_object_t * rnp_ritual_print_diagnostics( struct ritual_instance *inst,
     if( args ) {
         ritual_error( inst, "ritual-print-diagnostics takes no arguments" );
     }
-    printf( "Total bytes allocated: %d\n", inst->total_bytes_allocated );
+    int accounted = inst->env_hash_tables_allocated + inst->olist_allocated;
+    for(int i=1;i<RTYPE_NUM_TYPES;i++) {
+        fprintf( stderr, "%s: %d objects, %d bytes\n",
+                ritual_typename_abstract(i),
+                inst->typed_objects_allocated[i],
+                inst->typed_objects_bytes_allocated[i] );
+        accounted += inst->typed_objects_bytes_allocated[i];
+    }
+    printf( "OList nodes allocated: %d bytes\n", inst->olist_allocated );
+    printf( "Environment hash tables allocated: %d bytes\n", inst->env_hash_tables_allocated );
+    printf( "Total bytes allocated: %d (%d unaccounted for)\n",
+            inst->total_bytes_allocated,
+            inst->total_bytes_allocated - accounted );
     return 0;
 }
 

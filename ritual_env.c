@@ -7,6 +7,15 @@
 
 #include "ritual_basic_types.h"
 
+void* ritual_env_ht_alloc_debug(void*ctx, int sz) {
+    struct ritual_instance *inst = ctx;
+    void *rv = ritual_alloc( inst, sz );
+    if( rv ) {
+        inst->env_hash_tables_allocated += sz;
+    }
+    return rv;
+}
+
 void ritual_env_init_root(struct ritual_instance * inst,
                           struct ritual_env *rv ) {
     RITUAL_ASSERT( inst, rv, "null pointer passed to ritual_env_init_root" );
@@ -16,7 +25,7 @@ void ritual_env_init_root(struct ritual_instance * inst,
         ritual_error( inst, "unable to allocate root environment table" );
     }
     rv->table.memory_context = inst;
-    rv->table.ht_alloc = (void* (*)(void*,int)) ritual_alloc;
+    rv->table.ht_alloc = (void* (*)(void*,int)) ritual_env_ht_alloc_debug;
     rv->table.ht_free = (void (*)(void*,void*)) ritual_free;
 }
 
@@ -30,8 +39,11 @@ void ritual_env_init_sub(struct ritual_instance *inst,
         ritual_error( inst, "unable to allocate subenvironment table" );
     }
     rv->table.memory_context = inst;
-    rv->table.ht_alloc = (void* (*)(void*,int)) ritual_alloc;
+    rv->table.ht_alloc = (void* (*)(void*,int)) ritual_env_ht_alloc_debug;
     rv->table.ht_free = (void (*)(void*,void*)) ritual_free;
+
+    inst->subenvironments_allocated++;
+    inst->bytes_allocated_to_subenvironments += RITUAL_ENV_SIZE_SUB;
 }
 
 void ritual_env_destroy( struct ritual_instance *inst,

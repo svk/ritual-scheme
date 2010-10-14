@@ -114,6 +114,7 @@ void ritual_olist_push( struct ritual_instance *,
                         struct ritual_onode **,
                         ritual_object_t * );
 
+const char * ritual_typename_abstract(int);
 const char * ritual_typename( const void * );
 
 ritual_object_t * ritual_object_satisfies_typepred(
