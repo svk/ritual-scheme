@@ -22,6 +22,10 @@ int main(int argc, char *argv[]) {
     struct parse_context my;
 	struct rflo_filehandle *flo_stdout; 
 
+    ritual_global_initialize();
+
+    ritual_select_instance( &scheme ); // Life's easy when you're single-threaded..
+
     int failure = ritual_initialize_instance( &scheme );
     if( failure ) {
         fprintf(stderr, "fatal error: unable to initialize Scheme instance\n" );
@@ -82,6 +86,8 @@ int main(int argc, char *argv[]) {
     pctx_destroy( &my );
 
     ritual_deinitialize_instance( &scheme );
+
+    ritual_global_deinitialize();
     return 0;
 }
 

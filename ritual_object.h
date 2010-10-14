@@ -98,6 +98,8 @@ void * ritual_alloc_typed_object( struct ritual_instance*, ritual_type_t, int );
 void * ritual_alloc( struct ritual_instance*, int );
 void ritual_free( struct ritual_instance*, void * );
 
+void * ritual_trivial_realloc( struct ritual_instance*, void*, int, int );
+
 #define RITUAL_SET_TYPE(x,t) {((struct ritual_object*)(x))->type = (t);}
 #define RITUAL_TYPE(x) ((x) ? ((struct ritual_object*)(x))->type : RTYPE_NULL)
 
@@ -124,5 +126,13 @@ ritual_object_t * ritual_object_satisfies_typepred(
 
     // A cast by any other name, but it fits with the proper style.
 ritual_object_t * rconvto_object( void* );
+
+void ritual_free_tls( void* );
+void * ritual_alloc_tls( size_t );
+
+void * ritual_xalloc_tls( size_t );
+
+void ritual_free_tls_size( void*, size_t );
+void * ritual_xrealloc_tls_size( void*, size_t, size_t );
 
 #endif

@@ -168,3 +168,9 @@ ritual_object_t * rconvfrom_big_rational( struct ritual_instance *inst,
     }
     return (ritual_object_t*) big_rational;
 }
+
+void ritual_bignum_initialize(void) {
+    mp_set_memory_functions( ritual_xalloc_tls,
+                             ritual_xrealloc_tls_size,
+                             ritual_free_tls_size );
+}

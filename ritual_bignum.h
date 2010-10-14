@@ -56,4 +56,6 @@ ritual_object_t * rconvfrom_big_int( struct ritual_instance *, struct ritual_big
 
 struct ritual_big_rational *rconvto_big_rational( struct ritual_instance *, ritual_object_t* );
 ritual_object_t * rconvfrom_big_rational( struct ritual_instance *, struct ritual_big_rational * );
+
+void ritual_bignum_initialize(void);
 #endif

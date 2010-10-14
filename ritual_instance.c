@@ -22,6 +22,8 @@
 
 #include <stdio.h>
 
+#include "ritual_bignum.h"
+
 /* These use normal malloc/free; since they allocate the context
  * within other memory will operate that's natural. */
 
@@ -138,4 +140,32 @@ void ritual_deinitialize_instance( struct ritual_instance *inst ) {
 
     rgc_deinitialize( inst, inst->gc );
     free( inst->gc );
+}
+
+static pthread_key_t selected_instance;
+
+int ritual_global_initialize(void) {
+    do {
+        if( pthread_key_create( &selected_instance, 0 ) ) break;
+        ritual_bignum_initialize();
+
+        return 0;
+    } while(0);
+    return 1;
+}
+
+void ritual_global_deinitialize(void) {
+    pthread_key_delete( selected_instance );
+}
+
+int ritual_select_instance(struct ritual_instance* inst) {
+    RITUAL_ASSERT( inst, !pthread_getspecific( selected_instance ), "instance already selected!" );
+    if( pthread_setspecific( selected_instance, inst ) ) {
+        return 1; 
+    }
+    return 0;
+}
+
+struct ritual_instance *ritual_get_selected_instance (void) {
+    return pthread_getspecific( selected_instance );
 }

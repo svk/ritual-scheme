@@ -57,4 +57,9 @@ struct ritual_instance {
 int ritual_initialize_instance( struct ritual_instance* );
 void ritual_deinitialize_instance( struct ritual_instance * );
 
+int ritual_global_initialize(void);
+void ritual_global_deinitialize(void);
+int ritual_select_instance(struct ritual_instance*);
+struct ritual_instance *ritual_get_selected_instance (void);
+
 #endif

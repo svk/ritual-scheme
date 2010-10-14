@@ -12,6 +12,9 @@
 
 #include <assert.h>
 
+#include <pthread.h>
+#include <string.h>
+
 int ritual_typepred[RTYPE_NUM_TYPES] = {
     RTYPEPRED_NONE,
     RTYPEPRED_NONE,
@@ -78,6 +81,22 @@ void ritual_free_object( struct ritual_instance *inst,
 void ritual_free( struct ritual_instance *inst,
                   void * mem ) {
     free( mem );
+}
+
+void * ritual_trivial_realloc( struct ritual_instance *inst, void *old, int oldsz, int sz ) {
+    // The trivial implementation. Anything that actually relies
+    // heavily on ritual_realloc() and is meant to be efficient
+    // should use another set of memory functions that map onto
+    // the real malloc(), realloc(), free() after some
+    // quota-checking etc.
+    void *rv = ritual_alloc( inst, sz );
+    if( !rv ) {
+        return 0;
+    }
+    int minsize = (oldsz < sz) ? oldsz : sz;
+    memcpy( rv, old, minsize );
+    ritual_free( inst, old );
+    return rv;
 }
 
 /* For convenience. */
@@ -169,4 +188,37 @@ const char * ritual_typename( const void* p) {
 
 ritual_object_t * rconvto_object( void*p ) {
     return p;
+}
+
+void * ritual_alloc_tls( size_t sz ) {
+    struct ritual_instance *inst = ritual_get_selected_instance();
+    return ritual_alloc( inst, sz );
+}
+
+void ritual_free_tls( void* p ) {
+    struct ritual_instance *inst = ritual_get_selected_instance();
+    return ritual_free( inst, p );
+}
+
+void * ritual_xalloc_tls( size_t sz ) {
+    void *rv = ritual_alloc_tls( sz );
+    if( !rv ) {
+        struct ritual_instance *inst = ritual_get_selected_instance();
+        ritual_error( inst, "completely out of memory in xalloc - was allocating %d bytes", sz );
+    }
+    return rv;
+}
+
+void * ritual_xrealloc_tls_size ( void* p, size_t oldsz, size_t sz) {
+    struct ritual_instance *inst = ritual_get_selected_instance();
+    void *rv = ritual_trivial_realloc( inst, p, oldsz, sz );
+    if( !rv ) {
+        ritual_error( inst, "completely out of memory in xrealloc - was allocating %d bytes", sz );
+    }
+    return rv;
+}
+
+void ritual_free_tls_size( void* p, size_t sz ) {
+    return ritual_free_tls( p );
+
 }
