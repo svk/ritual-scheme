@@ -123,7 +123,8 @@ int main(int argc, char *argv[]) {
      * (which can be done in single-threaded programs but not in
      * multithreaded ones).
      *
-     * I should experiment a bit with optimizations of FUB.
+     * Yay: with the FUB optimization UMP is significantly faster
+     * than even single-byte malloc(), even with locks left in.
      */
 
     return 0;
