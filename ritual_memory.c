@@ -43,16 +43,6 @@ void * ritual_ump_id_to_pointer(struct ritual_ump *ump, int i) {
     return &ump->data[ump->element_size * ri];
 }
 
-int first_unset_bit( uint32_t x ) {
-    // fun optimization exercise for later.
-    uint32_t bit = 1;
-    for(int i=0;i<32;++i) {
-        if( !(bit & x) ) return i;
-        bit <<= 1;
-    }
-    return -1;
-}
-
 const int ritual_fub_array[] = {
     0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0, 4,
     0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0, 5,
@@ -87,14 +77,11 @@ int ritual_ump_alloc(struct ritual_ump *ump) {
     int rv = -1, i, jb, j, k;
     pthread_mutex_lock( &ump->mutex );
     do {
-//        fprintf(stderr, "fub(%08x) = %d = %d\n", ump->level1, FIRST_UNSET_BIT( ump->level1 ), first_unset_bit( ump->level1 ) );
         i = FIRST_UNSET_BIT( ump->level1 );
         if( i < 0 ) break;
-//        fprintf(stderr, "fub(%08x) = %d = %d\n", ump->level2[i], FIRST_UNSET_BIT( ump->level2[i] ), first_unset_bit( ump->level2[i] ) );
         jb = FIRST_UNSET_BIT( ump->level2[i] );
         assert( jb >= 0 );
         j = jb + (i << 5);
-//        fprintf(stderr, "fub(%08x) = %d = %d\n", ump->level3[j], FIRST_UNSET_BIT( ump->level3[j] ), first_unset_bit( ump->level3[j] ) );
         k = FIRST_UNSET_BIT( ump->level3[j] );
         assert( k >= 0 );
 
