@@ -32,7 +32,7 @@ int test_gc_24601(struct ritual_ump *ump,
 }
 
 int main(int argc, char *argv[]) {
-    struct ritual_ump *ump = ritual_ump_create( 100000, 64 );
+    struct ritual_ump *ump = ritual_ump_create( 64 );
     int allocated = 0;
 
     while( 1 ) {
@@ -50,7 +50,8 @@ int main(int argc, char *argv[]) {
     while( 1 ) {
         char *s = ritual_ump_alloc(ump);
         if( !s ) break;
-        sprintf( s, "This is number %d", ++allocated );
+        sprintf( s, "This is number %d", 0 );
+        ++allocated;
     }
     fprintf(stderr, "Allocated %d cells (expected: 1)\n", allocated );
     
@@ -107,7 +108,7 @@ int main(int argc, char *argv[]) {
         i = (i+1) % arrsize;
     }
     fprintf(stderr, "%d ticks elapsed; allocs=%d, frees=%d.\n", one - zero, allocs, wipes );
-    ritual_ump_free_tree( ump );
+    ritual_ump_free( ump );
 
     /* Result (on my machine) -- UMP slightly underperforms compared to
      * malloc() for small values (including 64). However, it's now

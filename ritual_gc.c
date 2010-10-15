@@ -87,9 +87,11 @@
  *    (The best way to build this is with a generic function
  *     which does only the first part -- run a specific
  *     void (*p)(void*,ritual_object_t*) on each outgoing
- *     reference.)
+ *     reference, the first argument being a context argument.)
  *  - a way to loop through all allocated objects (UMPs, plus linked
- *    lists of large objects) and apply 
+ *    lists of large objects) and apply a GC function
+ *    int (*p)(
+ */
 
 void rgc_initialize( struct ritual_instance *inst,
                      struct ritual_gc_instance * gc ) {

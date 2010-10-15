@@ -26,6 +26,7 @@ struct ritual_ump { // uniform memory page
         // needed for allocation, deallocation
         // not needed to access pointers
 
+    int used;
     int element_size;
 
     uint32_t level1;
@@ -34,15 +35,34 @@ struct ritual_ump { // uniform memory page
 
     uint8_t *data;
 
-
+        // for UMPs as part of dynumps
     struct ritual_ump *prev;
     struct ritual_ump *next;
 };
 
-struct ritual_ump * ritual_ump_create(int, int);
-void ritual_ump_free_tree(struct ritual_ump *);
+    // TODO: figure out a safe way to shrink dynumps (deleting unused
+    // UMPs). problem: what if someone's waiting on a lock? maybe we
+    // do need the dynump mutex to be held just to alloc, but that's
+    // sort of lame.
+    // waaait.. how about trylock?
+struct ritual_dynump {
+    pthread_mutex_t mutex;
 
+    int element_size;
+    struct ritual_ump *current;
+};
+
+struct ritual_ump * ritual_ump_create(int);
+void ritual_ump_free(struct ritual_ump *);
+
+struct ritual_dynump * ritual_dynump_create(int);
+void ritual_dynump_free(struct ritual_dynump *);
+
+void * ritual_dynump_alloc(struct ritual_dynump*);
+
+void * ritual_ump_alloc_unsafe(struct ritual_ump*, int);
 void * ritual_ump_alloc(struct ritual_ump*);
+void * ritual_ump_try_alloc(struct ritual_ump*);
 
 void ritual_ump_clean(struct ritual_ump *ump,
                       int (*gc)(struct ritual_ump*, void*) );
