@@ -1,5 +1,5 @@
-#ifndef H_RITUAL_MEMORY
-#define H_RITUAL_MEMORY
+#ifndef H_RITUAL_UMP
+#define H_RITUAL_UMP
 
 #include <stdint.h>
 #include <pthread.h>
