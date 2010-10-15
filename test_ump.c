@@ -36,9 +36,8 @@ int main(int argc, char *argv[]) {
     int allocated = 0;
 
     while( 1 ) {
-        int result = ritual_ump_alloc(ump);
-        if( result < 0 ) break;
-        char *s = ritual_ump_id_to_pointer( ump, result );
+        char *s = ritual_ump_alloc(ump);
+        if( !s ) break;
         sprintf( s, "This is number %d", ++allocated );
     }
 
@@ -49,9 +48,8 @@ int main(int argc, char *argv[]) {
 
     allocated = 0;
     while( 1 ) {
-        int result = ritual_ump_alloc(ump);
-        if( result < 0 ) break;
-        char *s = ritual_ump_id_to_pointer( ump, result );
+        char *s = ritual_ump_alloc(ump);
+        if( !s ) break;
         sprintf( s, "This is number %d", ++allocated );
     }
     fprintf(stderr, "Allocated %d cells (expected: 1)\n", allocated );
@@ -61,9 +59,8 @@ int main(int argc, char *argv[]) {
 
     allocated = 0;
     while( 1 ) {
-        int result = ritual_ump_alloc(ump);
-        if( result < 0 ) break;
-        char *s = ritual_ump_id_to_pointer( ump, result );
+        char *s = ritual_ump_alloc(ump);
+        if( !s ) break;
         sprintf( s, "This is number %d", ++allocated );
     }
     fprintf(stderr, "Allocated %d cells (expected: 16385)\n", allocated );
@@ -84,7 +81,7 @@ int main(int argc, char *argv[]) {
             memset( pointers, 0, sizeof *pointers * arrsize );
             wipes++;
         }
-        pointers[i] = ritual_ump_id_to_pointer( ump, ritual_ump_alloc( ump ) );
+        pointers[i] = ritual_ump_alloc( ump );
         allocs++;
         i = (i+1) % arrsize;
     }

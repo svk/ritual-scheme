@@ -22,6 +22,8 @@ struct ritual_ump * ritual_ump_create(int first_id, int sz) {
 
     rv->data = malloc( sz * RITUAL_UMP_SIZE );
 
+    rv->prev = rv->next = this;
+
     return rv;
 }
 
@@ -35,12 +37,6 @@ void ritual_ump_free_tree(struct ritual_ump *ump) {
         ritual_ump_free_tree( left );
         ritual_ump_free_tree( right );
     }
-}
-
-void * ritual_ump_id_to_pointer(struct ritual_ump *ump, int i) {
-    const int ri = i - ump->first_id;
-    assert( ri >= 0 && ri < RITUAL_UMP_SIZE );
-    return &ump->data[ump->element_size * ri];
 }
 
 const int ritual_fub_array[] = {
@@ -73,7 +69,7 @@ const int ritual_fub_array[] = {
                     ritual_fub_array[(x>>24)] + 24 : \
                         -1
 
-int ritual_ump_alloc(struct ritual_ump *ump) {
+void * ritual_ump_alloc(struct ritual_ump *ump) {
     int rv = -1, i, jb, j, k;
     pthread_mutex_lock( &ump->mutex );
     do {
@@ -96,7 +92,7 @@ int ritual_ump_alloc(struct ritual_ump *ump) {
         }
     } while(0);
     pthread_mutex_unlock( &ump->mutex );
-    return (rv < 0) ? rv : (rv + ump->first_id);
+    return (rv < 0) ? 0 : &ump->data[ump->element_size * rv];
 }
 
 void ritual_ump_clean(struct ritual_ump *ump,

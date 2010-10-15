@@ -26,26 +26,23 @@ struct ritual_ump { // uniform memory page
         // needed for allocation, deallocation
         // not needed to access pointers
 
-    int first_id;
     int element_size;
 
     uint32_t level1;
     uint32_t level2[32];
     uint32_t level3[1024];
 
-        // for arranging pages in a tree
-    struct ritual_ump *left;
-    struct ritual_ump *right;
-
     uint8_t *data;
+
+
+    struct ritual_ump *prev;
+    struct ritual_ump *next;
 };
 
 struct ritual_ump * ritual_ump_create(int, int);
 void ritual_ump_free_tree(struct ritual_ump *);
 
-void * ritual_ump_id_to_pointer(struct ritual_ump*, int);
-
-int ritual_ump_alloc(struct ritual_ump*);
+void * ritual_ump_alloc(struct ritual_ump*);
 
 void ritual_ump_clean(struct ritual_ump *ump,
                       int (*gc)(struct ritual_ump*, void*) );
