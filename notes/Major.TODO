@@ -1,0 +1,24 @@
+Continuations.
+
+This'll need a rewrite of the entire eval thing.
+Luckily eval is only as complex as it is because
+of struggling to implement tail recursion in C;
+in proper CPS it should be easier to handle.
+In any case, it must be done to meet R5RS.
+
+Basically: instead of a call stack, think of
+a linked "TODO" list and an associated environment.
+To drive our program, we pop something off the
+list and evaluate it in the environment. If
+there is nothing more on the TODO list [*], we
+return the value (to the REPL -- this is all
+only one layer deep). Note that evaluation 
+can affect the list and the environment
+
+     [*] That is, there is no continuation.
+
+Function application is a special case of LET
+binding, so let's consider the latter.
+A LET creates a new environment using the old
+one as a base. It will need to return from
+this environment, so first it 
