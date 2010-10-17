@@ -1,0 +1,120 @@
+Ritual Low-Level Language
+
+Execution context consists of:
+    return stack, consisting of a stack of:
+        execution pointers, pointing to a sequence of RL3 instructions
+    environment stack, consisting of a stack of:
+        pointers to environments
+    pointer to current instruction sequence (implicitly advanced when not mentioned)
+    pointer to current value (a Ritual object, autoset every form evaluation)
+
+RL3 basic instructions:
+
+    REPLACE-ENVIRONMENT-STACK {envstack}
+        Replaces the entire environment stack (still just a single
+        assignment).
+    PUSH-ENVIRONMENT {env}
+        Push the specified environment onto the environment stack.
+    REPLACE-TOP-ENVIRONMENT {env}
+        Set the top value of the environment stack, discarding
+        the previous top value.
+    NEW-ENVIRONMENT
+        Create a new environment as an empty subenvironment of
+        the current top, and and push it onto the environment stack.
+    LEAVE-ENVIRONMENT
+        Pop from the environment stack.
+
+    CLEAR-CURRENT
+        Clear the current value (set it to void or similar).
+
+    BIND-DEFINE {name}
+        Bind the current value to the given name in the current
+        environment stack, with define semantics: create a new
+        value in the topmost environment if no value exists with
+        the given name.
+
+    BIND-SET {name}
+        Bind the current value to the given name in the current
+        environment stack, with set! semantics: modify the
+        already bound reference closest to the top -- throw an
+        error if there is no such reference.
+
+    JUMP {code pointer}
+        Jump (set the instruction pointer) to code pointer.
+
+    BRANCH {code pointer} {code pointer}
+        Evaluates the current value, and jumps to the first
+        argument if true, otherwise the second.
+
+    EVAL {form}
+        Pushes to the instruction stack a singleton list containing
+        the form.
+
+    CALL {code pointer}
+        If there is a next instruction in the current sequence,
+        push it onto the execution stack. Jump to the code pointer.
+
+    CALL-BRANCH {code pointer} {code pointer}
+        Evaluates the current value, and calls the first
+        argument if true, otherwise the second.
+
+    RETURN
+        If the return stack is empty, return from the RL3 evaluation
+        function (return to top level, to REPL or similar).
+        Otherwise, pop from the return stack to the instruction
+        pointer.
+        [this is also IMPLICIT -- executed whenever the current
+         instruction sequence ends, and so does not really need
+         to be its own instruction (jump 0 does the same thing),
+         but it quacks a lot like one]
+
+    CALL-NATIVE {native pointer}
+        Make a call to a native C function, which will expect a
+        preprepared environment (arguments already bound -- to
+        "rest" etc. if necessary; functions now need to have an
+        external argument list). The native function is
+        expressly forbidden to evaluate any Scheme form. The
+        function return value (a Scheme form) is assigned to the
+        current value.
+
+The instruction sequence can consist of instructions, or (other)
+forms. Execution of sort of form means evaluation. Evaluation
+generally consists of pushing to the instruction sequence
+an instruction-level replacement for the form. More precisely:
+    - atoms simply set the current value.
+    - (LET bindings @body) compiles to:
+        NEW-ENVIRONMENT
+        for each (name,form) pair in bindings:
+            EVAL form
+            BIND-DEFINE name
+            CLEAR-CURRENT
+        CALL body
+        LEAVE-ENVIRONMENT
+    - (function @args), where function is a Scheme function, and in
+      a non-tail context, compiles to (simplification -- &rest is
+      not handled):
+        PUSH-ENVIRONMENT function.env
+        for each (name,form) pair in zip(function.arglist,args):
+            EVAL form
+            BIND-DEFINE name
+            CLEAR-CURRENT
+        CALL function.body
+        LEAVE-ENVIRONMENT
+    - in a tail context, the function above would compile to:
+        REPLACE-TOP-ENVIRONMENT function.env
+        for each (name,form) pair in zip(function.arglist,args):
+            EVAL form
+            BIND-DEFINE name
+            CLEAR-CURRENT
+        CALL function.body
+        ;; no LEAVE-ENVIRONMENT because whatever installed
+        ;; the previous environment will take care of it.
+    - (if a b c) compiles to:
+        EVAL a
+        EVAL-BRANCH b c
+    - (cont x) where cont is a continuation compiles to:
+        EVAL x
+        REPLACE-ENVIRONMENT-STACK cont.envs
+        JUMP cont.ip
+        
+TODO: how to recognize tail context?
