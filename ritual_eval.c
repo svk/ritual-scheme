@@ -178,6 +178,15 @@ ritual_object_t * ritual_eval( struct ritual_instance *inst,
                                 }
                                 break;
                             }
+                        case RTYPE_ENVPROC:
+                            {
+                                struct ritual_envproc *env_proc = (struct ritual_envproc*) proc;
+                                struct ritual_env *newenv = ritual_envproc_bind( inst,
+                                                                                 env,
+                                                                                 env_proc->params,
+                                                                                 rconvto_list( inst, pair->cdr ) );
+                                return env_proc->procedure( inst, newenv );
+                            }
                         case RTYPE_LAMBDA_PROC:
                             {
                                 struct ritual_lambda_proc *lambda_proc = (struct ritual_lambda_proc*) proc;

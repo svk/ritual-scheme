@@ -15,6 +15,8 @@
 #include "ritual_basic_types.h"
 #include "ritual_native_proc.h"
 
+#include "ritual_envproc.h"
+
 extern int yyparse( struct parse_context* );
 
 int main(int argc, char *argv[]) {
@@ -41,9 +43,10 @@ int main(int argc, char *argv[]) {
 
     ritual_define_native_proc( &scheme, scheme.root, "eq?", rnp_eqp );
     ritual_define_native_proc( &scheme, scheme.root, "ritual-print-diagnostics", rnp_ritual_print_diagnostics );
-    ritual_define_native_proc( &scheme, scheme.root, "ritual-typename", rnp_ritual_get_typename );
+    renvp_define_proper( &scheme, scheme.root, renvp_ritual_typename, "ritual-typename", "object", 0 );
     ritual_define_native_proc( &scheme, scheme.root, "ritual-trace", rnp_ritual_trace );
 
+    
     pctx_init( &my, &scheme );
     yylex_init( &my.scanner );
     yyset_extra( &my, my.scanner );

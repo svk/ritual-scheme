@@ -167,6 +167,8 @@ int ritual_list_has_cdr( struct ritual_instance *,
      * much better (code-wise) than macros. */
 struct ritual_pair *rconvto_pair( struct ritual_instance *, ritual_object_t* );
 ritual_object_t * rconvfrom_pair( struct ritual_instance *, struct ritual_pair * );
+struct ritual_symbol *rconvto_symbol( struct ritual_instance *, ritual_object_t* );
+ritual_object_t * rconvfrom_symbol( struct ritual_instance *, struct ritual_symbol * );
 
 struct ritual_native_int *rconvto_native_int( struct ritual_instance *, ritual_object_t* );
 ritual_object_t * rconvfrom_native_int( struct ritual_instance *, struct ritual_native_int * );

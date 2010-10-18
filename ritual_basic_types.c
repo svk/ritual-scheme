@@ -278,3 +278,21 @@ ritual_object_t * rconvfrom_native_int( struct ritual_instance *inst,
     }
     return (ritual_object_t*) native_int;
 }
+
+struct ritual_symbol *rconvto_symbol( struct ritual_instance *inst,
+                                      ritual_object_t *obj ) {
+    if( RITUAL_TYPE( obj ) != RTYPE_SYMBOL ) {
+        ritual_error( inst, "expected symbol, got \"%s\"", ritual_typename( obj ) );
+    }
+    return (struct ritual_symbol*) obj;
+}
+
+ritual_object_t * rconvfrom_symbol( struct ritual_instance *inst,
+                                  struct ritual_symbol *symbol ) {
+    if( !symbol ) {
+        ritual_error( inst, "expected symbol, got null" );
+    }
+    return (ritual_object_t*) symbol;
+}
+
+

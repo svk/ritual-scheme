@@ -6,6 +6,8 @@
 #include "ritual_instance.h"
 #include "ritual_basic_types.h"
 
+#include "ritual_envproc.h"
+
 #include "ritual_generic.h"
 
 
