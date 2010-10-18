@@ -207,6 +207,14 @@ ritual_object_t *ritual_list_peek( struct ritual_instance *inst,
     return rv;
 }
 
+void ritual_list_push( struct ritual_instance *inst,
+					   struct ritual_pair ** list
+					   ritual_object_t * obj ) {
+	struct ritual_pair *next = ritual_pair_create( obj, *list );
+	RITUAL_ASSERT( inst, next, "object creation should always succeed" );
+	*list = next;
+}
+
 ritual_object_t *ritual_list_next( struct ritual_instance *inst,
                                    struct ritual_pair ** list ) {
     if( !(*list) ) {
@@ -219,6 +227,7 @@ ritual_object_t *ritual_list_next( struct ritual_instance *inst,
     *list = rconvto_list( inst, (*list)->cdr );
     return rv;
 }
+
 void ritual_list_assert_end( struct ritual_instance *inst,
                              struct ritual_pair *p ) {
     if( p ) {

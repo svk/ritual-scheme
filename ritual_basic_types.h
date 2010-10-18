@@ -151,8 +151,11 @@ void ritual_print_double(
 
 ritual_object_t *ritual_list_peek( struct ritual_instance *,
                                    struct ritual_pair * );
+void ritual_list_push( struct ritual_instance *,
+                       struct ritual_pair **,
+                       ritual_object_t * );
 ritual_object_t *ritual_list_next( struct ritual_instance *,
-                                   struct ritual_pair ** );
+                                   struct ritual_pair ** ); // pop by any other name
 void ritual_list_assert_end( struct ritual_instance *,
                              struct ritual_pair * );
 int ritual_list_has_cdr( struct ritual_instance *,
