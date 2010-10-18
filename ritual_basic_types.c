@@ -217,7 +217,7 @@ void ritual_pair_setcar( struct ritual_instance *inst,
 void ritual_list_push( struct ritual_instance *inst,
 					   struct ritual_pair ** list,
 					   ritual_object_t * obj ) {
-	struct ritual_pair *next = ritual_pair_create( inst, obj, *list );
+	struct ritual_pair *next = ritual_pair_create( inst, obj, rconvfrom_list( inst, *list ) );
 	RITUAL_ASSERT( inst, next, "object creation should always succeed" );
 	*list = next;
 }

@@ -21,12 +21,8 @@ int main(int argc, char *argv[]) {
     struct parse_context my;
 	struct rflo_filehandle *flo_stdout; 
 
-    struct rl3_context rl3ctx;
-
     ritual_global_initialize();
     ritual_select_instance( &scheme ); // Life's easy when you're single-threaded..
-
-    rl3_context_init( &rl3ctx, &scheme );
 
     int failure = ritual_initialize_instance( &scheme );
     if( failure ) {
@@ -45,11 +41,32 @@ int main(int argc, char *argv[]) {
     yylex_init( &my.scanner );
     yyset_extra( &my, my.scanner );
 
+    struct rl3_global_context *gctx = rl3_initialize();
+    struct rl3_context rl3ctx;
+
+    rl3_context_init( &rl3ctx, gctx, &scheme );
+
     struct rl3_instr *program = 0;
-    program = rl3_mkinstr( &scheme, 0, 0, program );
-    program = rl3_mkinstr( &scheme, 1, 0, program );
-    program = rl3_mkinstr( &scheme, 3, 0, program );
-    program = rl3_mkinstr( &scheme, 2, 0, program );
+    struct rl3_instr *jpt = program = rl3_mkinstr( &scheme, gctx->IS_NULL, 0, program );
+    program = rl3_mkinstr( &scheme, gctx->BRANCH, 0, program );
+    program = rl3_mkinstr( &scheme, gctx->SPLIT_PAIR, 0, program );
+    program = rl3_mkinstr( &scheme, gctx->PRINT, 0, program );
+    program = rl3_mkinstr( &scheme, gctx->JUMP, jpt, program );
+    program = rl3_reverse( program );
+
+    struct rl3_instr *print_forwards = program;
+
+    struct rl3_instr *dsc = rl3_mkinstr( &scheme, gctx->DISCARD, 0, 0);
+    program = 0;
+    program = rl3_mkinstr( &scheme, gctx->STORE, 0, program );
+    jpt = program = rl3_mkinstr( &scheme, gctx->SWAP, 0, program );
+    program = rl3_mkinstr( &scheme, gctx->IS_NULL, 0, program );
+    program = rl3_mkinstr( &scheme, gctx->BRANCH, dsc, program );
+    program = rl3_mkinstr( &scheme, gctx->SPLIT_PAIR, 0, program );
+    program = rl3_mkinstr( &scheme, gctx->ROTATE, 0, program );
+    program = rl3_mkinstr( &scheme, gctx->SWAP, 0, program );
+    program = rl3_mkinstr( &scheme, gctx->CONS, 0, program );
+    program = rl3_mkinstr( &scheme, gctx->JUMP, jpt, program );
     program = rl3_reverse( program );
 
 	while( 1 ) {
@@ -91,6 +108,8 @@ int main(int argc, char *argv[]) {
 	rflo_filehandle_destroy( &scheme, flo_stdout );
     yylex_destroy( my.scanner );
     pctx_destroy( &my );
+
+    rl3_deinitialize( gctx );
 
     ritual_deinitialize_instance( &scheme );
 
