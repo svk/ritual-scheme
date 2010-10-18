@@ -36,7 +36,8 @@ int ritual_typepred[RTYPE_NUM_TYPES] = {
     RTYPEPRED_NUMBER,
     RTYPEPRED_PROCEDURE,
     RTYPEPRED_PROCEDURE,
-    RTYPEPRED_PROCEDURE
+    RTYPEPRED_PROCEDURE,
+    RTYPEPRED_NONE // rl3 ins.
 };
 
 ritual_object_t * ritual_object_satisfies_typepred(
@@ -173,7 +174,8 @@ const char * ritual_typename_abstract(int typeid) {
         "big rational",
         "native procedure (easy)",
         "native procedure (easy tail)",
-        "native procedure (envproc)"
+        "native procedure (envproc)",
+        "RL3 instruction"
     };
     static const char out_of_range[] = "(invalid - out of range)";
     if( typeid < 0 || typeid >= RTYPE_NUM_TYPES ) {

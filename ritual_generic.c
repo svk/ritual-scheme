@@ -60,6 +60,8 @@ const struct ritual_generic_functions ritual_genfun[ RTYPE_NUM_TYPES ] = {
     { ritual_print_native_proc, // "easy tail" native procedure
       0 },
     { ritual_print_native_proc, // envproc
+      0 },
+    { 0, // rl3 instruction
       0 }
 };
 

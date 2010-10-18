@@ -181,4 +181,7 @@ ritual_object_t * rconvfrom_native_int( struct ritual_instance *, struct ritual_
 struct ritual_pair *rconvto_list( struct ritual_instance *, ritual_object_t* );
 ritual_object_t * rconvfrom_list( struct ritual_instance *, struct ritual_pair * );
 
+void ritual_pair_setcar( struct ritual_instance *,
+						 struct ritual_pair * ,
+						 ritual_object_t *);
 #endif

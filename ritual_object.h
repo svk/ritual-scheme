@@ -34,6 +34,7 @@ typedef enum ritual_type {
     RTYPE_EASY_PROC,
     RTYPE_EASY_TAIL_PROC,
     RTYPE_ENVPROC,
+    RTYPE_RL3INSTRUCTION,
     RTYPE_NUM_TYPES
 } ritual_type_t;
 

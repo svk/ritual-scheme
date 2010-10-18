@@ -207,10 +207,17 @@ ritual_object_t *ritual_list_peek( struct ritual_instance *inst,
     return rv;
 }
 
+void ritual_pair_setcar( struct ritual_instance *inst,
+						 struct ritual_pair * pair,
+						 ritual_object_t * obj ) {
+	pair->car = obj;
+}
+
+
 void ritual_list_push( struct ritual_instance *inst,
-					   struct ritual_pair ** list
+					   struct ritual_pair ** list,
 					   ritual_object_t * obj ) {
-	struct ritual_pair *next = ritual_pair_create( obj, *list );
+	struct ritual_pair *next = ritual_pair_create( inst, obj, *list );
 	RITUAL_ASSERT( inst, next, "object creation should always succeed" );
 	*list = next;
 }

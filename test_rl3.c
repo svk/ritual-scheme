@@ -45,6 +45,13 @@ int main(int argc, char *argv[]) {
     yylex_init( &my.scanner );
     yyset_extra( &my, my.scanner );
 
+    struct rl3_instr *program = 0;
+    program = rl3_mkinstr( &scheme, 0, 0, program );
+    program = rl3_mkinstr( &scheme, 1, 0, program );
+    program = rl3_mkinstr( &scheme, 3, 0, program );
+    program = rl3_mkinstr( &scheme, 2, 0, program );
+    program = rl3_reverse( program );
+
 	while( 1 ) {
 		char data[1024];
 		fputs( ">>> ", stdout );
@@ -71,7 +78,8 @@ int main(int argc, char *argv[]) {
                 yy_delete_buffer( buffer, my.scanner );
                 while( pctx_has_more( &my ) ) {
                     ritual_object_t * object = pctx_pop( &my );
-                    // Back to a RPL!
+                    ritual_list_push( &scheme, &rl3ctx.values, object ); 
+                    object = rl3_run( &rl3ctx, program );
                     fputs( "-> ", stdout );
                     ritual_print( &scheme, &flo_stdout->flo, object );
                     puts( "" );
