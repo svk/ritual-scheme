@@ -96,7 +96,14 @@ int main(int argc, char *argv[]) {
                 while( pctx_has_more( &my ) ) {
                     ritual_object_t * object = pctx_pop( &my );
                     ritual_list_push( &scheme, &rl3ctx.values, object ); 
-                    object = rl3_run( &rl3ctx, program );
+                    ritual_list_push( &scheme, &rl3ctx.sequences, (void*) program );
+                    fprintf(stderr, "\n" );
+                    while( rl3_running( &rl3ctx ) ) {
+                        fprintf(stderr, "." );
+                        rl3_run_one( &rl3ctx );
+                    }
+                    fprintf(stderr, "\n" );
+                    object = ritual_list_next( &scheme, &rl3ctx.values );
                     fputs( "-> ", stdout );
                     ritual_print( &scheme, &flo_stdout->flo, object );
                     puts( "" );

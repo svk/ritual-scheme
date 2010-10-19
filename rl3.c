@@ -307,3 +307,7 @@ void rl3_run_one( struct rl3_context* ctx ) {
     ritual_pair_setcar( ctx->inst, ctx->sequences, rconvfrom_sequence( ctx->inst, ins->next ) );
     ctx->global->ptr[ ins->id - 1 ](ctx, ins->arg );
 }
+
+int rl3_running( struct rl3_context* ctx ) {
+    return ctx->sequences != 0;
+}

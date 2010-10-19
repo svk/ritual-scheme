@@ -39,6 +39,7 @@ int rl3_register_instruction(struct rl3_global_context*, void (*p)(struct rl3_co
 
 void rl3_context_init( struct rl3_context*, struct rl3_global_context*, struct ritual_instance* );
 
+int rl3_running( struct rl3_context* );
 void rl3_run_one( struct rl3_context* );
 ritual_object_t * rl3_run( struct rl3_context*, struct rl3_instr * );
 
