@@ -8,10 +8,14 @@
 struct ritual_rl3_extensions {
     int EVAL, EVAL_DISCARD, TAILEVAL;
     int ENV_PUSH, ENV_DISCARD, ENV_REPLACE, ENV_BIND;
+    int GENERAL_ERROR;
+    int CALL_NATIVE;
 };
 
 struct ritual_rl3_extended_context {
     struct rl3_context ctx;
+
+    struct ritual_rl3_extensions *ext;
 
     struct ritual_pair *environments;
 };

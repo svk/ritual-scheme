@@ -167,6 +167,19 @@ void rl3_ins_call(struct rl3_context *ctx, ritual_object_t *arg) {
     ritual_list_push( ctx->inst, &ctx->sequences, arg );
 }
 
+void rl3_ins_branch_not(struct rl3_context *ctx, ritual_object_t *arg) {
+#ifdef VERBOSE_DEBUG
+    fprintf( stderr, "branch-not\n" );
+    rl3_debug_show(ctx);
+#endif
+
+    ritual_object_t *top = ritual_list_next( ctx->inst, &ctx->values );
+    if( !RITUAL_AS_BOOLEAN( ctx->inst, top ) ) {
+        rl3_ins_jump( ctx, arg );
+    }
+}
+
+
 void rl3_ins_branch(struct rl3_context *ctx, ritual_object_t *arg) {
 #ifdef VERBOSE_DEBUG
     fprintf( stderr, "branch\n" );
@@ -207,6 +220,7 @@ struct rl3_global_context * rl3_initialize(void) {
         gctx->JUMP = rl3_register_instruction( gctx, rl3_ins_jump );
         gctx->CALL = rl3_register_instruction( gctx, rl3_ins_call );
         gctx->BRANCH = rl3_register_instruction( gctx, rl3_ins_branch );
+        gctx->BRANCH_NOT = rl3_register_instruction( gctx, rl3_ins_branch_not );
 
         return gctx;
     } while(0);

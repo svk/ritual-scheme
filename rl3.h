@@ -21,7 +21,7 @@ struct rl3_global_context {
     int DUP, STORE, DISCARD, SWAP, ROTATE;
     int IS_NULL, IS_PAIR;
     int SPLIT_PAIR, PRINT, CONS;
-    int JUMP, CALL, BRANCH;
+    int JUMP, CALL, BRANCH, BRANCH_NOT;
 };
 
 struct rl3_context {
