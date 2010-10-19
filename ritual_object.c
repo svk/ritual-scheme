@@ -184,6 +184,60 @@ const char * ritual_typename_abstract(int typeid) {
     return typenames[ typeid ];
 }
 
+ritual_object_t * ritual_preevaluate( struct ritual_instance *inst, ritual_object_t* obj, int *success ) {
+    // Evaluation that can be done without an environment (and so,
+    // implicitly, also without any other evaluations (except if
+    // those are also preevaluate-able!))
+    // Getting _really_ smart about this edges into actually
+    // compiling code. However, another part of compiling code
+    // would be "simplify", which is a generalization of this:
+    // change expression to something equivalent, that still
+    // gets evaluated afterwards. E.g.: arithmetic on literals:
+    // (* 2 3.14 r r) => (* 6.28 r r)
+    // Using such an operation, this is simply doing that and
+    // then returning success iff the result is self-evaluating.
+    // (Compiling can become more complex -- the most obvious
+    //  way is through awareness of the environment. However,
+    //  this is harder than it looks because Scheme makes it so
+    //  easy to shadow and change things. If the above said
+    //  "pi" rather than 3.14, could we ever really know that
+    //  "pi" was a constant and did not need an environment
+    //  lookup?)
+    *success = 1;
+    if( ritual_selfevaluatingp( inst, obj ) ) {
+        return obj;
+    }
+    switch( RITUAL_TYPE( obj ) ) {
+        case RTYPE_QUOTE:
+            {
+                struct ritual_quote *quote = (struct ritual_quote*) value;
+                return quote->quoted;
+            }
+    }
+    *success = 0;
+    return 0;
+}
+
+int ritual_selfevaluatingp( struct ritual_instance *inst, ritual_object_t* obj ) {
+    switch( RITUAL_TYPE( obj ) ) {
+        case RTYPE_NULL:
+        case RTYPE_ASCII_STRING:
+        case RTYPE_PROCEDURE:
+        case RTYPE_BOOLEAN:
+        case RTYPE_NATIVE_INTEGER:
+        case RTYPE_ASCII_CHAR:
+        case RTYPE_VECTOR:
+        case RTYPE_PORT:
+        case RTYPE_BIG_INTEGER:
+        case RTYPE_BIG_RATIONAL:
+        case RTYPE_EASY_PROC:
+        case RTYPE_EASY_TAIL_PROC:
+            return 1;
+        default:
+            return 0; // this is the safe default -- no harm in evaluating too much
+    }
+}
+
 const char * ritual_typename( const void* p) {
     const ritual_object_t *object = (const ritual_object_t*) p;
     int typeid = RITUAL_TYPE( object );

@@ -137,4 +137,7 @@ void * ritual_xalloc_tls( size_t );
 void ritual_free_tls_size( void*, size_t );
 void * ritual_xrealloc_tls_size( void*, size_t, size_t );
 
+ritual_object_t * ritual_preevaluate( struct ritual_instance *, ritual_object_t*, int *);
+int ritual_selfevaluatingp( struct ritual_instance*, ritual_object_t* );
+
 #endif
