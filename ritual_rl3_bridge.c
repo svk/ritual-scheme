@@ -131,7 +131,13 @@ void rl3ext_eval_discard( struct rl3_context *ctx, ritual_object_t *arg ) {
 }
 
 void rl3ext_taileval( struct rl3_context *ctx, ritual_object_t *arg ) {
-    ritual_error( ctx->inst, "not implemented yet!" );
+    ritual_object_t *obj = ritual_list_peek( ctx->inst, ctx->values );
+    if( RITUAL_TYPE(obj) != RTYPE_PAIR ) {
+        rl3ext_eval( ctx, 0 );
+        return;
+    }
+    // proper tail-context evaluation definitely isn't implemented yet
+    rl3ext_general_error(ctx,0);
 }
 
 void rl3ext_env_push( struct rl3_context *ctx, ritual_object_t *arg ) {
