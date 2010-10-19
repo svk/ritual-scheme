@@ -57,6 +57,7 @@ int main(int argc, char *argv[]) {
     struct rl3_instr *print_forwards = program;
 
     struct rl3_instr *dsc = rl3_mkinstr( &scheme, gctx->DISCARD, 0, 0);
+/*
     program = 0;
     program = rl3_mkinstr( &scheme, gctx->STORE, 0, program );
     jpt = program = rl3_mkinstr( &scheme, gctx->SWAP, 0, program );
@@ -68,6 +69,18 @@ int main(int argc, char *argv[]) {
     program = rl3_mkinstr( &scheme, gctx->CONS, 0, program );
     program = rl3_mkinstr( &scheme, gctx->JUMP, &jpt->header, program );
     program = rl3_reverse( program );
+    */
+    program = 0;
+    struct rl3_instr **writep = &program;
+    writep = rl3_seqinstr( &scheme, gctx->STORE, 0, writep, 0 );
+    writep = rl3_seqinstr( &scheme, gctx->SWAP, 0, writep, &jpt );
+    writep = rl3_seqinstr( &scheme, gctx->IS_NULL, 0, writep, 0 );
+    writep = rl3_seqinstr( &scheme, gctx->BRANCH, &dsc->header, writep, 0 );
+    writep = rl3_seqinstr( &scheme, gctx->SPLIT_PAIR, 0, writep, 0 );
+    writep = rl3_seqinstr( &scheme, gctx->ROTATE, 0, writep, 0 );
+    writep = rl3_seqinstr( &scheme, gctx->SWAP, 0, writep, 0 );
+    writep = rl3_seqinstr( &scheme, gctx->CONS, 0, writep, 0 );
+    writep = rl3_seqinstr( &scheme, gctx->JUMP, &jpt->header, writep, 0 );
 
 	while( 1 ) {
 		char data[1024];

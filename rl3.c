@@ -311,3 +311,12 @@ void rl3_run_one( struct rl3_context* ctx ) {
 int rl3_running( struct rl3_context* ctx ) {
     return ctx->sequences != 0;
 }
+
+struct rl3_instr** rl3_seqinstr( struct ritual_instance* inst, int id, ritual_object_t* arg, struct rl3_instr** last, struct rl3_instr **label) {
+    struct rl3_instr *ins = rl3_mkinstr( inst, id, arg, 0 );
+    *last = ins;
+    if( label ) {
+        *label = ins;
+    }
+    return &ins->next;
+}

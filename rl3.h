@@ -44,6 +44,7 @@ void rl3_run_one( struct rl3_context* );
 ritual_object_t * rl3_run( struct rl3_context*, struct rl3_instr * );
 
 struct rl3_instr* rl3_mkinstr( struct ritual_instance*, int, ritual_object_t*, struct rl3_instr* );
+struct rl3_instr** rl3_seqinstr( struct ritual_instance*, int, ritual_object_t*, struct rl3_instr**, struct rl3_instr** );
 struct rl3_instr* rl3_reverse( struct rl3_instr* );
 
 ritual_object_t * rconvfrom_sequence( struct ritual_instance *, struct rl3_instr *);
