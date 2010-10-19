@@ -86,6 +86,12 @@ void rl3ext_call_native( struct rl3_context *ctx, ritual_object_t *arg ) {
 }
 
 void ritual_rl3_clear_context( struct ritual_rl3_extended_context *ectx, ritual_object_t *rv ) {
+    // Note, better solution for the future: just set an exception flag.
+    // The caller of run*() detects this and aborts the execution.
+    // It then cleans up in this fashion.
+    // This is better because between those two, it can inspect the stacks
+    // to give a more informative error message (a backtrace, basically).
+
     // Back to root environment, but don't discard that.
     while( ectx->environments->cdr ) {
         ritual_list_next( ectx->ctx.inst, &ectx->environments );
@@ -117,7 +123,7 @@ void rl3ext_eval( struct rl3_context *ctx, ritual_object_t *arg ) {
     obj = ritual_preevaluate( ctx->inst, obj, &success );
 
     if( !success ) {
-        // proper evaluation isn't implemented yet
+        // TODO proper evaluation isn't implemented yet
         rl3ext_general_error(ctx,0);
     } else {
         ctx->values->car = obj;
@@ -125,7 +131,7 @@ void rl3ext_eval( struct rl3_context *ctx, ritual_object_t *arg ) {
 }
 
 void rl3ext_eval_discard( struct rl3_context *ctx, ritual_object_t *arg ) {
-        // unoptimized..
+        // TODO unoptimized..
     rl3ext_eval( ctx, 0 );
     rl3_ins_discard( ctx, 0 );
 }
@@ -136,7 +142,7 @@ void rl3ext_taileval( struct rl3_context *ctx, ritual_object_t *arg ) {
         rl3ext_eval( ctx, 0 );
         return;
     }
-    // proper tail-context evaluation definitely isn't implemented yet
+    // TODO proper tail-context evaluation definitely isn't implemented yet
     rl3ext_general_error(ctx,0);
 }
 
