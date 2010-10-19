@@ -25,6 +25,7 @@ struct rl3_global_context {
     int IS_NULL, IS_PAIR;
     int SPLIT_PAIR, PRINT, CONS;
     int JUMP, CALL, BRANCH, BRANCH_NOT;
+    int IS_PAIR_OR_NULL;
 };
 
 struct rl3_context {

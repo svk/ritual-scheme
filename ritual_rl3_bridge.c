@@ -32,6 +32,8 @@ struct rl3_instr ** ritual_rl3_make_arglist_parser( struct ritual_rl3_extended_c
     struct rl3_instr *too_many_arguments = rl3_mkinstr( inst, ext->GENERAL_ERROR, 0, 0 );
     // should probably discard some stuff -- important?
     
+    int was_rest = 0;
+    
     while( arglist ) {
         switch( RITUAL_TYPE( arglist ) ) {
             case RTYPE_PAIR:
@@ -53,10 +55,11 @@ struct rl3_instr ** ritual_rl3_make_arglist_parser( struct ritual_rl3_extended_c
                     struct ritual_symbol *sym = rconvto_symbol( inst, arglist );
                     arglist = 0;
 
-                    last = rl3_seqinstr( inst, gctx->IS_PAIR, 0, last, 0 );
+                    last = rl3_seqinstr( inst, gctx->IS_PAIR_OR_NULL, 0, last, 0 );
                     last = rl3_seqinstr( inst, gctx->BRANCH_NOT, (ritual_object_t*)too_few_arguments, last, 0 );
                     // TODO: map(eval, args)
                     last = rl3_seqinstr( inst, ext->ENV_BIND, rconvfrom_symbol( inst, sym ), last, 0 );
+                    was_rest = 1;
                     break;
                 }
             default:
@@ -64,10 +67,12 @@ struct rl3_instr ** ritual_rl3_make_arglist_parser( struct ritual_rl3_extended_c
         }
     }
 
-        // discard the nil, verifying that it's actually nil
-    last = rl3_seqinstr( inst, gctx->IS_NULL, 0, last, 0 );
-    last = rl3_seqinstr( inst, gctx->BRANCH_NOT, (ritual_object_t*) too_many_arguments, last, 0 );
-    last = rl3_seqinstr( inst, gctx->DISCARD, 0, last, 0 );
+    if( !was_rest ) {
+            // discard the nil, verifying that it's actually nil
+        last = rl3_seqinstr( inst, gctx->IS_NULL, 0, last, 0 );
+        last = rl3_seqinstr( inst, gctx->BRANCH_NOT, (ritual_object_t*) too_many_arguments, last, 0 );
+        last = rl3_seqinstr( inst, gctx->DISCARD, 0, last, 0 );
+    }
 
     return last;
 }

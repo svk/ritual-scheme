@@ -43,7 +43,8 @@ int main(int argc, char *argv[]) {
 
     ritual_define_native_proc( &scheme, scheme.root, "eq?", rnp_eqp );
     ritual_define_native_proc( &scheme, scheme.root, "ritual-print-diagnostics", rnp_ritual_print_diagnostics );
-    renvp_define_proper( &scheme, scheme.root, renvp_ritual_typename, "ritual-typename", "object", 0 );
+    ritual_define_envproc( &scheme, scheme.root, renvp_ritual_typename, "ritual-typename", "object", 0 );
+    ritual_define_envproc( &scheme, scheme.root, renvp_ritual_typenames, "ritual-typenames", RSENT_REST, "rest", 0 );
     ritual_define_native_proc( &scheme, scheme.root, "ritual-trace", rnp_ritual_trace );
 
     

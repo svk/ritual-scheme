@@ -7,6 +7,12 @@
 
 #include "ritual_rl3_bridge.h"
 
+#include <assert.h>
+
+static char ritual_sentry_rest[] = "&rest";
+
+const char * RSENT_REST = ritual_sentry_rest;
+
 struct ritual_env * ritual_envproc_bind( struct ritual_instance *inst,
                                          struct ritual_env *env,
                                          ritual_object_t *params,
@@ -57,14 +63,27 @@ struct ritual_env * ritual_envproc_bind( struct ritual_instance *inst,
     return rv;
 }
 
+ritual_object_t * renvp_ritual_typenames( struct ritual_instance *inst,
+                                          struct ritual_env *env ) {
+    struct ritual_pair *pair = rconvto_list( inst, ritual_env_lookup( inst, env, "rest" ) );
+    struct ritual_pair *rv = 0;
+    struct ritual_pair **tail = &rv;
+    while( pair ) {
+        ritual_object_t *obj = ritual_list_next( inst, &pair );
+        ritual_object_t *name = (ritual_object_t*) ritual_ascii_string_create( inst, ritual_typename( obj ) );
+        *tail = ritual_pair_create( inst, name, 0 );
+        tail = (struct ritual_pair**) &(*tail)->cdr;
+    }
+    return (ritual_object_t*) rv;
+}
+
 ritual_object_t * renvp_ritual_typename( struct ritual_instance *inst,
                                          struct ritual_env *env ) {
-    fprintf( stderr, "triggered!\n" );
     ritual_object_t * obj = ritual_env_lookup( inst, env, "object" );
     return (ritual_object_t*) ritual_ascii_string_create( inst, ritual_typename( obj ) );
 }
 
-void renvp_define_proper( struct ritual_instance *inst,
+void ritual_define_envproc( struct ritual_instance *inst,
                                        struct ritual_env *env,
                                        ritual_envproc_t func,
                                        const char *name,
@@ -79,6 +98,20 @@ void renvp_define_proper( struct ritual_instance *inst,
     const char *argname;
     va_start( args, name );
     while( (argname = va_arg( args, const char* )) ) {
+        if( argname == RSENT_REST ) {
+            argname = va_arg( args, const char * );
+
+            ritual_object_t * sym = rconvfrom_symbol( inst, ritual_symbol_create( inst, argname ) );
+            if( current ) {
+                current->cdr = sym;
+            } else {
+                params = (struct ritual_pair*) sym; // ugh
+            }
+
+            argname = va_arg( args, const char * );
+            assert( !argname );
+            break;
+        }
         ritual_object_t * sym = rconvfrom_symbol( inst, ritual_symbol_create( inst, argname ) );
         struct ritual_pair *moreparams = ritual_pair_create( inst, sym, 0 );
         if( current ) {
@@ -90,7 +123,7 @@ void renvp_define_proper( struct ritual_instance *inst,
     }
     va_end( args );
 
-    rv->params = rconvfrom_pair( inst, params );
+    rv->params = (ritual_object_t*) params; // ew
 
     ritual_rl3_compile_envproc( inst, rv );
 

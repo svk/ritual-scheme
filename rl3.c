@@ -84,6 +84,15 @@ void rl3_ins_is_null(struct rl3_context *ctx, ritual_object_t *arg) {
     }
 }
 
+void rl3_ins_is_pair_or_null(struct rl3_context *ctx, ritual_object_t *arg) {
+    ritual_object_t *top = ritual_list_peek( ctx->inst, ctx->values );
+    if( !top || RITUAL_TYPE(top) == RTYPE_PAIR ) {
+        ritual_list_push( ctx->inst, &ctx->values, ctx->inst->scheme_true );
+    } else {
+        ritual_list_push( ctx->inst, &ctx->values, ctx->inst->scheme_false );
+    }
+}
+
 void rl3_ins_is_pair(struct rl3_context *ctx, ritual_object_t *arg) {
     ritual_object_t *top = ritual_list_peek( ctx->inst, ctx->values );
     if( RITUAL_TYPE(top) == RTYPE_PAIR ) {
@@ -166,6 +175,7 @@ struct rl3_global_context * rl3_initialize(void) {
 
         gctx->IS_NULL = rl3_register_instruction( gctx, rl3_ins_is_null, "IS-NULL" );
         gctx->IS_PAIR = rl3_register_instruction( gctx, rl3_ins_is_pair, "IS-PAIR" );
+        gctx->IS_PAIR_OR_NULL = rl3_register_instruction( gctx, rl3_ins_is_pair_or_null, "IS-PAIR" );
 
         gctx->SPLIT_PAIR = rl3_register_instruction( gctx, rl3_ins_split_pair, "SPLIT-PAIR" );
         gctx->CONS = rl3_register_instruction( gctx, rl3_ins_cons, "CONS" );
