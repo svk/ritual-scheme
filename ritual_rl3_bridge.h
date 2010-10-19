@@ -41,4 +41,5 @@ struct rl3_instr ** ritual_rl3_make_arglist_parser( struct ritual_rl3_extended_c
 void ritual_rl3_compile_envproc( struct ritual_instance *,
                                  struct ritual_envproc * );
 
+void ritual_rl3_clear_context( struct ritual_rl3_extended_context *, ritual_object_t *);
 #endif

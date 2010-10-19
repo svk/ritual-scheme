@@ -26,6 +26,9 @@ struct rl3_instr ** ritual_rl3_make_arglist_parser( struct ritual_rl3_extended_c
     struct ritual_rl3_extensions *ext = ectx->ext;
     struct ritual_instance *inst = ectx->ctx.inst;
 
+    struct rl3_instr *too_few_arguments = rl3_mkinstr( inst, ext->GENERAL_ERROR, 0, 0 );
+    // should probably discard some stuff -- important?
+
     struct rl3_instr *too_many_arguments = rl3_mkinstr( inst, ext->GENERAL_ERROR, 0, 0 );
     // should probably discard some stuff -- important?
     
@@ -37,7 +40,10 @@ struct rl3_instr ** ritual_rl3_make_arglist_parser( struct ritual_rl3_extended_c
                     struct ritual_symbol *sym = rconvto_symbol( inst, pair->car );
                     arglist = pair->cdr;
 
+                    last = rl3_seqinstr( inst, gctx->IS_PAIR, 0, last, 0 );
+                    last = rl3_seqinstr( inst, gctx->BRANCH_NOT, (ritual_object_t*)too_few_arguments, last, 0 );
                     last = rl3_seqinstr( inst, gctx->SPLIT_PAIR, 0, last, 0 );
+                    last = rl3_seqinstr( inst, ext->EVAL, 0, last, 0 );
                     last = rl3_seqinstr( inst, ext->ENV_BIND, rconvfrom_symbol( inst, sym ), last, 0 );
 
                     break;
@@ -47,6 +53,9 @@ struct rl3_instr ** ritual_rl3_make_arglist_parser( struct ritual_rl3_extended_c
                     struct ritual_symbol *sym = rconvto_symbol( inst, arglist );
                     arglist = 0;
 
+                    last = rl3_seqinstr( inst, gctx->IS_PAIR, 0, last, 0 );
+                    last = rl3_seqinstr( inst, gctx->BRANCH_NOT, (ritual_object_t*)too_few_arguments, last, 0 );
+                    // TODO: map(eval, args)
                     last = rl3_seqinstr( inst, ext->ENV_BIND, rconvfrom_symbol( inst, sym ), last, 0 );
                     break;
                 }
@@ -76,22 +85,52 @@ void rl3ext_call_native( struct rl3_context *ctx, ritual_object_t *arg ) {
     ritual_list_push( ctx->inst, &ctx->values, rv );
 }
 
+void ritual_rl3_clear_context( struct ritual_rl3_extended_context *ectx, ritual_object_t *rv ) {
+    // Back to root environment, but don't discard that.
+    while( ectx->environments->cdr ) {
+        ritual_list_next( ectx->ctx.inst, &ectx->environments );
+    }
+
+    // Discard all scheduled instructions.
+    ectx->ctx.sequences = 0;
+
+    // Discard all current values and return rv.
+    ectx->ctx.values = 0;
+    ritual_list_push( ectx->ctx.inst, &ectx->ctx.values, rv );
+}
+
 void rl3ext_general_error( struct rl3_context *ctx, ritual_object_t *arg ) {
+    ritual_rl3_clear_context( (struct ritual_rl3_extended_context*) ctx, 0 );
+
     ritual_error( ctx->inst, "generic unhelpful error!" );
 }
 
 void rl3ext_eval( struct rl3_context *ctx, ritual_object_t *arg ) {
 //    struct ritual_rl3_extended_context *ectx = (struct ritual_rl3_extended_context*) ctx;
-    ritual_error( ctx->inst, "not implemented yet!" );
+    ritual_object_t *obj = ritual_list_peek( ctx->inst, ctx->values );
+
+    if( ritual_selfevaluatingp( ctx->inst, obj ) ) {
+        return;
+    }
+
+    int success;
+    obj = ritual_preevaluate( ctx->inst, obj, &success );
+
+    if( !success ) {
+        // proper evaluation isn't implemented yet
+        rl3ext_general_error(ctx,0);
+    } else {
+        ctx->values->car = obj;
+    }
 }
 
 void rl3ext_eval_discard( struct rl3_context *ctx, ritual_object_t *arg ) {
-//    struct ritual_rl3_extended_context *ectx = (struct ritual_rl3_extended_context*) ctx;
-    ritual_error( ctx->inst, "not implemented yet!" );
+        // unoptimized..
+    rl3ext_eval( ctx, 0 );
+    rl3_ins_discard( ctx, 0 );
 }
 
 void rl3ext_taileval( struct rl3_context *ctx, ritual_object_t *arg ) {
-//    struct ritual_rl3_extended_context *ectx = (struct ritual_rl3_extended_context*) ctx;
     ritual_error( ctx->inst, "not implemented yet!" );
 }
 
