@@ -298,6 +298,7 @@ void rl3_run_one( struct rl3_context* ctx ) {
 #ifdef VERBOSE_DEBUG
     rl3_print_instruction( ctx, ctx->inst->flo_stderr, ins );
     fprintf( stderr, "\n" );
+    rl3_debug_show( ctx );
 #endif
     ctx->global->ptr[ ins->id - 1 ](ctx, ins->arg );
 }

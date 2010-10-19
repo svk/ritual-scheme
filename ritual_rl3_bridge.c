@@ -48,6 +48,11 @@
  *       Do evaluation first so stuff starts working.
  */
 
+/* TODO fix bug: this binding construct is LET*, not LET which is used for
+   function application */
+
+// but might as well make it work before we fix it
+
 void ritual_rl3_compile_envproc( struct ritual_instance *inst,
                                                struct ritual_envproc *envproc ) {
     envproc->entry = 0;
@@ -62,6 +67,9 @@ struct rl3_instr ** ritual_rl3_make_arglist_parser( struct ritual_rl3_extended_c
     struct rl3_global_context *gctx = ectx->ctx.global;
     struct ritual_rl3_extensions *ext = ectx->ext;
     struct ritual_instance *inst = ectx->ctx.inst;
+
+    struct rl3_instr *borked_value_list = rl3_mkinstr( inst, ext->GENERAL_ERROR, 0, 0 );
+    // should probably discard some stuff -- important?
 
     struct rl3_instr *too_few_arguments = rl3_mkinstr( inst, ext->GENERAL_ERROR, 0, 0 );
     // should probably discard some stuff -- important?
@@ -93,9 +101,28 @@ struct rl3_instr ** ritual_rl3_make_arglist_parser( struct ritual_rl3_extended_c
                     arglist = 0;
 
                     last = rl3_seqinstr( inst, gctx->IS_PAIR_OR_NULL, 0, last, 0 );
-                    last = rl3_seqinstr( inst, gctx->BRANCH_NOT, (ritual_object_t*)too_few_arguments, last, 0 );
-                    // TODO: map(eval, args)
-                    last = rl3_seqinstr( inst, ext->ENV_BIND, rconvfrom_symbol( inst, sym ), last, 0 );
+                    last = rl3_seqinstr( inst, gctx->BRANCH_NOT, (ritual_object_t*)borked_value_list, last, 0 );
+
+                    struct rl3_instr * ending = 0;
+                    struct rl3_instr **ending_writep = &ending;
+                    ending_writep = rl3_seqinstr( inst, gctx->DISCARD, 0, ending_writep, 0 );
+                    ending_writep = rl3_seqinstr( inst, ext->ENV_BIND, rconvfrom_symbol( inst, sym ), ending_writep, 0 );
+
+                    struct rl3_instr * looplabel;
+
+                    last = rl3_seqinstr( inst, gctx->STORE, 0, last, 0 );
+                    last = rl3_seqinstr( inst, gctx->SWAP, 0, last, &looplabel);
+                    last = rl3_seqinstr( inst, gctx->IS_NULL, 0, last, 0 );
+                    last = rl3_seqinstr( inst, gctx->BRANCH, (ritual_object_t*) ending, last, 0);
+//                    last = rl3_seqinstr( inst, gctx->SWAP, 0, last, 0);
+                    last = rl3_seqinstr( inst, gctx->SPLIT_PAIR, 0, last, 0);
+                    last = rl3_seqinstr( inst, gctx->ROTATE, 0, last, 0);
+                    last = rl3_seqinstr( inst, gctx->SWAP, 0, last, 0);
+                    last = rl3_seqinstr( inst, ext->EVAL, 0, last, 0);
+                    last = rl3_seqinstr( inst, gctx->CONS, 0, last, 0);
+                    last = rl3_seqinstr( inst, gctx->JUMP, (ritual_object_t*) looplabel, last, 0);
+
+                    last = ending_writep;
                     was_rest = 1;
                     break;
                 }
