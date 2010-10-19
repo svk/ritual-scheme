@@ -93,6 +93,10 @@
  *    int (*p)(
  */
 
+/* Note: with the new RL3 scheme, because we will assume
+ * atomicity of RL3 instructions, we will not need
+ * pinning at all */
+
 void rgc_initialize( struct ritual_instance *inst,
                      struct ritual_gc_instance * gc ) {
     gc->all = 0;
