@@ -5,6 +5,8 @@
 
 #include <stdarg.h>
 
+#include "ritual_rl3_bridge.h"
+
 struct ritual_env * ritual_envproc_bind( struct ritual_instance *inst,
                                          struct ritual_env *env,
                                          ritual_object_t *params,
@@ -57,6 +59,7 @@ struct ritual_env * ritual_envproc_bind( struct ritual_instance *inst,
 
 ritual_object_t * renvp_ritual_typename( struct ritual_instance *inst,
                                          struct ritual_env *env ) {
+    fprintf( stderr, "triggered!\n" );
     ritual_object_t * obj = ritual_env_lookup( inst, env, "object" );
     return (ritual_object_t*) ritual_ascii_string_create( inst, ritual_typename( obj ) );
 }
@@ -88,6 +91,8 @@ void renvp_define_proper( struct ritual_instance *inst,
     va_end( args );
 
     rv->params = rconvfrom_pair( inst, params );
+
+    ritual_rl3_compile_envproc( inst, rv );
 
     ritual_env_define( inst, env, name, (ritual_object_t*) rv );
 }

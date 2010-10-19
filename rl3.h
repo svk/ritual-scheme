@@ -17,7 +17,9 @@ struct rl3_instr {
 struct rl3_global_context {
     int size;
     int next_id;
+
     void (**ptr)(struct rl3_context*, ritual_object_t*);
+    const char **desc;
 
     int DUP, STORE, DISCARD, SWAP, ROTATE;
     int IS_NULL, IS_PAIR;
@@ -36,7 +38,7 @@ struct rl3_context {
 
 struct rl3_global_context * rl3_initialize(void);
 void rl3_deinitialize(struct rl3_global_context*);
-int rl3_register_instruction(struct rl3_global_context*, void (*p)(struct rl3_context*,ritual_object_t*) );
+int rl3_register_instruction(struct rl3_global_context*, void (*p)(struct rl3_context*,ritual_object_t*), const char* );
 
 void rl3_context_init( struct rl3_context*, struct rl3_global_context*, struct ritual_instance* );
 
@@ -51,4 +53,7 @@ struct rl3_instr* rl3_reverse( struct rl3_instr* );
 ritual_object_t * rconvfrom_sequence( struct ritual_instance *, struct rl3_instr *);
 struct rl3_instr *rconvto_sequence( struct ritual_instance *,ritual_object_t * );
 
+void rl3_print_instruction( struct rl3_context *,
+                            struct ritual_flo *,
+                            void *);
 #endif

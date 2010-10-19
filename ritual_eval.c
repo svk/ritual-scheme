@@ -9,6 +9,9 @@
 
 #include "ritual_keyword.h"
 
+#include "rl3.h"
+#include "ritual_rl3_bridge.h"
+
 ritual_object_t * ritual_eval( struct ritual_instance *inst,
                                struct ritual_env *env,
                                ritual_object_t *value ) {
@@ -181,11 +184,8 @@ ritual_object_t * ritual_eval( struct ritual_instance *inst,
                         case RTYPE_ENVPROC:
                             {
                                 struct ritual_envproc *env_proc = (struct ritual_envproc*) proc;
-                                struct ritual_env *newenv = ritual_envproc_bind( inst,
-                                                                                 env,
-                                                                                 env_proc->params,
-                                                                                 rconvto_list( inst, pair->cdr ) );
-                                return env_proc->procedure( inst, newenv );
+                                ritual_list_push( inst, &inst->rl3_ctx->ctx.values, pair->cdr );
+                                return rl3_run( (struct rl3_context*) inst->rl3_ctx, env_proc->entry );
                             }
                         case RTYPE_LAMBDA_PROC:
                             {

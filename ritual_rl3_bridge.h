@@ -5,6 +5,8 @@
 
 #include "ritual_object.h"
 
+#include "ritual_envproc.h"
+
 struct ritual_rl3_extensions {
     int EVAL, EVAL_DISCARD, TAILEVAL;
     int ENV_PUSH, ENV_DISCARD, ENV_REPLACE, ENV_BIND;
@@ -31,5 +33,12 @@ struct ritual_rl3_procedure {
 
 void ritual_initialize_rl3_extensions( struct rl3_global_context*, struct ritual_rl3_extensions* );
 void ritual_initialize_extended_rl3_context( struct ritual_rl3_extended_context*, struct rl3_global_context*, struct ritual_instance *, struct ritual_env* );
+
+struct rl3_instr ** ritual_rl3_make_arglist_parser( struct ritual_rl3_extended_context *,
+                                                    ritual_object_t *,
+                                                    struct rl3_instr ** );
+
+void ritual_rl3_compile_envproc( struct ritual_instance *,
+                                 struct ritual_envproc * );
 
 #endif

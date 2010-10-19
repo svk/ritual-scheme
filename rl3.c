@@ -8,6 +8,10 @@
 
 #include "ritual_generic.h"
 
+#include <assert.h>
+
+#define VERBOSE_DEBUG
+
 void rl3_debug_show( struct rl3_context *ctx ) {
     struct ritual_pair *current = ctx->sequences;
     int n = 0;
@@ -37,35 +41,19 @@ void rl3_debug_show( struct rl3_context *ctx ) {
 }
 
 void rl3_ins_dup(struct rl3_context *ctx, ritual_object_t *arg) {
-#ifdef VERBOSE_DEBUG
-    fprintf( stderr, "dup\n" );
-    rl3_debug_show(ctx);
-#endif
     ritual_object_t *top = ritual_list_peek( ctx->inst, ctx->values );
     ritual_list_push( ctx->inst, &ctx->values, top );
 }
 
 void rl3_ins_store(struct rl3_context *ctx, ritual_object_t *arg) {
-#ifdef VERBOSE_DEBUG
-    fprintf( stderr, "store\n" );
-    rl3_debug_show(ctx);
-#endif
     ritual_list_push( ctx->inst, &ctx->values, arg );
 }
 
 void rl3_ins_discard(struct rl3_context *ctx, ritual_object_t *arg) {
-#ifdef VERBOSE_DEBUG
-    fprintf( stderr, "discard\n" );
-    rl3_debug_show(ctx);
-#endif
     ritual_list_next( ctx->inst, &ctx->values );
 }
 
 void rl3_ins_swap(struct rl3_context *ctx, ritual_object_t *arg) {
-#ifdef VERBOSE_DEBUG
-    fprintf( stderr, "swap\n" );
-    rl3_debug_show(ctx);
-#endif
     // keep in mind these are "atomic" wrt the GC,
     // so we can afford some tomfoolery
     ritual_object_t **first = &ctx->values->car;
@@ -76,10 +64,6 @@ void rl3_ins_swap(struct rl3_context *ctx, ritual_object_t *arg) {
 }
 
 void rl3_ins_rotate(struct rl3_context *ctx, ritual_object_t *arg) {
-#ifdef VERBOSE_DEBUG
-    fprintf( stderr, "rotate\n" );
-    rl3_debug_show(ctx);
-#endif
     ritual_object_t **first = &ctx->values->car;
     struct ritual_pair *firstp = rconvto_list( ctx->inst, ctx->values->cdr );
     ritual_object_t **second = &firstp->car;
@@ -92,10 +76,6 @@ void rl3_ins_rotate(struct rl3_context *ctx, ritual_object_t *arg) {
 }
 
 void rl3_ins_is_null(struct rl3_context *ctx, ritual_object_t *arg) {
-#ifdef VERBOSE_DEBUG
-    fprintf( stderr, "is null\n" );
-    rl3_debug_show(ctx);
-#endif
     ritual_object_t *top = ritual_list_peek( ctx->inst, ctx->values );
     if( !top ) {
         ritual_list_push( ctx->inst, &ctx->values, ctx->inst->scheme_true );
@@ -105,10 +85,6 @@ void rl3_ins_is_null(struct rl3_context *ctx, ritual_object_t *arg) {
 }
 
 void rl3_ins_is_pair(struct rl3_context *ctx, ritual_object_t *arg) {
-#ifdef VERBOSE_DEBUG
-    fprintf( stderr, "pair\n" );
-    rl3_debug_show(ctx);
-#endif
     ritual_object_t *top = ritual_list_peek( ctx->inst, ctx->values );
     if( RITUAL_TYPE(top) == RTYPE_PAIR ) {
         ritual_list_push( ctx->inst, &ctx->values, ctx->inst->scheme_true );
@@ -118,11 +94,11 @@ void rl3_ins_is_pair(struct rl3_context *ctx, ritual_object_t *arg) {
 }
 
 void rl3_ins_split_pair(struct rl3_context *ctx, ritual_object_t *arg) {
-#ifdef VERBOSE_DEBUG
-    fprintf( stderr, "split-pair\n" );
-    rl3_debug_show(ctx);
-#endif
+    assert( ctx->values );
+
     ritual_object_t **first = &ctx->values->car;
+
+    assert( RITUAL_TYPE( *first ) == RTYPE_PAIR );
 
     struct ritual_pair *pair = rconvto_pair( ctx->inst, *first );
     ritual_object_t *obj = pair->car;
@@ -132,10 +108,6 @@ void rl3_ins_split_pair(struct rl3_context *ctx, ritual_object_t *arg) {
 }
 
 void rl3_ins_cons(struct rl3_context *ctx, ritual_object_t *arg) {
-#ifdef VERBOSE_DEBUG
-    fprintf( stderr, "cons\n" );
-    rl3_debug_show(ctx);
-#endif
     ritual_object_t *first = ritual_list_next( ctx->inst, &ctx->values );
     ritual_object_t *second = ritual_list_next( ctx->inst, &ctx->values );
     struct ritual_pair *pair = ritual_pair_create( ctx->inst, first, second );
@@ -143,36 +115,19 @@ void rl3_ins_cons(struct rl3_context *ctx, ritual_object_t *arg) {
 }
 
 void rl3_ins_print(struct rl3_context *ctx, ritual_object_t *arg) {
-#ifdef VERBOSE_DEBUG
-    fprintf( stderr, "print\n" );
-    rl3_debug_show(ctx);
-#endif
     ritual_object_t *obj = ritual_list_next( ctx->inst, &ctx->values );
     ritual_print( ctx->inst, ctx->inst->flo_stdout, obj );
 }
 
 void rl3_ins_jump(struct rl3_context *ctx, ritual_object_t *arg) {
-#ifdef VERBOSE_DEBUG
-    fprintf( stderr, "jump\n" );
-    rl3_debug_show(ctx);
-#endif
     ctx->sequences->car = (ritual_object_t*) arg;
 }
 
 void rl3_ins_call(struct rl3_context *ctx, ritual_object_t *arg) {
-#ifdef VERBOSE_DEBUG
-    fprintf( stderr, "call\n" );
-    rl3_debug_show(ctx);
-#endif
     ritual_list_push( ctx->inst, &ctx->sequences, arg );
 }
 
 void rl3_ins_branch_not(struct rl3_context *ctx, ritual_object_t *arg) {
-#ifdef VERBOSE_DEBUG
-    fprintf( stderr, "branch-not\n" );
-    rl3_debug_show(ctx);
-#endif
-
     ritual_object_t *top = ritual_list_next( ctx->inst, &ctx->values );
     if( !RITUAL_AS_BOOLEAN( ctx->inst, top ) ) {
         rl3_ins_jump( ctx, arg );
@@ -181,11 +136,6 @@ void rl3_ins_branch_not(struct rl3_context *ctx, ritual_object_t *arg) {
 
 
 void rl3_ins_branch(struct rl3_context *ctx, ritual_object_t *arg) {
-#ifdef VERBOSE_DEBUG
-    fprintf( stderr, "branch\n" );
-    rl3_debug_show(ctx);
-#endif
-
     ritual_object_t *top = ritual_list_next( ctx->inst, &ctx->values );
     if( RITUAL_AS_BOOLEAN( ctx->inst, top ) ) {
         rl3_ins_jump( ctx, arg );
@@ -199,31 +149,39 @@ struct rl3_global_context * rl3_initialize(void) {
     do {
         memset( gctx, 0, sizeof *gctx );
         gctx->size = 32;
+
         gctx->ptr = malloc(sizeof *gctx->ptr * gctx->size);
         if( !gctx->ptr ) break;
+
+        gctx->desc = malloc(sizeof *gctx->desc * gctx->size);
+        if( !gctx->desc ) break;
+
         gctx->next_id = 1;
 
-        gctx->DUP = rl3_register_instruction( gctx, rl3_ins_dup );
-        gctx->STORE = rl3_register_instruction( gctx, rl3_ins_store );
-        gctx->DISCARD = rl3_register_instruction( gctx, rl3_ins_discard );
-        gctx->SWAP = rl3_register_instruction( gctx, rl3_ins_swap );
-        gctx->ROTATE = rl3_register_instruction( gctx, rl3_ins_rotate );
+        gctx->DUP = rl3_register_instruction( gctx, rl3_ins_dup, "DUP" );
+        gctx->STORE = rl3_register_instruction( gctx, rl3_ins_store, "STORE" );
+        gctx->DISCARD = rl3_register_instruction( gctx, rl3_ins_discard, "DISCARD" );
+        gctx->SWAP = rl3_register_instruction( gctx, rl3_ins_swap, "SWAP" );
+        gctx->ROTATE = rl3_register_instruction( gctx, rl3_ins_rotate, "ROTATE" );
 
-        gctx->IS_NULL = rl3_register_instruction( gctx, rl3_ins_is_null );
-        gctx->IS_PAIR = rl3_register_instruction( gctx, rl3_ins_is_pair );
+        gctx->IS_NULL = rl3_register_instruction( gctx, rl3_ins_is_null, "IS-NULL" );
+        gctx->IS_PAIR = rl3_register_instruction( gctx, rl3_ins_is_pair, "IS-PAIR" );
 
-        gctx->SPLIT_PAIR = rl3_register_instruction( gctx, rl3_ins_split_pair );
-        gctx->CONS = rl3_register_instruction( gctx, rl3_ins_cons );
-        gctx->PRINT = rl3_register_instruction( gctx, rl3_ins_print );
-//        gctx->READ = rl3_register_instruction( gctx, rl3_ins_read );
+        gctx->SPLIT_PAIR = rl3_register_instruction( gctx, rl3_ins_split_pair, "SPLIT-PAIR" );
+        gctx->CONS = rl3_register_instruction( gctx, rl3_ins_cons, "CONS" );
+        gctx->PRINT = rl3_register_instruction( gctx, rl3_ins_print, "PRINT" );
+//        gctx->READ = rl3_register_instruction( gctx, rl3_ins_read, "READ" );
 
-        gctx->JUMP = rl3_register_instruction( gctx, rl3_ins_jump );
-        gctx->CALL = rl3_register_instruction( gctx, rl3_ins_call );
-        gctx->BRANCH = rl3_register_instruction( gctx, rl3_ins_branch );
-        gctx->BRANCH_NOT = rl3_register_instruction( gctx, rl3_ins_branch_not );
+        gctx->JUMP = rl3_register_instruction( gctx, rl3_ins_jump, "JUMP" );
+        gctx->CALL = rl3_register_instruction( gctx, rl3_ins_call, "CALL" );
+        gctx->BRANCH = rl3_register_instruction( gctx, rl3_ins_branch, "BRANCH" );
+        gctx->BRANCH_NOT = rl3_register_instruction( gctx, rl3_ins_branch_not, "BRANCH-NOT" );
 
         return gctx;
     } while(0);
+    if( gctx->desc ) {
+        free( gctx->desc );
+    }
     if( gctx->ptr ) {
         free( gctx->ptr );
     }
@@ -237,17 +195,24 @@ void rl3_deinitialize(struct rl3_global_context* gctx) {
     free( gctx );
 }
 
-int rl3_register_instruction(struct rl3_global_context *gctx, void (*p)(struct rl3_context*,ritual_object_t*) ) {
+int rl3_register_instruction(struct rl3_global_context *gctx, void (*p)(struct rl3_context*,ritual_object_t*), const char *name ) {
     int id = gctx->next_id++;
     while( id >= gctx->size ) {
         void *mem = realloc( gctx->ptr, sizeof *gctx->ptr * gctx->size * 2);
         if( !mem ) {
             return -1;
         }
+        void *mem2 = realloc( gctx->desc, sizeof *gctx->desc * gctx->size * 2);
+        if( !mem2 ) {
+            free( mem );
+            return -1;
+        }
         gctx->size *= 2;
         gctx->ptr = mem;
+        gctx->desc = mem2;
     }
     gctx->ptr[id - 1] = p;
+    gctx->desc[id - 1] = name;
     return id;
 }
 
@@ -319,6 +284,11 @@ void rl3_run_one( struct rl3_context* ctx ) {
 
     struct rl3_instr *ins = rconvto_sequence( ctx->inst, obj );
     ritual_pair_setcar( ctx->inst, ctx->sequences, rconvfrom_sequence( ctx->inst, ins->next ) );
+
+#ifdef VERBOSE_DEBUG
+    rl3_print_instruction( ctx, ctx->inst->flo_stderr, ins );
+    fprintf( stderr, "\n" );
+#endif
     ctx->global->ptr[ ins->id - 1 ](ctx, ins->arg );
 }
 
@@ -333,4 +303,20 @@ struct rl3_instr** rl3_seqinstr( struct ritual_instance* inst, int id, ritual_ob
         *label = ins;
     }
     return &ins->next;
+}
+
+void rl3_print_instruction( struct rl3_context *ctx,
+                            struct ritual_flo *flo,
+                            void *obj ) {
+    struct rl3_instr *instr = obj;
+    rflo_putstring( flo, ctx->global->desc[ instr->id - 1 ] );
+    rflo_putchar( flo, ' ' );
+    switch( RITUAL_TYPE( instr->arg ) ) {
+        case RTYPE_RL3INSTRUCTION:
+            rflo_putstring( flo, "<instruction>" );
+            break;
+        default:
+            ritual_print( ctx->inst, flo, instr->arg );
+            break;
+    }
 }
