@@ -25,6 +25,11 @@ struct ritual_error_instance;
 struct ritual_env;
 struct ritual_flo;
 
+struct rl3_global_context;
+struct ritual_rl3_extensions;
+struct ritual_rl3_extended_context;
+
+
 struct ritual_instance {
     struct ritual_gc_instance *gc;
     struct ritual_error_instance *error;
@@ -41,6 +46,13 @@ struct ritual_instance {
     // handy for debugging
     struct ritual_flo * flo_stdout;
     struct ritual_flo * flo_stderr;
+
+    // RL3 -- could be global
+    struct rl3_global_context *rl3_global;
+    struct ritual_rl3_extensions *rl3_ext;
+
+    // RL3 -- per execution ("thread")
+    struct ritual_rl3_extended_context *rl3_ctx;
 
     // diagnostics
     int total_bytes_allocated;

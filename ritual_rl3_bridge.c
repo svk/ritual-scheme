@@ -122,3 +122,10 @@ void ritual_initialize_rl3_extensions( struct rl3_global_context* gctx, struct r
 
     ext->CALL_NATIVE = rl3_register_instruction( gctx, rl3ext_call_native );
 }
+
+void ritual_initialize_extended_rl3_context( struct ritual_rl3_extended_context *ectx, struct rl3_global_context* gctx, struct ritual_instance *inst, struct ritual_env *root ) {
+    rl3_context_init( &ectx->ctx, gctx, inst );
+
+    ectx->environments = 0;
+    ritual_list_push( inst, &ectx->environments, (ritual_object_t*) root );
+}

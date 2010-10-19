@@ -1,10 +1,11 @@
 #ifndef H_RL3
 #define H_RL3
 
+struct rl3_context;
+struct rl3_global_context;
+
 #include "ritual_object.h"
 #include "ritual_basic_types.h"
-
-struct rl3_context;
 
 struct rl3_instr {
     ritual_object_t header;

@@ -17,6 +17,8 @@
 
 #include "ritual_basic_procs.h"
 
+#include "ritual_rl3_bridge.h"
+
 #include <string.h>
 #include <stdlib.h>
 
@@ -52,6 +54,17 @@ int ritual_initialize_instance( struct ritual_instance * inst ) {
         inst->symbol_table->memory_context = inst;
         inst->symbol_table->ht_alloc = (void* (*)(void*,int)) ritual_alloc;
         inst->symbol_table->ht_free = (void (*)(void*,void*)) ritual_free;
+
+        inst->rl3_global = rl3_initialize();
+        if( !inst->rl3_global ) break;
+
+        inst->rl3_ext = malloc(sizeof *inst->rl3_ext);
+        if( !inst->rl3_ext ) break;
+        ritual_initialize_rl3_extensions( inst->rl3_global, inst->rl3_ext );
+
+        inst->rl3_ctx = malloc(sizeof *inst->rl3_ctx);
+        if( !inst->rl3_ctx ) break;
+        ritual_initialize_extended_rl3_context( inst->rl3_ctx, inst->rl3_global, inst, inst->root );
 
         /* These objects are GCed on deinitialization as all others
          * and we do not need to free them. On the contrary, we need
@@ -114,6 +127,15 @@ int ritual_initialize_instance( struct ritual_instance * inst ) {
 
         return 0;
     } while(0);
+    if( inst->rl3_ctx ) {
+        free( inst->rl3_ctx );
+    }
+    if( inst->rl3_ext ) {
+        free( inst->rl3_ext );
+    }
+    if( inst->rl3_global ) {
+        rl3_deinitialize( inst->rl3_global );
+    }
     if( inst->gc ) {
         rgc_deinitialize( inst, inst->gc );
         free( inst->gc );

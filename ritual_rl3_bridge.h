@@ -30,5 +30,6 @@ struct ritual_rl3_procedure {
 };
 
 void ritual_initialize_rl3_extensions( struct rl3_global_context*, struct ritual_rl3_extensions* );
+void ritual_initialize_extended_rl3_context( struct ritual_rl3_extended_context*, struct rl3_global_context*, struct ritual_instance *, struct ritual_env* );
 
 #endif
