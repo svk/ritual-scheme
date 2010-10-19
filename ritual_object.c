@@ -15,6 +15,8 @@
 #include <pthread.h>
 #include <string.h>
 
+#include "ritual_basic_types.h"
+
 int ritual_typepred[RTYPE_NUM_TYPES] = {
     RTYPEPRED_NONE,
     RTYPEPRED_NONE,
@@ -210,7 +212,7 @@ ritual_object_t * ritual_preevaluate( struct ritual_instance *inst, ritual_objec
     switch( RITUAL_TYPE( obj ) ) {
         case RTYPE_QUOTE:
             {
-                struct ritual_quote *quote = (struct ritual_quote*) value;
+                struct ritual_quote *quote = (struct ritual_quote*) obj;
                 return quote->quoted;
             }
     }

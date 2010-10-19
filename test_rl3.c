@@ -51,7 +51,7 @@ int main(int argc, char *argv[]) {
     program = rl3_mkinstr( &scheme, gctx->BRANCH, 0, program );
     program = rl3_mkinstr( &scheme, gctx->SPLIT_PAIR, 0, program );
     program = rl3_mkinstr( &scheme, gctx->PRINT, 0, program );
-    program = rl3_mkinstr( &scheme, gctx->JUMP, jpt, program );
+    program = rl3_mkinstr( &scheme, gctx->JUMP, &jpt->header, program );
     program = rl3_reverse( program );
 
     struct rl3_instr *print_forwards = program;
@@ -61,12 +61,12 @@ int main(int argc, char *argv[]) {
     program = rl3_mkinstr( &scheme, gctx->STORE, 0, program );
     jpt = program = rl3_mkinstr( &scheme, gctx->SWAP, 0, program );
     program = rl3_mkinstr( &scheme, gctx->IS_NULL, 0, program );
-    program = rl3_mkinstr( &scheme, gctx->BRANCH, dsc, program );
+    program = rl3_mkinstr( &scheme, gctx->BRANCH, &dsc->header, program );
     program = rl3_mkinstr( &scheme, gctx->SPLIT_PAIR, 0, program );
     program = rl3_mkinstr( &scheme, gctx->ROTATE, 0, program );
     program = rl3_mkinstr( &scheme, gctx->SWAP, 0, program );
     program = rl3_mkinstr( &scheme, gctx->CONS, 0, program );
-    program = rl3_mkinstr( &scheme, gctx->JUMP, jpt, program );
+    program = rl3_mkinstr( &scheme, gctx->JUMP, &jpt->header, program );
     program = rl3_reverse( program );
 
 	while( 1 ) {
