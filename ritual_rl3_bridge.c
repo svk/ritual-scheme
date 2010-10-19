@@ -7,9 +7,46 @@
 
 #include "ritual_envproc.h"
 
-
-
 #include <assert.h>
+
+/* Way forward: writing the eval functions. The issue here is that
+ * we want to be able to use the same code in two situations:
+ *   -evaluating an expression -- just pushing code onto the IP stack
+ *   -compiling an expression -- chaining together code to be jumped into later
+ * Example:
+ *   (if a b c)
+ *   We don't want to have to REEVALUTE this when we encounter it in a function;
+ *   e.g. rerecognize that "if" is a keyword and so on.
+ *   (Even DrScheme doesn't allow redefining of keywords after the fact:
+ *      (define (f x y z) (if x y z))
+ *      (define if (lambda (x y z) z))
+ *      (f #t 1 0) => 1
+ *       [compare to:]
+ *      (define if (lambda (x y z) z))
+ *      (define (f x y z) (if x y z))
+ *      (f #t 1 0) => 0
+ *       [and to:]
+ *      (define (g x y z) (if x y z))
+ *      (define (f x y z) (g x y z))
+ *      (define g (lambda (x y z) z))
+ *      (f #t 1 0) => 0
+ *   )
+ *   It should simply be compiled to, in RL3:
+ *     STORE a
+ *     EVAL a
+ *     IS-FALSE
+ *     BRANCH {x}
+ *     TAILEVAL b
+ *     -
+ *    x:
+ *     TAILEVAL c
+ *     -
+ *   Where the evaluations, again, can possibly be compiled themselves.
+ *   Is it possible/desirable to write the code above only once, and use
+ *   it for both cases?
+ * Note: Evaluation is the basic case. Compilation is just an optimization.
+ *       Do evaluation first so stuff starts working.
+ */
 
 void ritual_rl3_compile_envproc( struct ritual_instance *inst,
                                                struct ritual_envproc *envproc ) {
