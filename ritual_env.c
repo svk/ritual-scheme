@@ -46,6 +46,16 @@ void ritual_env_init_sub(struct ritual_instance *inst,
     inst->bytes_allocated_to_subenvironments += RITUAL_ENV_SIZE_SUB;
 }
 
+struct ritual_env * ritual_env_sub_create( struct ritual_instance *inst,
+                                           struct ritual_env *parent ) {
+    struct ritual_env *rv = (struct ritual_env*) ritual_alloc_typed_object( inst, RTYPE_ENVIRONMENT, sizeof *rv );
+    if( !rv ) {
+        ritual_error( inst, "unable to allocate subenvironment (out of memory)" );
+    }
+    ritual_env_init_sub( inst, rv, parent );
+    return rv;
+}
+
 void ritual_env_destroy( struct ritual_instance *inst,
                          void *venv ) {
     RITUAL_ASSERT( inst, RITUAL_TYPE( venv ) == RTYPE_ENVIRONMENT, "ritual_env_destroy got object of wrong type" );

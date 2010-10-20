@@ -26,6 +26,7 @@ struct rl3_global_context {
     int SPLIT_PAIR, PRINT, CONS;
     int JUMP, CALL, BRANCH, BRANCH_NOT;
     int IS_PAIR_OR_NULL;
+    int PASS;
 };
 
 struct rl3_context {
@@ -37,7 +38,7 @@ struct rl3_context {
     struct ritual_pair *values;
 };
 
-struct rl3_global_context * rl3_initialize(void);
+int rl3_initialize(struct rl3_global_context *);
 void rl3_deinitialize(struct rl3_global_context*);
 int rl3_register_instruction(struct rl3_global_context*, void (*p)(struct rl3_context*,ritual_object_t*), const char* );
 

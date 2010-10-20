@@ -41,7 +41,10 @@ int main(int argc, char *argv[]) {
     yylex_init( &my.scanner );
     yyset_extra( &my, my.scanner );
 
-    struct rl3_global_context *gctx = rl3_initialize();
+    struct rl3_global_context gctx_s;
+    struct rl3_global_context *gctx = &gctx_s;
+    rl3_initialize(gctx );
+
     struct rl3_context rl3ctx;
 
     rl3_context_init( &rl3ctx, gctx, &scheme );

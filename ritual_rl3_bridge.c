@@ -215,19 +215,30 @@ void rl3ext_taileval( struct rl3_context *ctx, ritual_object_t *arg ) {
     rl3ext_general_error(ctx,0);
 }
 
-void rl3ext_env_push( struct rl3_context *ctx, ritual_object_t *arg ) {
+void rl3ext_env_create_push( struct rl3_context *ctx, ritual_object_t *arg ) {
     struct ritual_rl3_extended_context *ectx = (struct ritual_rl3_extended_context*) ctx;
-    ritual_list_push( ctx->inst, &ectx->environments, arg );
+    struct ritual_env *parent = (struct ritual_env*) arg;
+    assert( RITUAL_TYPE( parent ) == RTYPE_ENVIRONMENT );
+
+    struct ritual_env *env = ritual_env_sub_create( ctx->inst, parent );
+
+    ritual_list_push( ctx->inst, &ectx->environments, (ritual_object_t*) env );
 }
+
+void rl3ext_env_create_replace( struct rl3_context *ctx, ritual_object_t *arg ) {
+    struct ritual_rl3_extended_context *ectx = (struct ritual_rl3_extended_context*) ctx;
+    struct ritual_env *parent = (struct ritual_env*) arg;
+    assert( RITUAL_TYPE( parent ) == RTYPE_ENVIRONMENT );
+
+    struct ritual_env *env = ritual_env_sub_create( ctx->inst, parent );
+
+    ectx->environments->car = (ritual_object_t*) env;
+}
+
 
 void rl3ext_env_discard( struct rl3_context *ctx, ritual_object_t *arg ) {
     struct ritual_rl3_extended_context *ectx = (struct ritual_rl3_extended_context*) ctx;
     ritual_list_next( ctx->inst, &ectx->environments );
-}
-
-void rl3ext_env_replace( struct rl3_context *ctx, ritual_object_t *arg ) {
-    struct ritual_rl3_extended_context *ectx = (struct ritual_rl3_extended_context*) ctx;
-    ectx->environments->car = arg;
 }
 
 void rl3ext_env_bind( struct rl3_context *ctx, ritual_object_t *arg ) {
@@ -238,14 +249,15 @@ void rl3ext_env_bind( struct rl3_context *ctx, ritual_object_t *arg ) {
     ritual_env_define( ctx->inst, env, sym->name, object );
 }
 
-void ritual_initialize_rl3_extensions( struct rl3_global_context* gctx, struct ritual_rl3_extensions* ext ) {
+void ritual_initialize_rl3_extensions( struct ritual_rl3_extensions* ext ) {
+    struct rl3_global_context *gctx = &ext->gctx;
     ext->EVAL = rl3_register_instruction( gctx, rl3ext_eval, "EVAL" );
     ext->EVAL_DISCARD = rl3_register_instruction( gctx, rl3ext_eval_discard, "EVAL-DISCARD" );
     ext->TAILEVAL = rl3_register_instruction( gctx, rl3ext_taileval, "TAILEVAL" );
 
-    ext->ENV_PUSH = rl3_register_instruction( gctx, rl3ext_env_push, "ENV-PUSH" );
+    ext->ENV_PUSH = rl3_register_instruction( gctx, rl3ext_env_create_push, "ENV-CREATE-PUSH" );
+    ext->ENV_REPLACE = rl3_register_instruction( gctx, rl3ext_env_create_replace, "ENV-CREATE-REPLACE" );
     ext->ENV_DISCARD = rl3_register_instruction( gctx, rl3ext_env_discard, "ENV-DISCARD" );
-    ext->ENV_REPLACE = rl3_register_instruction( gctx, rl3ext_env_replace, "ENV-REPLACE" );
     ext->ENV_BIND = rl3_register_instruction( gctx, rl3ext_env_bind, "ENV-BIND" );
 
     ext->GENERAL_ERROR = rl3_register_instruction( gctx, rl3ext_general_error, "GENERAL-ERROR" );

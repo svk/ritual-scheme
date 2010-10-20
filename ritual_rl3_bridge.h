@@ -8,8 +8,10 @@
 #include "ritual_envproc.h"
 
 struct ritual_rl3_extensions {
+    struct rl3_global_context gctx;
+
     int EVAL, EVAL_DISCARD, TAILEVAL;
-    int ENV_PUSH, ENV_DISCARD, ENV_REPLACE, ENV_BIND;
+    int ENV_CREATE_PUSH, ENV_CREATE_REPLACE, ENV_DISCARD, ENV_BIND;
     int GENERAL_ERROR;
     int CALL_NATIVE;
 };
@@ -31,7 +33,7 @@ struct ritual_rl3_procedure {
         //  native procedures...)
 };
 
-void ritual_initialize_rl3_extensions( struct rl3_global_context*, struct ritual_rl3_extensions* );
+void ritual_initialize_rl3_extensions( struct ritual_rl3_extensions* );
 void ritual_initialize_extended_rl3_context( struct ritual_rl3_extended_context*, struct rl3_global_context*, struct ritual_instance *, struct ritual_env* );
 
 struct rl3_instr ** ritual_rl3_make_arglist_parser( struct ritual_rl3_extended_context *,

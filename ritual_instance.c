@@ -55,12 +55,13 @@ int ritual_initialize_instance( struct ritual_instance * inst ) {
         inst->symbol_table->ht_alloc = (void* (*)(void*,int)) ritual_alloc;
         inst->symbol_table->ht_free = (void (*)(void*,void*)) ritual_free;
 
-        inst->rl3_global = rl3_initialize();
-        if( !inst->rl3_global ) break;
-
         inst->rl3_ext = malloc(sizeof *inst->rl3_ext);
         if( !inst->rl3_ext ) break;
-        ritual_initialize_rl3_extensions( inst->rl3_global, inst->rl3_ext );
+        inst->rl3_global = &inst->rl3_ext->gctx;
+        if( rl3_initialize( &inst->rl3_ext->gctx ) ) break;
+        ritual_initialize_rl3_extensions( inst->rl3_ext );
+
+
 
         inst->rl3_ctx = malloc(sizeof *inst->rl3_ctx);
         if( !inst->rl3_ctx ) break;

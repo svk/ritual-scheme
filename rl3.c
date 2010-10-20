@@ -40,6 +40,10 @@ void rl3_debug_show( struct rl3_context *ctx ) {
     printf( "(%d)\n", n );
 }
 
+void rl3_ins_pass(struct rl3_context *ctx, ritual_object_t *arg) {
+    ;
+}
+
 void rl3_ins_dup(struct rl3_context *ctx, ritual_object_t *arg) {
     ritual_object_t *top = ritual_list_peek( ctx->inst, ctx->values );
     ritual_list_push( ctx->inst, &ctx->values, top );
@@ -152,9 +156,7 @@ void rl3_ins_branch(struct rl3_context *ctx, ritual_object_t *arg) {
 }
 
 
-struct rl3_global_context * rl3_initialize(void) {
-    struct rl3_global_context *gctx = malloc(sizeof *gctx);
-    if( !gctx ) return 0;
+int rl3_initialize(struct rl3_global_context *gctx) {
     do {
         memset( gctx, 0, sizeof *gctx );
         gctx->size = 32;
@@ -187,7 +189,9 @@ struct rl3_global_context * rl3_initialize(void) {
         gctx->BRANCH = rl3_register_instruction( gctx, rl3_ins_branch, "BRANCH" );
         gctx->BRANCH_NOT = rl3_register_instruction( gctx, rl3_ins_branch_not, "BRANCH-NOT" );
 
-        return gctx;
+        gctx->PASS = rl3_register_instruction( gctx, rl3_ins_pass, "PASS" );
+
+        return 0;
     } while(0);
     if( gctx->desc ) {
         free( gctx->desc );
@@ -195,14 +199,16 @@ struct rl3_global_context * rl3_initialize(void) {
     if( gctx->ptr ) {
         free( gctx->ptr );
     }
-    return 0;
+    return 1;
 }
 
 void rl3_deinitialize(struct rl3_global_context* gctx) {
     if( gctx->ptr ) {
         free( gctx->ptr );
     }
-    free( gctx );
+    if( gctx->desc ) {
+        free( gctx->desc );
+    }
 }
 
 int rl3_register_instruction(struct rl3_global_context *gctx, void (*p)(struct rl3_context*,ritual_object_t*), const char *name ) {

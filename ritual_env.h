@@ -49,5 +49,6 @@ struct ritual_env * ritual_letrec_env( struct ritual_instance *,
                                        struct ritual_pair * );
 
 
+struct ritual_env * ritual_env_sub_create( struct ritual_instance *, struct ritual_env * );
 
 #endif
